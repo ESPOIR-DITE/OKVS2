@@ -1,4 +1,4 @@
-package controller
+package domain
 
 type OrderLine struct {
 	LineId  string `json:"line_id"`

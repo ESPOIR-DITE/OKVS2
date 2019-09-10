@@ -1,4 +1,4 @@
-package controller
+package domain
 
 type Payment struct {
 	PaymentId   string `json:"payment_id"`

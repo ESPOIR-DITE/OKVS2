@@ -1,4 +1,4 @@
-package controller
+package domain
 
 type Order struct {
 	OrderId  string `json:"order_id"`

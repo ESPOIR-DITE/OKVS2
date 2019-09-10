@@ -1,4 +1,4 @@
-package controller
+package domain
 
 type ItemSold struct {
 	Id      string `json:"id"`

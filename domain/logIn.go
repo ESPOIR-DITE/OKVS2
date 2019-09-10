@@ -1,4 +1,4 @@
-package controller
+package domain
 
 type LogIn struct {
 	id       string `json:"id"`

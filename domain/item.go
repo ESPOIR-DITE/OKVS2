@@ -1,4 +1,4 @@
-package controller
+package domain
 
 type Item struct {
 	ItemId   string

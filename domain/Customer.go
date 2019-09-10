@@ -1,4 +1,4 @@
-package controller
+package domain
 
 type Customer struct {
 	Id      string `json:"id"`

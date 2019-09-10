@@ -1,4 +1,4 @@
-package controller
+package domain
 
 type Admin struct {
 	Id      string `json:"id"`
