@@ -1,11 +1,11 @@
 package api
 
 import (
+	"OKVS2/config"
 	"gopkg.in/resty.v1"
-	"obas/src/config"
 )
 
-const BASE_URL string = "http://OKVS"
+const BASE_URL string = "http://localhost:9090/OKVS/"
 
 func Rest() *resty.Request {
 	return resty.R().SetAuthToken("").
