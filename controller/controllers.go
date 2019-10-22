@@ -23,6 +23,7 @@ func Controllers(env *config.Env) http.Handler {
 	mux.Mount("/customer", customer.Customer(env))
 	mux.Mount("/user", users.User(env))
 	mux.Mount("/manager", admin.Admin(env))
+	mux.Mount("/item", item.Home(env))
 
 	fileServer := http.FileServer(http.Dir("./views/assets/"))
 	// Use the mux.Handle() function to register the file server as the handler for

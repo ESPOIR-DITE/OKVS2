@@ -2,26 +2,26 @@
 <html lang="en">
 <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <link rel="icon" href="assets/img/favicon.png" type="image/png" />
+    <link rel="icon" href="../../assets/img/fevicon.png" type="image/png"/>
     <title>Eiser ecommerce</title>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="../assets/css/bootstrap.css" />
-    <link rel="stylesheet" href="../assets/vendors/linericon/style.css" />
-    <link rel="stylesheet" href="../assets/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="../assets/css/themify-icons.css" />
-    <link rel="stylesheet" href="../assets/vendors/owl-carousel/owl.carousel.min.css" />
-    <link rel="stylesheet" href="../assets/vendors/lightbox/simpleLightbox.css" />
-    <link rel="stylesheet" href="../assets/vendors/nice-select/css/nice-select.css" />
-    <link rel="stylesheet" href="../assets/vendors/animate-css/animate.css" />
-    <link rel="stylesheet" href="../assets/vendors/jquery-ui/jquery-ui.css" />
+    <link rel="stylesheet" href="../../assets/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../assets/vendors/linericon/style.css"/>
+    <link rel="stylesheet" href="../../assets/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="../../assets/css/themify-icons.css"/>
+    <link rel="stylesheet" href="../../assets/vendors/owl-carousel/owl.carousel.min.css"/>
+    <link rel="stylesheet" href="../../assets/vendors/lightbox/simpleLightbox.css"/>
+    <link rel="stylesheet" href="../../assets/vendors/nice-select/css/nice-select.css"/>
+    <link rel="stylesheet" href="../../assets/vendors/animate-css/animate.css"/>
+    <link rel="stylesheet" href="../../assets/vendors/jquery-ui/jquery-ui.css"/>
     <!-- main css -->
-    <link rel="stylesheet" href="../assets/css/style.css" />
-    <link rel="stylesheet" href="../assets/css/responsive.css" />
+    <link rel="stylesheet" href="../../assets/css/style.css"/>
+    <link rel="stylesheet" href="../../assets/css/responsive.css"/>
 </head>
 
 <body>
@@ -65,7 +65,7 @@
             <nav class="navbar navbar-expand-lg navbar-light w-100">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <a class="navbar-brand logo_h" href="index.html">
-                    <img src="../assets/img/logo.png" alt="" />
+                    <img src="../../assets/img/logo.png" alt=""/>
                 </a>
                 <button
                         class="navbar-toggler"
@@ -183,8 +183,10 @@
                                 </li>
 
                                 <li class="nav-item submenu dropdown ">
-                                    <a href="#" class="nav-link dropdown-toggle icons"  data-toggle="dropdown" role="button" aria-haspopup="true"
-                                       aria-expanded="false">  <i class="ti-user" aria-hidden="true"></i> <label class="user" style=""></label></a>
+                                    <a href="#" class="nav-link dropdown-toggle icons" data-toggle="dropdown"
+                                       role="button" aria-haspopup="true"
+                                       aria-expanded="false"> <i class="ti-user" aria-hidden="true"></i> <label
+                                                class="user" style=""></label></a>
                                     <ul class="dropdown-menu">
                                         <li class="nav-item">
                                             <a class="nav-link" href="user/register">Register</a>
@@ -219,14 +221,14 @@
         <div class="container">
             <div class="banner_content d-md-flex justify-content-between align-items-center">
                 <div class="mb-3 mb-md-0">
-                    <h2>Customers Table</h2>
+                    <h2>Item </h2>
                     <p>Very us move be blessed multiply night</p>
                 </div>
                 <div class="page_link">
                     <a href="/customer/table">Customers</a>
                     <a href="/order/table">Orders</a>
                     <a href="/item/soulier/table">items view</a>
-                    <a href="/item/soulier/table">items add</a>
+                    <a href="/item/add">items add</a>
                     <a href="/managers/table">managers</a>
                 </div>
             </div>
@@ -237,31 +239,68 @@
 
 <!-- ================ contact section start ================= -->
 
-<!-- ================ contact section end ================= -->
-<div class="container">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Email</th>
-            <th>Name</th>
-            <th>First Name</th>
-            <th>status</th>
+<div class="row row flex-row">
+    <div class="col-lg-3">
+        <div class="right_sidebar_area">
+            <aside class="right_widgets p_filter_widgets">
+                <div class="l_w_title">
+                    <h3>Browse item Categories</h3>
+                </div>
+                <div class="widgets_inner">
+                    <ul class="list">
+                        <li>
+                            <a href="/item/soulier/table" style="background-color: #71cd14">soulier</a>
+                        </li>
+                        <li>
+                            <a href="/item/chemise/table">chemise</a>
+                        </li>
+                        <li>
+                            <a href="/item/pantalon/table">pantalon</a>
+                        </li>
+                        <li>
+                            <a href="/item/beate/table">beate</a>
+                        </li>
+                        <li>
+                            <a href="/item/perique/table">perique</a>
+                        </li>
 
-        </tr>
-        </thead>
-        <tbody>
-        {{with .Entities }}
-        {{range .}}
-        <tr>
-            <td> {{.Email}}</td>
-            <td> {{.Name}}</td>
-            <td> {{.SurName}}</td>
-            <td> {{.Status}}</td>
-            {{end}}
-            {{end}}
-        </tr>
-        </tbody>
-    </table>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- ================ contact section end ================= -->
+    <div class="col-lg-9">
+        <div class="l_w_title">
+            <h3>soulier</h3>
+        </div>
+        <table class="table table-dark">
+            <thead>
+            <tr>
+                <th>Item Number</th>
+                <th>Marque</th>
+                <th>size</th>
+                <th>Gender</th>
+                <th>Color</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {{with .Entities }}
+            {{range .}}
+            <tr>
+                <td> {{.ItemNumber}}</td>
+                <td> {{.Marque}}</td>
+                <td> {{.Size}}</td>
+                <td> {{.Gender}}</td>
+                <td> {{.Color}}</td>
+                {{end}}
+                {{end}}
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 <section class="banner_area">
 </section>
@@ -309,9 +348,11 @@
                 <h4>Newsletter</h4>
                 <p>You can trust us. we only send promo offers,</p>
                 <div class="form-wrap" id="mc_embed_signup">
-                    <form target="_blank" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
+                    <form target="_blank"
+                          action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
                           method="get" class="form-inline">
-                        <input class="form-control" name="EMAIL" placeholder="Your Email Address" onfocus="this.placeholder = ''"
+                        <input class="form-control" name="EMAIL" placeholder="Your Email Address"
+                               onfocus="this.placeholder = ''"
                                onblur="this.placeholder = 'Your Email Address '" required="" type="email">
                         <button class="click-btn btn btn-default">Subscribe</button>
                         <div style="position: absolute; left: -5000px;">
@@ -324,8 +365,11 @@
             </div>
         </div>
         <div class="footer-bottom row align-items-center">
-            <p class="footer-text m-0 col-lg-8 col-md-12"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+            <p class="footer-text m-0 col-lg-8 col-md-12">
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                Copyright &copy;<script>document.write(new Date().getFullYear());</script>
+                All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a
+                        href="https://colorlib.com" target="_blank">Colorlib</a>
                 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
             <div class="col-lg-4 col-md-12 footer-social">
                 <a href="#"><i class="fa fa-facebook"></i></a>
@@ -369,8 +413,6 @@
     </div>
 </div>
 <!--================End Contact Success and Error message Area =================-->
-
-
 
 
 <!-- Optional JavaScript -->

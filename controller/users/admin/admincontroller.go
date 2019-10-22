@@ -11,6 +11,8 @@ func Admin(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/home", AdminMethod(app))
 	r.Get("/table", AdminTableHandler(app))
+	//r.Get("/table", AdminTableHandler(app))
+
 	return r
 }
 

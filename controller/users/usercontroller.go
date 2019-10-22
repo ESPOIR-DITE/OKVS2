@@ -79,6 +79,7 @@ func ManagerLogHandler(env *config.Env) http.HandlerFunc {
 			http.Redirect(w, r, "/user/management", 301)
 		}
 
+		fmt.Println("user type is: ", resp)
 		if resp.UserTupe == "admin" {
 			http.Redirect(w, r, "/user/managementwelcom", 301)
 		}
