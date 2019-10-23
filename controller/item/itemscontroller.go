@@ -5,7 +5,6 @@ import (
 	"OKVS2/domain/items"
 	itemsIO "OKVS2/io/items"
 	"bufio"
-	"encoding/base64"
 	"fmt"
 	"github.com/go-chi/chi"
 	"html/template"
@@ -13,12 +12,16 @@ import (
 	"net/http"
 )
 
+/**
 type Soulier items.Shoes
 type Perique items.Hair
 type Items items.Items
 type ItemSold items.ItemSold
 type Cloths items.Cloths
-type Beate items.BeautyMakeup
+type Beate items.BeautyMakeup*/
+type results struct {
+	name string
+}
 
 func Home(app *config.Env) http.Handler {
 	r := chi.NewRouter()
@@ -46,30 +49,71 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(" we are creating Beaute")
 		r.ParseForm()
+		fmt.Println(" reading the file")
 		file, handler, err := r.FormFile("file")
-		if err != nil {
-			fmt.Println(err)
-			return
+		fmt.Println(" read successful")
+		var data string
+		type DataPage struct {
+			result results
 		}
-		defer file.Close()
-		fmt.Fprintf(w, "%v", handler.Header)
+		fmt.Println("********")
+		if err != nil {
+			fmt.Println(err, "<<<<<<>>>>>>>")
+			data = " could not upload the details"
+		}
+		//defer file.Close()
+		//fmt.Fprintf(w, "%v", handler.Header)
+		fmt.Println(" converting to byte array", handler)
 		reader := bufio.NewReader(file)
 		content, _ := ioutil.ReadAll(reader)
-		encoded := base64.StdEncoding.EncodeToString(content)
+		fmt.Println("converting to byte array successful")
+		//encoded := base64.StdEncoding.EncodeToString(content)
 		ItemName := r.PostFormValue("ItemName")
 		size := r.PostFormValue("size")
 		color := r.PostFormValue("color")
-		description := r.PostFormValue("desc")
+		description := r.PostFormValue("decription")
 		//photo1 :=r.PostFormValue("photo1")
 
-		user := items.BeautyMakeup{ItemName, size, description, color}
+		fmt.Println("creating an Beauty object")
 
-		fmt.Println(encoded, " ", user) //result, err := customer.CreateCustomer(user)
-		/*if err != nil {
+		B := items.BeautyHelper{ItemName, size, description, color, content}
+		//user := items.BeautyMakeup{ItemName, size, description, color}
+
+		fmt.Println("creating an Beauty object successful")
+
+		fmt.Println("sending to backend")
+
+		result, err := itemsIO.CreatBeatyHelper(B)
+		fmt.Println("sending to backend successful")
+
+		//fmt.Println(encoded, " ", B) //
+		if err != nil {
 			app.ErrorLog.Println(err.Error())
+			data = " could not upload the details"
+			fmt.Println(err, "  this is the erro")
 		}
 		app.InfoLog.Println("create response is :", result)
-		http.Redirect(w, r, "/", 301)*/
+		//http.Redirect(w, r, "/", 301)
+
+		files := []string{
+			app.Path + "itemAdd/beauteAdd.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		if result == true {
+			data = "upload successful"
+		}
+		data = "upload successful"
+		res := results{data}
+		myData := DataPage{res}
+		err = ts.Execute(w, myData)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+
 	}
 }
 

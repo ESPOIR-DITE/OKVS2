@@ -4,11 +4,25 @@ import (
 	"OKVS2/api"
 	"OKVS2/domain/items"
 	"errors"
+	"fmt"
 )
 
-const beautyURL = api.BASE_URL + "/beaty"
+const beautyURL = api.BASE_URL + "beaty"
 
 type BeautyItem items.BeautyMakeup
+type BeutyHleper items.BeautyHelper
+
+func CreatBeatyHelper(bh interface{}) (bool, error) {
+	fmt.Println(bh)
+	resp, _ := api.Rest().SetBody(bh).Post(beautyURL + "/creatwithfile")
+	fmt.Println("result: ", resp)
+	if resp.IsError() {
+		fmt.Println("checking if there any error: ", resp)
+		return false, errors.New(resp.Status())
+	}
+
+	return true, nil
+}
 
 func GetBeauties() ([]BeautyItem, error) {
 	entities := []BeautyItem{}

@@ -268,9 +268,9 @@
     </div>
     <!-- ================ contact section end ================= -->
     <div class="col-lg-8 col-md-8">
-        <h3 class="mb-30 title_color">Beauty Item Form</h3>
+        <h3 class="mb-30 title_color">Beauty Item Form <br> {{if .result}} {{.result}} {{end}}</h3>
        <!-- <form method="post" action="http://localhost:9090/OKVS/beaty/create" enctype="multipart/form-data">-->
-        <form method="post" enctype="multipart/form-data" action="/item/create/soulier" >
+        <form method="post"  action="/item/create/soulier" enctype="multipart/form-data" >
             <div class="form-group">
                 <label for="exampleFormControlFile1">Premiere Photo</label>
                 <input type="file" name="file" class="form-control-file" id="exampleFormControlFile1">
