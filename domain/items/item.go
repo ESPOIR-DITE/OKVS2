@@ -1,12 +1,31 @@
 package items
 
 type BeautyMakeup struct {
-
 	//ItemNumber string `json:"item_number"`
 	ItemName   string `json:"item_name"`
 	Size       string `json:"size"`
 	Decription string `json:"decription"`
 	Color      string `json:"color"`
+}
+type MyItemHelper struct {
+	ItemName   string   `json:"itemName"`
+	Size       []string `json:"size"`
+	Decription string   `json:"decription"`
+	Gender     string   `json:"gender"`
+	Itemtype   string   `json:"itemtype"`
+	Quantity   int      `json:"quantity"`
+	Price      float64  `json:"price"`
+	Image      [][]byte `json:"image"`
+	Color      []string `json:"color"`
+	Braind     string   `json:"braind"`
+}
+type MyImages struct {
+	Image  []byte
+	Image1 []byte
+	Image2 []byte
+}
+type ColorList struct {
+	color string
 }
 
 type Cloths struct {
@@ -38,8 +57,8 @@ type Shoes struct {
 }
 type Items struct {
 	ItemNumber  string `json:"item_number"`
-	Price       string `json:"price"`
-	Quantity    string `json:"quantity"`
+	Name        string `json:"name"`
+	TypeName    string `json:"type_name"`
 	Description string `json:"description"`
 }
 type ItemSold struct {
@@ -47,10 +66,46 @@ type ItemSold struct {
 	ItemId  string `json:"item_id"`
 	OrderId string `json:"order_id"`
 }
-type BeautyHelper struct {
-	ItemName   string `json:"itemName"`
-	Size       string `json:"size"`
-	Decription string `json:"decription"`
-	Color      string `json:"color"`
-	Image      []byte `json:"image"`
+
+type ItemType struct {
+	ItemId string `json:"item_id"`
+	TypeId string `json:"type_id"`
+}
+type Type struct {
+	Id       string `json:"id"`
+	TypeName string `json:"type_name"`
+}
+type Color struct {
+	ColorId   string `json:"color_id"`
+	ColorName string `json:"color_name"`
+}
+type ItemColor struct {
+	ItemId  string `json:"item_id"`
+	ColorId string `json:"color_id"`
+}
+type Braind struct {
+	BraindId   string `json:"braind_id"`
+	BraindName string `json:"braind_name"`
+}
+type Accounting struct {
+	ItemId   string  `json:"item_id"`
+	Price    float64 `json:"price"`
+	Quantity int     `json:"quantity"`
+}
+type Products struct {
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+type ProductType struct {
+	ItemId   string `json:"item_id"`
+	TypeName string `json:"type_name"`
+}
+type Size struct {
+	Id         string `json:"id"`
+	SizeNumber string `json:"size_number"`
+}
+type ProductSize struct {
+	ItemId string `json:"item_id"`
+	SizeId string `json:"size_id"`
 }

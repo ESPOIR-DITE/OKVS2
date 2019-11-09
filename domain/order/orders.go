@@ -1,9 +1,9 @@
 package order
 
 type Orders struct {
-	OrderNumber string `json:"order_number"`
-	Customer_id string `json:"customer_id"`
-	Date        string `json:"date"`
+	Id         string `json:"id"`
+	CustomerId string `json:"customer_id"`
+	Date       string `json:"date"`
 }
 
 type OrderLine struct {
