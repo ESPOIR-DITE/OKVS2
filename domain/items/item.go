@@ -24,9 +24,6 @@ type MyImages struct {
 	Image1 []byte
 	Image2 []byte
 }
-type ColorList struct {
-	color string
-}
 
 type Cloths struct {
 	ItemNumber string `json:"item_number"`
@@ -76,16 +73,16 @@ type Type struct {
 	TypeName string `json:"type_name"`
 }
 type Color struct {
-	ColorId   string `json:"color_id"`
-	ColorName string `json:"color_name"`
+	ColorId   string `json:"colorId"`
+	ColorName string `json:"colorName"`
 }
 type ItemColor struct {
 	ItemId  string `json:"item_id"`
 	ColorId string `json:"color_id"`
 }
 type Braind struct {
-	BraindId   string `json:"braind_id"`
-	BraindName string `json:"braind_name"`
+	BraindId   string `json:"braindId"`
+	BraindName string `json:"braindName"`
 }
 type Accounting struct {
 	ItemId   string  `json:"item_id"`
@@ -108,4 +105,8 @@ type Size struct {
 type ProductSize struct {
 	ItemId string `json:"item_id"`
 	SizeId string `json:"size_id"`
+}
+type AddressType struct {
+	AddressTypeId string `json:"addressTypeId"`
+	AddressType   string `json:"addressType"`
 }

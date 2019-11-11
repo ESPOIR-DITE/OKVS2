@@ -4,6 +4,7 @@ import (
 	"OKVS2/config"
 	"OKVS2/domain/items"
 	itemsIO "OKVS2/io/items"
+	"OKVS2/io/types"
 	"bufio"
 	"fmt"
 	"github.com/go-chi/chi"
@@ -24,6 +25,8 @@ type results struct {
 	name string
 }
 
+//type Gender gender.Gender
+
 func Home(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	//r.Use(middleware.LoginSession{SessionManager: app.Session}.RequireAuthenticatedUser)
@@ -39,11 +42,637 @@ func Home(app *config.Env) http.Handler {
 	r.Get("/beate/add", BeauteAddHandler(app))
 	r.Get("/perique/add", PeriqueAddHandler(app))
 
+	/***TYPES*/
+	r.Get("/types", TypesHandler(app))
+	r.Get("/types/gender", TypesGenderHandler(app))
+	r.Get("/types/color", TypesColorHandler(app))
+	r.Get("/types/braind", TypesBraindHandler(app))
+	r.Get("/types/product", TypesProductHandler(app))
+	r.Get("/types/address", TypesAddressHandler(app))
+
 	/**r.Post("/create/soulier", CreateSoulierHandler(app))
 	r.Post("/create/soulier", CreateChemiseHandler(app))
 	r.Post("/create/soulier", CreatePeriqueHandler(app))*/
 	r.Post("/create/soulier", CreateBeauteHandler(app))
+	r.Post("/create/gender", CreateGenderHandler(app))
+	r.Post("/create/color", CreateColorHandler(app))
+	r.Post("/create/braind", CreateBraindHandler(app))
+	r.Post("/create/product", CreateProductHandler(app))
+	r.Post("/create/address", CreateAddressHandler(app))
+
+	r.Post("/delete/color", DeleteColorHandler(app))
+	r.Post("/delete/gender", DeleteGenderHandler(app))
+	r.Post("/delete/braind", DeleteBraindHandler(app))
+	r.Post("/delete/product", DeleteProductHandler(app))
+	r.Post("/delete/address", DeleteAddressHandler(app))
+
 	return r
+}
+
+func DeleteAddressHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  DeleteAddressHandler...")
+
+		r.ParseForm()
+		addressId := r.PostFormValue("addressId")
+		fmt.Println(" what we are delete ", addressId)
+		type PageData struct {
+			Entities []types.AddressType
+		}
+		if addressId != "" {
+			_, nill := types.DeleteAddressType(addressId)
+
+			if nill != nil {
+				app.ErrorLog.Println(nill.Error())
+			}
+		}
+		data2, err := types.GetAddressTypes()
+
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println(" Error when reading ", addressId)
+		}
+
+		Data := PageData{data2}
+		fmt.Println(" we are reading", Data)
+		files := []string{
+			app.Path + "create_types/addresses_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func CreateAddressHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  CreateAddressHandler...")
+
+		r.ParseForm()
+		addressdName := r.PostFormValue("addressdName")
+
+		fmt.Println(" what we are creating ", addressdName)
+
+		type PageData struct {
+			Entities []types.AddressType
+		}
+
+		if addressdName != "" {
+			_, nill := types.CreateAddressType(addressdName)
+
+			if nill != nil {
+				app.ErrorLog.Println(nill.Error())
+				fmt.Println(" Error when creating ")
+
+			}
+		}
+		data2, err := types.GetAddressTypes()
+
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println(" Error when reading ", addressdName)
+
+		}
+
+		Data := PageData{data2}
+		fmt.Println(" we are creating colore", Data)
+		files := []string{
+			app.Path + "create_types/addresses_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func TypesAddressHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		fmt.Println(" In  TypesAddressHandler...")
+		type PageData struct {
+			Entities []types.AddressType
+		}
+		data, nill := types.GetAddressTypes()
+
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+		}
+		Data := PageData{data}
+		fmt.Println(" we are calling addressType page", Data)
+		files := []string{
+			app.Path + "create_types/addresses_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func DeleteProductHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  DeleteColorHandler...")
+
+		r.ParseForm()
+		ProductdId := r.PostFormValue("ProductdId")
+		fmt.Println(" what we are delete ", ProductdId)
+		type PageData struct {
+			Entities []types.Product
+		}
+		if ProductdId != "" {
+			_, nill := types.DeleteProduct(ProductdId)
+
+			if nill != nil {
+				app.ErrorLog.Println(nill.Error())
+			}
+		}
+		data2, err := types.GetProducts()
+
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println(" Error when reading ", ProductdId)
+		}
+
+		Data := PageData{data2}
+		fmt.Println(" we are reading", Data)
+		files := []string{
+			app.Path + "create_types/products_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func CreateProductHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  CreateColorHandler...")
+
+		r.ParseForm()
+		ProductdName := r.PostFormValue("ProductdName")
+		Description := r.PostFormValue("Description")
+		fmt.Println(" what we are creating ", ProductdName, " and ", Description)
+
+		type PageData struct {
+			Entities []types.Product
+		}
+
+		if ProductdName != "" && Description != "" {
+			_, nill := types.CreateProduct(ProductdName, Description)
+
+			if nill != nil {
+				app.ErrorLog.Println(nill.Error())
+				fmt.Println(" Error when creating ")
+
+			}
+		}
+		data2, err := types.GetProducts()
+
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println(" Error when reading ", ProductdName)
+
+		}
+
+		Data := PageData{data2}
+		fmt.Println(" we are creating colore", Data)
+		files := []string{
+			app.Path + "create_types/products_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func TypesProductHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		fmt.Println(" In  TypesProductHandler...")
+		type PageData struct {
+			Entities []types.Product
+		}
+		data, nill := types.GetProducts()
+
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+		}
+		Data := PageData{data}
+		fmt.Println(" we are calling product page", Data)
+		files := []string{
+			app.Path + "create_types/products_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func DeleteBraindHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  DeleteColorHandler...")
+
+		r.ParseForm()
+		braind := r.PostFormValue("BraindName")
+		fmt.Println(" what we are delete ", braind)
+		type PageData struct {
+			Entities []types.Braind
+		}
+		if braind != "" {
+			_, nill := types.DeleteBraind(braind)
+
+			if nill != nil {
+				app.ErrorLog.Println(nill.Error())
+			}
+		}
+		data2, err := types.GetBrainds()
+
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println(" Error when reading ", braind)
+		}
+
+		Data := PageData{data2}
+		fmt.Println(" we are reading", Data)
+		files := []string{
+			app.Path + "create_types/brainds_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func CreateBraindHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  CreateColorHandler...")
+
+		r.ParseForm()
+		braind := r.PostFormValue("BraindName")
+		fmt.Println(" what we are creating ", braind)
+
+		type PageData struct {
+			Entities []types.Braind
+		}
+
+		if braind != "" {
+			_, nill := types.CreateBraind(braind)
+
+			if nill != nil {
+				app.ErrorLog.Println(nill.Error())
+				fmt.Println(" Error when creating ")
+
+			}
+		}
+		data2, err := types.GetBrainds()
+
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println(" Error when reading ", braind)
+
+		}
+
+		Data := PageData{data2}
+		fmt.Println(" we are creating colore", Data)
+		files := []string{
+			app.Path + "create_types/brainds_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func TypesBraindHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		fmt.Println(" In  TypesColorHandler...")
+		type PageData struct {
+			Entities []types.Braind
+		}
+		data, nill := types.GetBrainds()
+
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+		}
+		Data := PageData{data}
+		fmt.Println(" we are calling color page", Data)
+		files := []string{
+			app.Path + "create_types/brainds_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func CreateColorHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  CreateColorHandler...")
+
+		r.ParseForm()
+		color := r.PostFormValue("ColorName")
+		fmt.Println(" what we are creating ", color)
+
+		type PageData struct {
+			Entities []types.Color
+		}
+
+		if color != "" {
+			_, nill := types.CreateColors(color)
+
+			if nill != nil {
+				app.ErrorLog.Println(nill.Error())
+				fmt.Println(" Error when creating ")
+
+			}
+		}
+		data2, err := types.GetColors()
+
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println(" Error when reading ", color)
+
+		}
+
+		Data := PageData{data2}
+		fmt.Println(" we are creating colore", Data)
+		files := []string{
+			app.Path + "create_types/colors_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func DeleteColorHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  DeleteColorHandler...")
+
+		r.ParseForm()
+		color := r.PostFormValue("ColorName")
+		fmt.Println(" what we are delete ", color)
+		type PageData struct {
+			Entities []types.Color
+		}
+		if color != "" {
+			_, nill := types.DeleteColor(color)
+
+			if nill != nil {
+				app.ErrorLog.Println(nill.Error())
+			}
+		}
+		data2, err := types.GetColors()
+
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println(" Error when reading ", color)
+		}
+
+		Data := PageData{data2}
+		fmt.Println(" we are reading", Data)
+		files := []string{
+			app.Path + "create_types/colors_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func TypesColorHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		fmt.Println(" In  TypesColorHandler...")
+		type PageData struct {
+			Entities []types.Color
+		}
+		data, nill := types.GetColors()
+
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+		}
+		Data := PageData{data}
+		fmt.Println(" we are calling color page", Data)
+		files := []string{
+			app.Path + "create_types/colors_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func DeleteGenderHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  DeleteGenderHandler...")
+
+		r.ParseForm()
+		gender := r.PostFormValue("GenderName")
+		fmt.Println(" what we are delete ", gender)
+		type PageData struct {
+			Entities []types.Gender
+		}
+		if gender != "" {
+			_, nill := types.DeleteGender(gender)
+
+			if nill != nil {
+				app.ErrorLog.Println(nill.Error())
+			}
+		}
+		data2, err := types.GetGenders()
+
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println(" Error when reading ", gender)
+		}
+
+		Data := PageData{data2}
+		fmt.Println(" we are creating Beaute", Data)
+		files := []string{
+			app.Path + "create_types/geder_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func CreateGenderHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  CreateGenderHandler...")
+
+		//var stat string
+		r.ParseForm()
+		gender := r.PostFormValue("GenderName")
+		fmt.Println(" what we are creating ", gender)
+
+		type PageData struct {
+			Entities []types.Gender
+		}
+
+		if gender != "" {
+			_, nill := types.CreateGender(gender)
+
+			if nill != nil {
+				app.ErrorLog.Println(nill.Error())
+
+			}
+		}
+		data2, err := types.GetGenders()
+
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println(" Error when reading ", gender)
+
+		}
+
+		Data := PageData{data2}
+		fmt.Println(" we are creating Beaute", Data)
+		files := []string{
+			app.Path + "create_types/geder_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func TypesGenderHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  TypesGenderHandler...")
+
+		type PageData struct {
+			Entities []types.Gender
+		}
+		data, nill := types.GetGenders()
+
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+		}
+		Data := PageData{data}
+		fmt.Println(" we are creating Beaute", Data)
+		files := []string{
+			app.Path + "create_types/geder_type.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, Data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func TypesHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(" In  TypesHandler...")
+
+		type PageData struct {
+			Entities []itemsIO.ShoesItem
+		}
+
+		files := []string{
+			app.Path + "create_types/types.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, nil)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+
 }
 
 func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
