@@ -10,6 +10,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 /**
@@ -51,6 +52,8 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 		r.ParseForm()
 		fmt.Println(" reading the file")
 		file, handler, err := r.FormFile("file")
+		file1, handler, err := r.FormFile("file")
+		file2, handler, err := r.FormFile("file")
 		fmt.Println(" read successful")
 		var data string
 		type DataPage struct {
@@ -65,19 +68,32 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 		//fmt.Fprintf(w, "%v", handler.Header)
 		fmt.Println(" converting to byte array", handler)
 		reader := bufio.NewReader(file)
+		reader1 := bufio.NewReader(file1)
+		reader2 := bufio.NewReader(file2)
+
 		content, _ := ioutil.ReadAll(reader)
+		content1, _ := ioutil.ReadAll(reader1)
+		content2, _ := ioutil.ReadAll(reader2)
+		sliceOfImage := [][]byte{content, content1, content2}
+		//a:=items.MyImages{content,content1,content2}
+
 		fmt.Println("converting to byte array successful")
 		//encoded := base64.StdEncoding.EncodeToString(content)
 		ItemName := r.PostFormValue("ItemName")
-		size := r.PostFormValue("size")
-		color := r.PostFormValue("color")
+		//color := r.PostFormValue("color")
 		description := r.PostFormValue("decription")
-		//photo1 :=r.PostFormValue("photo1")
+		itemType := r.PostFormValue("itemType")
+		gender := r.PostFormValue("gender")
+		quantity, _ := strconv.Atoi(r.PostFormValue("quantity"))
+		price, _ := strconv.ParseFloat(r.PostFormValue("price"), 64)
+		braind := r.PostFormValue("braind")
 
 		fmt.Println("creating an Beauty object")
 
-		B := items.BeautyHelper{ItemName, size, description, color, content}
-		//user := items.BeautyMakeup{ItemName, size, description, color}
+		size := r.Form["size"]
+		Z := r.Form["new_data"]
+
+		B := items.MyItemHelper{ItemName, contains(size), description, gender, itemType, quantity, price, sliceOfImage, contains(Z), braind}
 
 		fmt.Println("creating an Beauty object successful")
 
@@ -116,7 +132,20 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 
 	}
 }
-
+func containsImages(slice [][]byte) [][]byte {
+	set := [][]byte{}
+	for _, s := range slice {
+		set = append(slice, s)
+	}
+	return set
+}
+func contains(slice []string) []string {
+	set := []string{}
+	for _, s := range slice {
+		set = append(slice, s)
+	}
+	return set
+}
 func ChemiseAddHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 

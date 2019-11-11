@@ -10,7 +10,7 @@ import (
 const beautyURL = api.BASE_URL + "beaty"
 
 type BeautyItem items.BeautyMakeup
-type BeutyHleper items.BeautyHelper
+type BeutyHleper items.MyItemHelper
 
 func CreatBeatyHelper(bh interface{}) (bool, error) {
 	fmt.Println(bh)

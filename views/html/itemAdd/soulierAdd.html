@@ -294,13 +294,60 @@
             <div class="input-group-icon mt-10">
                 <div class="form-select" id="default-select" name="color">
                     <select>
-                        <option value="1">Color</option>
-                        <option value="1">Rouge</option>
-                        <option value="1">Blue</option>
-                        <option value="1">Noire</option>
-                        <option value="1">Blanc</option>
-                        <option value="1">Ver</option>
+                        <option style="background-color: #003eff" value="bleu">Color</option>
+                        <option style="background-color: #f3f4f7" value="white">Rouge</option>
                     </select>
+                </div>
+            </div>
+            <div class="input-group-icon mt-10">
+                <select multiple data-title="Multiple Select" name="currency" class="form-select" data-style="btn-info btn-fill btn-block" data-menu-style="dropdown-blue">
+                    <option value="ARS" style="background-color: #003eff">ARS</option>
+                    <option value="AUD">AUD</option>
+                    <option value="BRL">BRL</option>
+                    <option value="CAD">CAD</option>
+                    <option value="CHF">CHF</option>
+                    <option value="CNY">CNY</option>
+                    <option value="CZK">CZK</option>
+                    <option value="DKK">DKK</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="HKD">HKD</option>
+                    <option value="HUF">HUF</option>
+                    <option value="IDR">IDR</option>
+                    <option value="ILS">ILS</option>
+                    <option value="INR">INR</option>
+                    <option value="JPY">JPY</option>
+                    <option value="KRW">KRW</option>
+                    <option value="MYR">MYR</option>
+                    <option value="MXN">MXN</option>
+                    <option value="NOK">NOK</option>
+                    <option value="NZD">NZD</option>
+                    <option value="PHP">PHP</option>
+                    <option value="PLN">PLN</option>
+                    <option value="RUB">RUB</option>
+                    <option value="SEK">SEK</option>
+                    <option value="SGD">SGD</option>
+                    <option value="TWD">TWD</option>
+                    <option value="USD">USD</option>
+                    <option value="VND">VND</option>
+                    <option value="ZAR">ZAR</option>
+                </select>
+            </div>
+            <div class="card">
+                <div class="card-body text-center d-flex justify-content-center align-items-center flex-column">
+                    <p>Click the below button to activate the Color Picker</p>
+                    <button class="btn btn-primary btn-sm" id="color-picker-2">Open Picker</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body text-center d-flex justify-content-center align-items-center flex-column">
+                    <ul class="list-group list-group-flush w-100">
+                        <li class="list-group-item" id="hex"></li>
+                        <li class="list-group-item" id="rgba"></li>
+                        <li class="list-group-item" id="hsla"></li>
+                        <li class="list-group-item" id="hsva"></li>
+                        <li class="list-group-item" id="cmyk"></li>
+                    </ul>
                 </div>
             </div>
 
@@ -308,9 +355,45 @@
 								<textarea class="single-textarea" placeholder="Message" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Description'"
                                           required></textarea>
             </div>
-            <div class="form-group">
+            <div class="mt-10">
                 <label for="exampleFormControlFile1">Premiere Photo</label>
                 <input type="file" class="form-control-file" id="exampleFormControlFile1">
+            </div>
+            <div class="mt-10">
+                <label >Premiere Photo</label>
+                <input type="file" class="form-control-file1" id="exampleFormControlFile1">
+            </div>
+            <div class="mt-10">
+                <label for="exampleFormControlFile1">Premiere Photo</label>
+                <input type="file" class="form-control-file2" id="exampleFormControlFile1">
+            </div>
+
+            <select class="custom-select" multiple>
+                <option selected>Open this select menu</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+
+
+            <div class="col-lg-3 col-md-4 mt-sm-30 element-wrap">
+            <div class="single-element-widget">
+                <h3 class="mb-30 title_color">Checkboxes</h3>
+                <div class="switch-wrap d-flex justify-content-between">
+                    <p>01. Sample Checkbox</p>
+                    <div class="primary-checkbox">
+                        <input type="checkbox" id="default-checkbox">
+                        <label for="default-checkbox"></label>
+                    </div>
+                </div>
+                <div class="switch-wrap d-flex justify-content-between">
+                    <p>02. Primary Color Checkbox</p>
+                    <div class="primary-checkbox">
+                        <input type="checkbox" id="primary-checkbox" checked>
+                        <label for="primary-checkbox"></label>
+                    </div>
+                </div>
+            </div>
             </div>
             <button class="mt-10" id="customerDetais" type="submit" style="background-color: #FFFFFF; border: #FFFFFF">
                 <a  class="genric-btn primary circle">Add Item</a>
@@ -451,6 +534,10 @@
 <script src="../../assets/js/jquery.form.js"></script>
 <script src="../../assets/js/jquery.validate.min.js"></script>
 <script src="../../assets/js/contact.js"></script>
+<script src="../../assets/js/colorpicker.js"></script>
+
+
+
 <!--gmaps Js-->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
 <script src="../../assets/js/gmaps.min.js"></script>
