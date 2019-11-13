@@ -7,15 +7,15 @@ import (
 	"fmt"
 )
 
-const beautyURL = api.BASE_URL + "beaty"
+const beautyURL = api.BASE_URL + "myitems"
 
 type BeautyItem items.BeautyMakeup
 type BeutyHleper items.MyItemHelper
 
 func CreatBeatyHelper(bh interface{}) (bool, error) {
-	fmt.Println(bh)
+	//fmt.Println(bh)
 	resp, _ := api.Rest().SetBody(bh).Post(beautyURL + "/creatwithfile")
-	fmt.Println("result: ", resp)
+	//fmt.Println("result: ", resp)
 	if resp.IsError() {
 		fmt.Println("checking if there any error: ", resp)
 		return false, errors.New(resp.Status())

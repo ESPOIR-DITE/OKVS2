@@ -2,6 +2,7 @@ package item
 
 import (
 	"OKVS2/config"
+	"OKVS2/domain/gender"
 	"OKVS2/domain/items"
 	itemsIO "OKVS2/io/items"
 	"OKVS2/io/types"
@@ -21,8 +22,8 @@ type Items items.Items
 type ItemSold items.ItemSold
 type Cloths items.Cloths
 type Beate items.BeautyMakeup*/
-type results struct {
-	name string
+type Results struct {
+	Name string
 }
 
 //type Gender gender.Gender
@@ -36,6 +37,8 @@ func Home(app *config.Env) http.Handler {
 	r.Get("/pantalon/table", PantalonHanler(app))
 	r.Get("/beate/table", BeauteItemHanler(app))
 	r.Get("/perique/table", PeriqueItemHanler(app))
+
+	r.Get("/item/add", ItemAddHandler(app))
 
 	r.Get("/soulier/add", SoulierAddHandler(app))
 	r.Get("/chemise/add", ChemiseAddHandler(app))
@@ -67,6 +70,28 @@ func Home(app *config.Env) http.Handler {
 	r.Post("/delete/address", DeleteAddressHandler(app))
 
 	return r
+}
+
+func ItemAddHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		type PageData struct {
+			Entities []itemsIO.ShoesItem
+		}
+
+		files := []string{
+			app.Path + "itemAdd/addItem.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, nil)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
 }
 
 func DeleteAddressHandler(app *config.Env) http.HandlerFunc {
@@ -311,7 +336,7 @@ func DeleteBraindHandler(app *config.Env) http.HandlerFunc {
 		braind := r.PostFormValue("BraindName")
 		fmt.Println(" what we are delete ", braind)
 		type PageData struct {
-			Entities []types.Braind
+			Entities []items.Braind
 		}
 		if braind != "" {
 			_, nill := types.DeleteBraind(braind)
@@ -353,7 +378,7 @@ func CreateBraindHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println(" what we are creating ", braind)
 
 		type PageData struct {
-			Entities []types.Braind
+			Entities []items.Braind
 		}
 
 		if braind != "" {
@@ -395,7 +420,7 @@ func TypesBraindHandler(app *config.Env) http.HandlerFunc {
 
 		fmt.Println(" In  TypesColorHandler...")
 		type PageData struct {
-			Entities []types.Braind
+			Entities []items.Braind
 		}
 		data, nill := types.GetBrainds()
 
@@ -428,7 +453,7 @@ func CreateColorHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println(" what we are creating ", color)
 
 		type PageData struct {
-			Entities []types.Color
+			Entities []items.Color
 		}
 
 		if color != "" {
@@ -473,7 +498,7 @@ func DeleteColorHandler(app *config.Env) http.HandlerFunc {
 		color := r.PostFormValue("ColorName")
 		fmt.Println(" what we are delete ", color)
 		type PageData struct {
-			Entities []types.Color
+			Entities []items.Color
 		}
 		if color != "" {
 			_, nill := types.DeleteColor(color)
@@ -511,7 +536,7 @@ func TypesColorHandler(app *config.Env) http.HandlerFunc {
 
 		fmt.Println(" In  TypesColorHandler...")
 		type PageData struct {
-			Entities []types.Color
+			Entities []items.Color
 		}
 		data, nill := types.GetColors()
 
@@ -540,13 +565,13 @@ func DeleteGenderHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println(" In  DeleteGenderHandler...")
 
 		r.ParseForm()
-		gender := r.PostFormValue("GenderName")
-		fmt.Println(" what we are delete ", gender)
+		genderName := r.PostFormValue("GenderName")
+		fmt.Println(" what we are delete ", genderName)
 		type PageData struct {
-			Entities []types.Gender
+			Entities []gender.Gender
 		}
-		if gender != "" {
-			_, nill := types.DeleteGender(gender)
+		if genderName != "" {
+			_, nill := types.DeleteGender(genderName)
 
 			if nill != nil {
 				app.ErrorLog.Println(nill.Error())
@@ -556,7 +581,7 @@ func DeleteGenderHandler(app *config.Env) http.HandlerFunc {
 
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
-			fmt.Println(" Error when reading ", gender)
+			fmt.Println(" Error when reading ", genderName)
 		}
 
 		Data := PageData{data2}
@@ -582,15 +607,15 @@ func CreateGenderHandler(app *config.Env) http.HandlerFunc {
 
 		//var stat string
 		r.ParseForm()
-		gender := r.PostFormValue("GenderName")
-		fmt.Println(" what we are creating ", gender)
+		genderName := r.PostFormValue("GenderName")
+		fmt.Println(" what we are creating ", genderName)
 
 		type PageData struct {
-			Entities []types.Gender
+			Entities []gender.Gender
 		}
 
-		if gender != "" {
-			_, nill := types.CreateGender(gender)
+		if genderName != "" {
+			_, nill := types.CreateGender(genderName)
 
 			if nill != nil {
 				app.ErrorLog.Println(nill.Error())
@@ -601,7 +626,7 @@ func CreateGenderHandler(app *config.Env) http.HandlerFunc {
 
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
-			fmt.Println(" Error when reading ", gender)
+			fmt.Println(" Error when reading ", genderName)
 
 		}
 
@@ -627,7 +652,7 @@ func TypesGenderHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println(" In  TypesGenderHandler...")
 
 		type PageData struct {
-			Entities []types.Gender
+			Entities []gender.Gender
 		}
 		data, nill := types.GetGenders()
 
@@ -681,13 +706,11 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 		r.ParseForm()
 		fmt.Println(" reading the file")
 		file, handler, err := r.FormFile("file")
-		file1, handler, err := r.FormFile("file")
-		file2, handler, err := r.FormFile("file")
+		file1, handler, err := r.FormFile("file1")
+		file2, handler, err := r.FormFile("file2")
 		fmt.Println(" read successful")
 		var data string
-		type DataPage struct {
-			result results
-		}
+
 		fmt.Println("********")
 		if err != nil {
 			fmt.Println(err, "<<<<<<>>>>>>>")
@@ -712,7 +735,8 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 		//color := r.PostFormValue("color")
 		description := r.PostFormValue("decription")
 		itemType := r.PostFormValue("itemType")
-		gender := r.PostFormValue("gender")
+		fmt.Println("item type>>>", itemType)
+		genders := r.Form["gender"]
 		quantity, _ := strconv.Atoi(r.PostFormValue("quantity"))
 		price, _ := strconv.ParseFloat(r.PostFormValue("price"), 64)
 		braind := r.PostFormValue("braind")
@@ -720,11 +744,11 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println("creating an Beauty object")
 
 		size := r.Form["size"]
-		Z := r.Form["new_data"]
+		Z := r.Form["colors"]
 
-		B := items.MyItemHelper{ItemName, contains(size), description, gender, itemType, quantity, price, sliceOfImage, contains(Z), braind}
+		B := items.MyItemHelper{ItemName, contains(size), description, genders, itemType, quantity, price, sliceOfImage, Z, braind}
 
-		fmt.Println("creating an Beauty object successful")
+		//fmt.Println("creating an Beauty object successful>>>> :",B)
 
 		fmt.Println("sending to backend")
 
@@ -741,7 +765,7 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 		//http.Redirect(w, r, "/", 301)
 
 		files := []string{
-			app.Path + "itemAdd/beauteAdd.html",
+			app.Path + "itemAdd/addItem.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -751,10 +775,46 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 		if result == true {
 			data = "upload successful"
 		}
+
+		type PageData struct {
+			GenderData   []gender.Gender
+			SizeData     []items.Size
+			ColorData    []items.Color
+			ItemTypeData []items.Type
+			BraindData   []items.Braind
+			Result       Results
+		}
+
+		mygender, nill := types.GetGenders()
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+			return
+		}
+		color, nill := types.GetColors()
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+			return
+		}
+		mybraind, nill := types.GetBrainds()
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+			return
+		}
+		mysize, nill := types.GetSizes()
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+			return
+		}
+		myitemType, nill := types.GetTypes()
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+			return
+		}
 		data = "upload successful"
-		res := results{data}
-		myData := DataPage{res}
-		err = ts.Execute(w, myData)
+		res := Results{data}
+		datatypes := PageData{mygender, mysize, color, myitemType, mybraind, res}
+
+		err = ts.Execute(w, datatypes)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 		}
@@ -844,19 +904,56 @@ func PeriqueAddHandler(app *config.Env) http.HandlerFunc {
 func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		StringValidatio := ""
 		type PageData struct {
-			Entities []itemsIO.ShoesItem
+			GenderData   []gender.Gender
+			SizeData     []items.Size
+			ColorData    []items.Color
+			ItemTypeData []types.Product
+			BraindData   []items.Braind
+			Result       Results
 		}
-
+		res := Results{StringValidatio}
+		gender, nill := types.GetGenders()
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+			fmt.Println(" Error reading gender", nill)
+			return
+		}
+		color, nill := types.GetColors()
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+			fmt.Println(" Error reading color", nill)
+			return
+		}
+		braind, nill := types.GetBrainds()
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+			fmt.Println(" Error reading braind", nill)
+			return
+		}
+		size, nill := types.GetSizes()
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+			fmt.Println(" Error reading size", nill)
+			return
+		}
+		itemType, nill := types.GetProducts()
+		if nill != nil {
+			app.ErrorLog.Println(nill.Error())
+			fmt.Println(" Error reading itemType", nill)
+			return
+		}
+		data := PageData{gender, size, color, itemType, braind, res}
 		files := []string{
-			app.Path + "itemAdd/soulierAdd.html",
+			app.Path + "itemAdd/addItem.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			return
 		}
-		err = ts.Execute(w, nil)
+		err = ts.Execute(w, data)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 		}

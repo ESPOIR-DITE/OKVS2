@@ -11,8 +11,8 @@ const genderURL = api.BASE_URL + "gender"
 
 type Gender gender.Gender
 
-func GetGenders() ([]Gender, error) {
-	entities := []Gender{}
+func GetGenders() ([]gender.Gender, error) {
+	entities := []gender.Gender{}
 	resp, _ := api.Rest().Get(genderURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())

@@ -7,14 +7,14 @@ import (
 	"fmt"
 )
 
-const braindURL = api.BASE_URL + "braind"
+const sizeURL = api.BASE_URL + "size"
 
-type Braind items.Braind
+type Size items.Size
 
-func GetBrainds() ([]items.Braind, error) {
+func GetSizes() ([]items.Size, error) {
 	//entity :=Color{}
-	entities := []items.Braind{}
-	resp, _ := api.Rest().Get(braindURL + "/reads")
+	entities := []items.Size{}
+	resp, _ := api.Rest().Get(sizeURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
 	}
@@ -24,11 +24,11 @@ func GetBrainds() ([]items.Braind, error) {
 	}
 	return entities, nil
 }
-func CreateBraind(braind string) (Braind, error) {
+func CreateSize(braind string) (Size, error) {
 	fmt.Println(" we are about to creating Color", braind)
-	entity := Braind{}
-	myType := Braind{"000", braind}
-	resp, _ := api.Rest().SetBody(myType).Post(braindURL + "/create")
+	entity := Size{}
+	myType := Size{"000", braind}
+	resp, _ := api.Rest().SetBody(myType).Post(sizeURL + "/create")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -42,10 +42,10 @@ func CreateBraind(braind string) (Braind, error) {
 	}
 	return entity, nil
 }
-func DeleteBraind(braind string) (items.Braind, error) {
+func DeleteSize(braind string) (items.Size, error) {
 	//entities:=[]Color{}
-	entity := items.Braind{}
-	resp, _ := api.Rest().Get(braindURL + "/delete?id=" + braind)
+	entity := items.Size{}
+	resp, _ := api.Rest().Get(sizeURL + "/delete?id=" + braind)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}

@@ -11,7 +11,7 @@ type MyItemHelper struct {
 	ItemName   string   `json:"itemName"`
 	Size       []string `json:"size"`
 	Decription string   `json:"decription"`
-	Gender     string   `json:"gender"`
+	Gender     []string `json:"gender"`
 	Itemtype   string   `json:"itemtype"`
 	Quantity   int      `json:"quantity"`
 	Price      float64  `json:"price"`
@@ -64,14 +64,6 @@ type ItemSold struct {
 	OrderId string `json:"order_id"`
 }
 
-type ItemType struct {
-	ItemId string `json:"item_id"`
-	TypeId string `json:"type_id"`
-}
-type Type struct {
-	Id       string `json:"id"`
-	TypeName string `json:"type_name"`
-}
 type Color struct {
 	ColorId   string `json:"colorId"`
 	ColorName string `json:"colorName"`
@@ -94,10 +86,6 @@ type Products struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
-type ProductType struct {
-	ItemId   string `json:"item_id"`
-	TypeName string `json:"type_name"`
-}
 type Size struct {
 	Id         string `json:"id"`
 	SizeNumber string `json:"size_number"`
@@ -109,4 +97,16 @@ type ProductSize struct {
 type AddressType struct {
 	AddressTypeId string `json:"addressTypeId"`
 	AddressType   string `json:"addressType"`
+}
+type ProductType struct {
+	ItemId   string `json:"item_id"`
+	TypeName string `json:"type_name"`
+}
+type ItemType struct {
+	ItemId string `json:"item_id"`
+	TypeId string `json:"type_id"`
+}
+type Type struct {
+	Id       string `json:"id"`
+	TypeName string `json:"type_name"`
 }

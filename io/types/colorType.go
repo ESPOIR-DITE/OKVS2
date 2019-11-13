@@ -12,9 +12,9 @@ const colorURL = api.BASE_URL + "color"
 
 type Color items.Color
 
-func GetColors() ([]Color, error) {
+func GetColors() ([]items.Color, error) {
 	//entity :=Color{}
-	entities := []Color{}
+	entities := []items.Color{}
 	resp, _ := api.Rest().Get(colorURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
