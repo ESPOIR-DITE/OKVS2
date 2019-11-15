@@ -23,6 +23,19 @@ func GetGenders() ([]gender.Gender, error) {
 	}
 	return entities, nil
 }
+func GetGender(id string) (gender.Gender, error) {
+	entity := gender.Gender{}
+	resp, _ := api.Rest().Get(braindURL + "/read?id=" + id)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+
+}
 func CreateGender(gender string) (Gender, error) {
 	entity := Gender{}
 	myType := Gender{"000", gender}

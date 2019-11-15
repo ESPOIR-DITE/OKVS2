@@ -24,6 +24,18 @@ func GetSizes() ([]items.Size, error) {
 	}
 	return entities, nil
 }
+func GetSize(id string) (items.Size, error) {
+	entity := items.Size{}
+	resp, _ := api.Rest().Get(sizeURL + "read?id=" + id)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}
 func CreateSize(braind string) (Size, error) {
 	fmt.Println(" we are about to creating Color", braind)
 	entity := Size{}

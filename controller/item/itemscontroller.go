@@ -4,6 +4,7 @@ import (
 	"OKVS2/config"
 	"OKVS2/domain/gender"
 	"OKVS2/domain/items"
+	"OKVS2/io/image_oi"
 	itemsIO "OKVS2/io/items"
 	"OKVS2/io/types"
 	"bufio"
@@ -69,7 +70,62 @@ func Home(app *config.Env) http.Handler {
 	r.Post("/delete/product", DeleteProductHandler(app))
 	r.Post("/delete/address", DeleteAddressHandler(app))
 
+	r.Post("/search/product", SearchProductHandler(app))
+
 	return r
+}
+func readImage(byteImage []byte) string {
+	mybyte := string(byteImage)
+	return mybyte
+}
+func SearchProductHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		r.ParseForm()
+		productId := r.PostFormValue("productId")
+
+		var myimages []string
+		product, _ := types.GetProduct(productId)
+		accounting, _ := itemsIO.GetAccounting(productId)
+		color, _ := types.GetColor(productId)
+		braind, _ := types.GetBrand(productId)
+		genderdate, _ := types.GetGender(productId)
+		itemImag, _ := image_oi.GetItemImage(productId)
+		theSize, _ := types.GetSize(productId)
+
+		if itemImag != nil {
+			for _, imageId := range itemImag {
+				myImage, _ := image_oi.GetImage(imageId.Id)
+				myimages = append(myimages, readImage(myImage.Image))
+			}
+		}
+
+		fmt.Println(" In  product...", product)
+		fmt.Println(" In  accounting...", accounting)
+
+		type PageData struct {
+			Product items.Products
+			Account items.Accounting
+			Color   items.Color
+			Braind  items.Braind
+			Gender  gender.Gender
+			MySize  items.Size
+			Myimage []string
+		}
+		data := PageData{product, accounting, color, braind, genderdate, theSize, myimages}
+		files := []string{
+			app.Path + "items/productsSearchResult.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
 }
 
 func ItemAddHandler(app *config.Env) http.HandlerFunc {
@@ -219,7 +275,7 @@ func DeleteProductHandler(app *config.Env) http.HandlerFunc {
 		ProductdId := r.PostFormValue("ProductdId")
 		fmt.Println(" what we are delete ", ProductdId)
 		type PageData struct {
-			Entities []types.Product
+			Entities []items.Products
 		}
 		if ProductdId != "" {
 			_, nill := types.DeleteProduct(ProductdId)
@@ -262,7 +318,7 @@ func CreateProductHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println(" what we are creating ", ProductdName, " and ", Description)
 
 		type PageData struct {
-			Entities []types.Product
+			Entities []items.Products
 		}
 
 		if ProductdName != "" && Description != "" {
@@ -304,7 +360,7 @@ func TypesProductHandler(app *config.Env) http.HandlerFunc {
 
 		fmt.Println(" In  TypesProductHandler...")
 		type PageData struct {
-			Entities []types.Product
+			Entities []items.Products
 		}
 		data, nill := types.GetProducts()
 
@@ -745,6 +801,7 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 
 		size := r.Form["size"]
 		Z := r.Form["colors"]
+		fmt.Println("item type>>>", Z)
 
 		B := items.MyItemHelper{ItemName, contains(size), description, genders, itemType, quantity, price, sliceOfImage, Z, braind}
 
@@ -909,7 +966,7 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 			GenderData   []gender.Gender
 			SizeData     []items.Size
 			ColorData    []items.Color
-			ItemTypeData []types.Product
+			ItemTypeData []items.Type
 			BraindData   []items.Braind
 			Result       Results
 		}
@@ -921,6 +978,7 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 			return
 		}
 		color, nill := types.GetColors()
+		fmt.Println("  reading itemType", color)
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())
 			fmt.Println(" Error reading color", nill)
@@ -938,7 +996,7 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 			fmt.Println(" Error reading size", nill)
 			return
 		}
-		itemType, nill := types.GetProducts()
+		itemType, nill := types.GetTypes()
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())
 			fmt.Println(" Error reading itemType", nill)
@@ -963,19 +1021,17 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 
 func SoulierItemHanler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		resp, err := itemsIO.GetShoes()
+		resp, err := types.GetProducts()
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			return
 		}
 		type PageData struct {
-			Entities []itemsIO.ShoesItem
+			Entities []items.Products
 		}
 		data := PageData{resp}
-
 		files := []string{
-			app.Path + "items/soulierTable.html",
+			app.Path + "items/itemProduct.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {

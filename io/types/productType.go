@@ -11,9 +11,9 @@ const productURL = api.BASE_URL + "product"
 
 type Product items.Products
 
-func GetProducts() ([]Product, error) {
+func GetProducts() ([]items.Products, error) {
 	//entity :=Color{}
-	entities := []Product{}
+	entities := []items.Products{}
 	resp, _ := api.Rest().Get(productURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
@@ -23,6 +23,18 @@ func GetProducts() ([]Product, error) {
 		return entities, errors.New(resp.Status())
 	}
 	return entities, nil
+}
+func GetProduct(id string) (items.Products, error) {
+	entity := items.Products{}
+	resp, _ := api.Rest().Get(productURL + "read?id=" + id)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
 }
 func CreateProduct(productName, desc string) (items.Products, error) {
 	fmt.Println(" we are about to creating product", productName)

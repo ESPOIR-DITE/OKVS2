@@ -25,6 +25,18 @@ func GetColors() ([]items.Color, error) {
 	}
 	return entities, nil
 }
+func GetColor(id string) (items.Color, error) {
+	entity := items.Color{}
+	resp, _ := api.Rest().Get(colorURL + "/read?id=" + id)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}
 func CreateColors(color string) (Color, error) {
 	fmt.Println(" we are about to creating Color", color)
 	entity := Color{}

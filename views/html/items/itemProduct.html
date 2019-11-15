@@ -22,10 +22,6 @@
     <!-- main css -->
     <link rel="stylesheet" href="../../assets/css/style.css"/>
     <link rel="stylesheet" href="../../assets/css/responsive.css"/>
-
-
-    <link href="../../assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../../assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
 </head>
 
 <body>
@@ -166,7 +162,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item active">
                                     <a class="nav-link" href="contact.html">Contact</a>
                                 </li>
                             </ul>
@@ -193,13 +189,13 @@
                                                 class="user" style=""></label></a>
                                     <ul class="dropdown-menu">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="/user/register">Register</a>
+                                            <a class="nav-link" href="user/register">Register</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="/user/login">Login</a>
+                                            <a class="nav-link" href="user/login">Login</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="/user/management">Manager</a>
+                                            <a class="nav-link" href="user/management">Manager</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -242,7 +238,8 @@
 <!--================End Home Banner Area =================-->
 
 <!-- ================ contact section start ================= -->
-<div class="section-top-border">
+<section class="cat_product_area section_gap">
+<div class="container">
 <div class="row row flex-row">
     <div class="col-lg-3">
         <div class="right_sidebar_area">
@@ -253,16 +250,19 @@
                 <div class="widgets_inner">
                     <ul class="list">
                         <li>
-                            <a href="/item/soulier/add" style="background-color: #71cd14">soulier</a>
+                            <a href="/item/soulier/table">soulier</a>
                         </li>
                         <li>
-                            <a href="/item/chemise/add">chemise</a>
+                            <a href="/item/chemise/table">chemise</a>
                         </li>
                         <li>
-                            <a href="/item/beate/add" >beate</a>
+                            <a href="/item/pantalon/table">pantalon</a>
                         </li>
                         <li>
-                            <a href="/item/perique/add">perique</a>
+                            <a href="/item/beate/table" style="background-color: #71cd14">beate</a>
+                        </li>
+                        <li>
+                            <a href="/item/perique/table">perique</a>
                         </li>
 
                     </ul>
@@ -270,40 +270,74 @@
             </aside>
         </div>
     </div>
+
     <!-- ================ contact section end ================= -->
-    <div class="col-lg-8 col-md-8">
-        <h3 class="mb-30 title_color">Shoes Item Form</h3>
-        <div class="col-lg-9">
+
+
+    <div class="col-lg-9">
+        <h4 class="product_top_bar">Choose The Product You Want to View</h4>
+
+<form method="get" action="item/search/product">
+
+    <div class="mt-10">
+        <select name="productId" class="selectpicker" data-title="Single Select"
+                data-style="btn-default btn-outline"
+                data-menu-style="dropdown-blue">
+            <option  disabled selected>Select One Item Type</option>
+                    {{with .ColorData}}
+                        {{range .}}
+                            <option value={{.Id}}>{{.Name}}</option>
+                        {{end}}
+                    {{end}}
+                </select>
+
+    </div>
+    <button class="mt-10" id="customerDetais" type="submit" style="background-color: #FFFFFF; border: #FFFFFF">
+        <a  class="genric-btn primary circle">Search</a>
+    </button>
+
+</form>
+
+
             <div class="l_w_title">
                 <h3>Item de Beate</h3>
             </div>
+            <div class="progress-table-wrap">
             <table class="table table-dark">
                 <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Size</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
                     <th>Description</th>
                     <th>Color</th>
-
+                    <th>Brand</th>
+                    <th>Color</th>
                 </tr>
                 </thead>
                 <tbody>
-                {{with .Entities }}
-                {{range .}}
                 <tr>
-                    <td> {{.ItemName}}</td>
-                    <td> {{.Size}}</td>
-                    <td> {{.Decription}}</td>
-                    <td> {{.Color}}</td>
-                    {{end}}
-                    {{end}}
+                    <td> </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
                 </tr>
                 </tbody>
             </table>
         </div>
+
     </div>
+
+
+
+
 </div>
 </div>
+</section>
 <!--================ start footer Area  =================-->
 <footer class="footer-area section_gap">
     <div class="container">
@@ -417,40 +451,28 @@
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="../../assets/js/jquery-3.2.1.min.js"></script>
-<script src="../../assets/js/popper.js"></script>
-<script src="../../assets/js/bootstrap.min.js"></script>
-<script src="../../assets/js/stellar.js"></script>
-<script src="../../assets/vendors/lightbox/simpleLightbox.min.js"></script>
-<script src="../../assets/vendors/nice-select/js/jquery.nice-select.min.js"></script>
-<script src="../../assets/vendors/isotope/imagesloaded.pkgd.min.js"></script>
-<script src="../../assets/vendors/isotope/isotope-min.js"></script>
-<script src="../../assets/vendors/owl-carousel/owl.carousel.min.js"></script>
-<script src="../../assets/vendors/jquery-ui/jquery-ui.js"></script>
-<script src="../../assets/js/jquery.ajaxchimp.min.js"></script>
-<script src="../../assets/js/mail-script.js"></script>
-<script src="../../assets/vendors/counter-up/jquery.waypoints.min.js"></script>
-<script src="../../assets/vendors/counter-up/jquery.counterup.js"></script>
+<script src="../assets/js/jquery-3.2.1.min.js"></script>
+<script src="../assets/js/popper.js"></script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../assets/js/stellar.js"></script>
+<script src="../assets/vendors/lightbox/simpleLightbox.min.js"></script>
+<script src="../assets/vendors/nice-select/js/jquery.nice-select.min.js"></script>
+<script src="../assets/vendors/isotope/imagesloaded.pkgd.min.js"></script>
+<script src="../assets/vendors/isotope/isotope-min.js"></script>
+<script src="../assets/vendors/owl-carousel/owl.carousel.min.js"></script>
+<script src="../assets/vendors/jquery-ui/jquery-ui.js"></script>
+<script src="../assets/js/jquery.ajaxchimp.min.js"></script>
+<script src="../assets/js/mail-script.js"></script>
+<script src="../assets/vendors/counter-up/jquery.waypoints.min.js"></script>
+<script src="../assets/vendors/counter-up/jquery.counterup.js"></script>
 <!-- contact js -->
-<script src="../../assets/js/jquery.form.js"></script>
-<script src="../../assets/js/jquery.validate.min.js"></script>
-<script src="../../assets/js/contact.js"></script>
-
-
-<script src="../../assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
-<script src="../../assets/js/core/popper.min.js" type="text/javascript"></script>
-<script src="../../assets/js/core/bootstrap.min.js" type="text/javascript"></script>
-<script src="../../assets/js/plugins/bootstrap-tagsinput.js" type="text/javascript"></script>
-<script src="../../assets/js/plugins/bootstrap-selectpicker.js" type="text/javascript"></script>
-<script src="../../assets/js/plugins/jquery.validate.min.js" type="text/javascript"></script>
-
-
-
-
+<script src="../assets/js/jquery.form.js"></script>
+<script src="../assets/js/jquery.validate.min.js"></script>
+<script src="../assets/js/contact.js"></script>
 <!--gmaps Js-->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
-<script src="../../assets/js/gmaps.min.js"></script>
-<script src="../../assets/js/theme.js"></script>
+<script src="../assets/js/gmaps.min.js"></script>
+<script src="../assets/js/theme.js"></script>
 </body>
 
 </html>

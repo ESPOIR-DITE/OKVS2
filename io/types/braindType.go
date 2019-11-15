@@ -24,6 +24,19 @@ func GetBrainds() ([]items.Braind, error) {
 	}
 	return entities, nil
 }
+func GetBrand(id string) (items.Braind, error) {
+	entity := items.Braind{}
+	resp, _ := api.Rest().Get(braindURL + "/read?id=" + id)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+
+}
 func CreateBraind(braind string) (Braind, error) {
 	fmt.Println(" we are about to creating Color", braind)
 	entity := Braind{}

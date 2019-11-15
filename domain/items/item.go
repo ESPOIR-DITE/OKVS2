@@ -12,13 +12,23 @@ type MyItemHelper struct {
 	Size       []string `json:"size"`
 	Decription string   `json:"decription"`
 	Gender     []string `json:"gender"`
-	Itemtype   string   `json:"itemtype"`
+	Itemtype   string   `json:"itemType"`
 	Quantity   int      `json:"quantity"`
 	Price      float64  `json:"price"`
 	Image      [][]byte `json:"image"`
-	Color      []string `json:"color"`
+	Color      []string `json:"colors"`
 	Braind     string   `json:"braind"`
 }
+type Images struct {
+	Id    string `json:"id"`
+	Image []byte `json:"image"`
+}
+type Item_Pictures struct {
+	Id      string `json:"id"`
+	ItemId  string `json:"itemId"`
+	ImageId string `json:"imageId"`
+}
+
 type MyImages struct {
 	Image  []byte
 	Image1 []byte
@@ -77,7 +87,7 @@ type Braind struct {
 	BraindName string `json:"braindName"`
 }
 type Accounting struct {
-	ItemId   string  `json:"item_id"`
+	ItemId   string  `json:"itemId"`
 	Price    float64 `json:"price"`
 	Quantity int     `json:"quantity"`
 }
@@ -88,7 +98,7 @@ type Products struct {
 }
 type Size struct {
 	Id         string `json:"id"`
-	SizeNumber string `json:"size_number"`
+	SizeNumber string `json:"sizeNumber"`
 }
 type ProductSize struct {
 	ItemId string `json:"item_id"`
@@ -108,5 +118,5 @@ type ItemType struct {
 }
 type Type struct {
 	Id       string `json:"id"`
-	TypeName string `json:"type_name"`
+	TypeName string `json:"typeName"`
 }
