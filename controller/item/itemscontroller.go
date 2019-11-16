@@ -51,7 +51,7 @@ func Home(app *config.Env) http.Handler {
 	r.Get("/types/gender", TypesGenderHandler(app))
 	r.Get("/types/color", TypesColorHandler(app))
 	r.Get("/types/braind", TypesBraindHandler(app))
-	r.Get("/types/product", TypesProductHandler(app))
+	r.Get("/types/product", TypesProductTypeHandler(app))
 	r.Get("/types/address", TypesAddressHandler(app))
 
 	/**r.Post("/create/soulier", CreateSoulierHandler(app))
@@ -61,13 +61,13 @@ func Home(app *config.Env) http.Handler {
 	r.Post("/create/gender", CreateGenderHandler(app))
 	r.Post("/create/color", CreateColorHandler(app))
 	r.Post("/create/braind", CreateBraindHandler(app))
-	r.Post("/create/product", CreateProductHandler(app))
+	r.Post("/create/product", CreateProductTypeHandler(app))
 	r.Post("/create/address", CreateAddressHandler(app))
 
 	r.Post("/delete/color", DeleteColorHandler(app))
 	r.Post("/delete/gender", DeleteGenderHandler(app))
 	r.Post("/delete/braind", DeleteBraindHandler(app))
-	r.Post("/delete/product", DeleteProductHandler(app))
+	r.Post("/delete/product", DeleteProductTypeHandler(app))
 	r.Post("/delete/address", DeleteAddressHandler(app))
 
 	r.Post("/search/product", SearchProductHandler(app))
@@ -82,16 +82,38 @@ func SearchProductHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
-		productId := r.PostFormValue("productId")
-
+		productTypeId := r.PostFormValue("productId")
+		fmt.Println("product type to search>>>", productTypeId)
 		var myimages []string
-		product, _ := types.GetProduct(productId)
-		accounting, _ := itemsIO.GetAccounting(productId)
-		color, _ := types.GetColor(productId)
-		braind, _ := types.GetBrand(productId)
-		genderdate, _ := types.GetGender(productId)
-		itemImag, _ := image_oi.GetItemImage(productId)
-		theSize, _ := types.GetSize(productId)
+		var colorListe []items.Color
+		var sizeListe []items.Size
+
+		productId, _ := types.GetProductType(productTypeId)
+		product, _ := itemsIO.GetProduct(productId.ItemId)
+		fmt.Println("product product to search>>>", product)
+
+		accounting, _ := itemsIO.GetAccounting(product.Id)
+		itemColorList, _ := types.GetItemColorList(product.Id)
+
+		for _, itemColor := range itemColorList {
+			color, _ := types.GetColor(itemColor.ColorId)
+			colorListe = append(colorListe, color)
+		}
+
+		itemBrand, _ := types.GetBrand(product.Id)
+		braind, _ := types.GetBrand(itemBrand.BraindId)
+
+		itemGender, _ := types.GetItemGender(product.Id)
+		genderdate, _ := types.GetGender(itemGender.GenderId)
+
+		itemImag, _ := image_oi.GetItemImage(product.Id)
+		fmt.Println("product itemImag to search>>>", itemImag)
+
+		productSizes, _ := types.GetPtoductSizeWithItemId(product.Id)
+		for _, itemSize := range productSizes {
+			size, _ := types.GetSize(itemSize.SizeId)
+			sizeListe = append(sizeListe, size)
+		}
 
 		if itemImag != nil {
 			for _, imageId := range itemImag {
@@ -106,13 +128,13 @@ func SearchProductHandler(app *config.Env) http.HandlerFunc {
 		type PageData struct {
 			Product items.Products
 			Account items.Accounting
-			Color   items.Color
+			Color   []items.Color
 			Braind  items.Braind
 			Gender  gender.Gender
-			MySize  items.Size
+			MySize  []items.Size
 			Myimage []string
 		}
-		data := PageData{product, accounting, color, braind, genderdate, theSize, myimages}
+		data := PageData{product, accounting, colorListe, braind, genderdate, sizeListe, myimages}
 		files := []string{
 			app.Path + "items/productsSearchResult.html",
 		}
@@ -267,7 +289,7 @@ func TypesAddressHandler(app *config.Env) http.HandlerFunc {
 	}
 }
 
-func DeleteProductHandler(app *config.Env) http.HandlerFunc {
+func DeleteProductTypeHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(" In  DeleteColorHandler...")
 
@@ -275,16 +297,16 @@ func DeleteProductHandler(app *config.Env) http.HandlerFunc {
 		ProductdId := r.PostFormValue("ProductdId")
 		fmt.Println(" what we are delete ", ProductdId)
 		type PageData struct {
-			Entities []items.Products
+			Entities []items.ProductType
 		}
 		if ProductdId != "" {
-			_, nill := types.DeleteProduct(ProductdId)
+			_, nill := types.DeleteProductType(ProductdId)
 
 			if nill != nil {
 				app.ErrorLog.Println(nill.Error())
 			}
 		}
-		data2, err := types.GetProducts()
+		data2, err := types.GetProductTypes()
 
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
@@ -308,7 +330,7 @@ func DeleteProductHandler(app *config.Env) http.HandlerFunc {
 	}
 }
 
-func CreateProductHandler(app *config.Env) http.HandlerFunc {
+func CreateProductTypeHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(" In  CreateColorHandler...")
 
@@ -318,11 +340,11 @@ func CreateProductHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println(" what we are creating ", ProductdName, " and ", Description)
 
 		type PageData struct {
-			Entities []items.Products
+			Entities []items.ProductType
 		}
 
 		if ProductdName != "" && Description != "" {
-			_, nill := types.CreateProduct(ProductdName, Description)
+			_, nill := types.CreateProductType(ProductdName, Description)
 
 			if nill != nil {
 				app.ErrorLog.Println(nill.Error())
@@ -330,7 +352,7 @@ func CreateProductHandler(app *config.Env) http.HandlerFunc {
 
 			}
 		}
-		data2, err := types.GetProducts()
+		data2, err := types.GetProductTypes()
 
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
@@ -355,14 +377,14 @@ func CreateProductHandler(app *config.Env) http.HandlerFunc {
 	}
 }
 
-func TypesProductHandler(app *config.Env) http.HandlerFunc {
+func TypesProductTypeHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		fmt.Println(" In  TypesProductHandler...")
+		fmt.Println(" In  TypesProductTypeHandler...")
 		type PageData struct {
-			Entities []items.Products
+			Entities []items.ProductType
 		}
-		data, nill := types.GetProducts()
+		data, nill := types.GetProductTypes()
 
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())
@@ -848,6 +870,7 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 			return
 		}
 		color, nill := types.GetColors()
+		fmt.Println("the read colors>>>", color)
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())
 			return
@@ -1021,13 +1044,13 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 
 func SoulierItemHanler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		resp, err := types.GetProducts()
+		resp, err := types.GetTypes()
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			return
 		}
 		type PageData struct {
-			Entities []items.Products
+			Entities []items.Type
 		}
 		data := PageData{resp}
 		files := []string{

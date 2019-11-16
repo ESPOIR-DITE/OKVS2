@@ -1,4 +1,4 @@
-package types
+package items
 
 import (
 	"OKVS2/api"
@@ -7,14 +7,14 @@ import (
 	"fmt"
 )
 
-const productTypeURL = api.BASE_URL + "productType"
+const productURL = api.BASE_URL + "product"
 
-type ProductType items.ProductType
+type Product items.Products
 
-func GetProductTypes() ([]items.ProductType, error) {
+func GetProducts() ([]items.Products, error) {
 	//entity :=Color{}
-	entities := []items.ProductType{}
-	resp, _ := api.Rest().Get(productTypeURL + "/reads")
+	entities := []items.Products{}
+	resp, _ := api.Rest().Get(productURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
 	}
@@ -24,9 +24,9 @@ func GetProductTypes() ([]items.ProductType, error) {
 	}
 	return entities, nil
 }
-func GetProductType(id string) (items.ProductType, error) {
-	entity := items.ProductType{}
-	resp, _ := api.Rest().Get(productTypeURL + "/read?id=" + id)
+func GetProduct(id string) (items.Products, error) {
+	entity := items.Products{}
+	resp, _ := api.Rest().Get(productURL + "read?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -37,19 +37,16 @@ func GetProductType(id string) (items.ProductType, error) {
 	fmt.Println("In Product Type", entity)
 	return entity, nil
 }
-
-/***
-!!!! can not create !!!!
-*/
-func CreateProductType(productName, desc string) (items.ProductType, error) {
+func CreateProduct(productName, desc string) (items.Products, error) {
 	fmt.Println(" we are about to creating product", productName)
-	entity := items.ProductType{}
+	entity := items.Products{}
 	myType := items.Products{"000", productName, desc}
-	resp, _ := api.Rest().SetBody(myType).Post(productTypeURL + "/create")
+	resp, _ := api.Rest().SetBody(myType).Post(productURL + "/create")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
+
 	fmt.Println(" we have create product", entity)
 	if err != nil {
 		fmt.Println(" erro when marshaling", err)
@@ -58,10 +55,10 @@ func CreateProductType(productName, desc string) (items.ProductType, error) {
 	}
 	return entity, nil
 }
-func DeleteProductType(productId string) (items.ProductType, error) {
+func DeleteProduct(productId string) (items.Products, error) {
 	//entities:=[]Color{}
-	entity := items.ProductType{}
-	resp, _ := api.Rest().Get(productTypeURL + "/delete?id=" + productId)
+	entity := items.Products{}
+	resp, _ := api.Rest().Get(productURL + "/delete?id=" + productId)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}

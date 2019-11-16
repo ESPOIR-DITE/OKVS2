@@ -316,13 +316,13 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>{{.Products.Name}}</td>
-                    <td>{{.Size.SizeNumber}}</td>
-                    <td>{{.Braind.BraindName}}</td>
-                    <td>{{.Color.ColorName}}</td>
-                    <td>{{.Accounting.Quantity}}</td>
-                    <td>{{.Accounting.Price}}</td>
-                    <td>{{.Products.Description}}</td>
+                    <td>{{if.Products.Name}}{{.Products.Name}}  {{ else }} None {{end}}</td>
+                    <td>{{if .Size.SizeNumber}}{{.Size.SizeNumber}} {{ else }} None{{end}}</td>
+                    <td>{{if .Braind.BraindName}}{{.Braind.BraindName}} {{ else }} None{{end}}</td>
+                    <td>{{if .Color.ColorName}}{{.Color.ColorName}} {{ else }} None{{end}}</td>
+                    <td>{{if .Accounting.Quantity}}{{.Accounting.Quantity}} {{ else }} None{{end}}</td>
+                    <td>{{if .Accounting.Price}}{{.Accounting.Price}} {{ else }} None{{end}}</td>
+                    <td>{{if .Products.Description}}{{.Products.Description}} {{ else }} None{{end}}</td>
 
                 </tr>
 
@@ -332,10 +332,12 @@
 
     </div>
     {{with .Myimage}}
+        {{range .}}
     <div class="col-lg-4 col-md-6">
         <div class="single-product">
             <div class="product-img">
-                <img
+                <img id='base64image'
+                     src="data:image/jpeg;base64, {{.string}}"
                         class="card-img"
                         src="data:image/png;base64,{{with .string}}"
                         alt=""
@@ -363,8 +365,7 @@
             </div>
         </div>
     </div>
-{{end}}
-    {{end}}
+{{end}}{{end}}
 
 
 
@@ -484,28 +485,28 @@
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="../assets/js/jquery-3.2.1.min.js"></script>
-<script src="../assets/js/popper.js"></script>
-<script src="../assets/js/bootstrap.min.js"></script>
-<script src="../assets/js/stellar.js"></script>
-<script src="../assets/vendors/lightbox/simpleLightbox.min.js"></script>
-<script src="../assets/vendors/nice-select/js/jquery.nice-select.min.js"></script>
-<script src="../assets/vendors/isotope/imagesloaded.pkgd.min.js"></script>
-<script src="../assets/vendors/isotope/isotope-min.js"></script>
-<script src="../assets/vendors/owl-carousel/owl.carousel.min.js"></script>
-<script src="../assets/vendors/jquery-ui/jquery-ui.js"></script>
-<script src="../assets/js/jquery.ajaxchimp.min.js"></script>
-<script src="../assets/js/mail-script.js"></script>
-<script src="../assets/vendors/counter-up/jquery.waypoints.min.js"></script>
-<script src="../assets/vendors/counter-up/jquery.counterup.js"></script>
+<script src="../../assets/js/jquery-3.2.1.min.js"></script>
+<script src="../../assets/js/popper.js"></script>
+<script src="../../assets/js/bootstrap.min.js"></script>
+<script src="../../assets/js/stellar.js"></script>
+<script src="../../assets/vendors/lightbox/simpleLightbox.min.js"></script>
+<script src="../../assets/vendors/nice-select/js/jquery.nice-select.min.js"></script>
+<script src="../../assets/vendors/isotope/imagesloaded.pkgd.min.js"></script>
+<script src="../../assets/vendors/isotope/isotope-min.js"></script>
+<script src="../../assets/vendors/owl-carousel/owl.carousel.min.js"></script>
+<script src="../../assets/vendors/jquery-ui/jquery-ui.js"></script>
+<script src="../../assets/js/jquery.ajaxchimp.min.js"></script>
+<script src="../../assets/js/mail-script.js"></script>
+<script src="../../assets/vendors/counter-up/jquery.waypoints.min.js"></script>
+<script src="../../assets/vendors/counter-up/jquery.counterup.js"></script>
 <!-- contact js -->
-<script src="../assets/js/jquery.form.js"></script>
-<script src="../assets/js/jquery.validate.min.js"></script>
-<script src="../assets/js/contact.js"></script>
+<script src="../../assets/js/jquery.form.js"></script>
+<script src="../../assets/js/jquery.validate.min.js"></script>
+<script src="../../assets/js/contact.js"></script>
 <!--gmaps Js-->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
-<script src="../assets/js/gmaps.min.js"></script>
-<script src="../assets/js/theme.js"></script>
+<script src="../../assets/js/gmaps.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
 </body>
 
 </html>

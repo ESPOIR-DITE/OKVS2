@@ -277,16 +277,16 @@
     <div class="col-lg-9">
         <h4 class="product_top_bar">Choose The Product You Want to View</h4>
 
-<form method="get" action="item/search/product">
+<form method="post" action="/item/search/product">
 
     <div class="mt-10">
         <select name="productId" class="selectpicker" data-title="Single Select"
                 data-style="btn-default btn-outline"
                 data-menu-style="dropdown-blue">
             <option  disabled selected>Select One Item Type</option>
-                    {{with .ColorData}}
+                    {{with .Entities}}
                         {{range .}}
-                            <option value={{.Id}}>{{.Name}}</option>
+                            <option value={{.Id}}>{{.TypeName}}</option>
                         {{end}}
                     {{end}}
                 </select>
