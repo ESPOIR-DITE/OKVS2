@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-const itemGenderURL = api.BASE_URL + "itemBraind"
+const itemGenderURL = api.BASE_URL + "itemGender"
 
 type ItemGender items.ItemGender
 
@@ -34,6 +34,7 @@ func GetItemGender(id string) (items.ItemGender, error) {
 	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
+	fmt.Println(" we are about to reading ItemGender <<int item gender>>", entity)
 	return entity, nil
 
 }

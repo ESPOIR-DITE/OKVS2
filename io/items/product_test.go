@@ -12,7 +12,7 @@ func TestGetProducts(t *testing.T) {
 	assert.Nil(t, err)
 }
 func TestGetProduct(t *testing.T) {
-	resp, err := GetProduct("")
+	resp, err := GetProduct("PF-3f390a44-3e43-4a03-959a-585118bbbeac")
 	fmt.Println("result of product is: ", resp)
 	assert.Nil(t, err)
 }

@@ -8,10 +8,10 @@ import (
 
 type ItemImage items.Item_Pictures
 
-const itemImageURL = api.BASE_URL + "image"
+const itemImageURL = api.BASE_URL + "itemPicture"
 
-func GetItemImage(id string) ([]items.Images, error) {
-	entity := []items.Images{}
+func GetItemImage(id string) ([]items.Item_Pictures, error) {
+	entity := []items.Item_Pictures{}
 
 	resp, _ := api.Rest().Get(itemImageURL + "/read?id=" + id)
 

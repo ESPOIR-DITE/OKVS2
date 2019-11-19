@@ -128,3 +128,19 @@ type ItemGender struct {
 	ItemId   string `json:"itemId"`
 	GenderId string `json:"genderId"`
 }
+type ItemView struct {
+	ItemNumber  string  `json:"itemNumber"`
+	ProductName string  `json:"productName"`
+	Price       float64 `json:"price"`
+	Description string  `json:"description"`
+	Image       []byte  `json:"image"`
+}
+type ItemViewHtml struct {
+	ItemNumber  string  `json:"itemNumber"`
+	ProductName string  `json:"productName"`
+	Price       float64 `json:"price"`
+	Description string  `json:"description"`
+	Image       string  `json:"image"`
+}
+type Specials struct {
+}

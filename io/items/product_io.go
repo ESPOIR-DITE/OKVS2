@@ -26,7 +26,7 @@ func GetProducts() ([]items.Products, error) {
 }
 func GetProduct(id string) (items.Products, error) {
 	entity := items.Products{}
-	resp, _ := api.Rest().Get(productURL + "read?id=" + id)
+	resp, _ := api.Rest().Get(productURL + "/read?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -34,7 +34,7 @@ func GetProduct(id string) (items.Products, error) {
 	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
-	fmt.Println("In Product Type", entity)
+	fmt.Println("In Product", entity)
 	return entity, nil
 }
 func CreateProduct(productName, desc string) (items.Products, error) {

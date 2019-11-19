@@ -25,7 +25,7 @@ func GetGenders() ([]gender.Gender, error) {
 }
 func GetGender(id string) (gender.Gender, error) {
 	entity := gender.Gender{}
-	resp, _ := api.Rest().Get(braindURL + "/read?id=" + id)
+	resp, _ := api.Rest().Get(genderURL + "/read?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -33,6 +33,7 @@ func GetGender(id string) (gender.Gender, error) {
 	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
+	fmt.Println(" we are reading Gender <<in Gender IO>>", entity)
 	return entity, nil
 
 }

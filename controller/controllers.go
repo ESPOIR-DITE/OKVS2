@@ -19,6 +19,7 @@ func Controllers(env *config.Env) http.Handler {
 	mux.Use(middleware.Logger)
 
 	mux.Handle("/", controllers.Home(env))
+	//mux.Handle("/homeError", controllers.Home(env))
 	mux.Mount("/category", item.Home(env))
 	mux.Mount("/customer", customer.Customer(env))
 	mux.Mount("/user", users.User(env))

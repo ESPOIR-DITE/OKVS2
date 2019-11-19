@@ -28,7 +28,7 @@ func Environment() *config.Env {
 
 func main() {
 
-	addr := flag.String("addr", ":4001", "HTTP network address")
+	addr := flag.String("addr", ":4009", "HTTP network address")
 	flag.Parse()
 	srv := &http.Server{
 		Addr:     *addr,
