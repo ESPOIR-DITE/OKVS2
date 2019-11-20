@@ -142,5 +142,28 @@ type ItemViewHtml struct {
 	Description string  `json:"description"`
 	Image       string  `json:"image"`
 }
+
+//this entity help to read individua product
+type ViewProduct struct {
+	ItemId      string   `json:"itemId"`
+	ItemName    string   `json:"itemName"`
+	ItemBrand   string   `json:"itemBrand"`
+	Price       float64  `json:"price"`
+	Description string   `json:"description"`
+	Quantity    int      `json:"quantity"`
+	Pictures    [][]byte `json:"pictures"`
+	Colors      []Color  `json:"colors"`
+}
+
+//this entity help ViewProduct
+type ViewProduct2 struct {
+	ItemId      string  `json:"itemId"`
+	ItemName    string  `json:"itemName"`
+	ItemBrand   string  `json:"itemBrand"`
+	Price       float64 `json:"price"`
+	Description string  `json:"description"`
+	Quantity    int     `json:"quantity"`
+	Colors      []Color `json:"colors"`
+}
 type Specials struct {
 }

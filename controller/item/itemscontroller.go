@@ -6,6 +6,7 @@ import (
 	"OKVS2/domain/items"
 	"OKVS2/io/image_oi"
 	itemsIO "OKVS2/io/items"
+	"OKVS2/io/makeUp"
 	"OKVS2/io/types"
 	"bufio"
 	"fmt"
@@ -24,7 +25,8 @@ type ItemSold items.ItemSold
 type Cloths items.Cloths
 type Beate items.BeautyMakeup*/
 type Results struct {
-	Name string
+	Name  string
+	Class string
 }
 
 //type Gender gender.Gender
@@ -55,6 +57,7 @@ func Home(app *config.Env) http.Handler {
 	r.Get("/types/address", TypesAddressHandler(app))
 
 	r.Get("/searchProduct/{resetkey}", ReadProductHandler(app))
+	r.Get("/addToCard/{resetkeys}", AddToCardHandler(app))
 
 	/**r.Post("/create/soulier", CreateSoulierHandler(app))
 	r.Post("/create/soulier", CreateChemiseHandler(app))
@@ -78,18 +81,86 @@ func Home(app *config.Env) http.Handler {
 	return r
 }
 
+func AddToCardHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		resetKey := chi.URLParam(r, "resetkeys")
+		//productTypeId := r.PostFormValue("productpic")
+		fmt.Println("product id to add to the card>>>", resetKey, "<<<< User email>>>", userEmail)
+
+		//fmt.Println("product Details to search>>>", productDetails)
+
+		//http.Redirect(w, r, "/", 301)
+		return
+	}
+}
+
+type Numbers struct {
+	One, Two, Three int
+}
+
 func ReadProductHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		resetKey := chi.URLParam(r, "resetkey")
 		//productTypeId := r.PostFormValue("productpic")
-		fmt.Println("product picture to search>>>", resetKey)
+		fmt.Println("product id to search>>>", resetKey)
+		productDetails, err := makeUp.GetOneItemDetails(resetKey)
+		if err != nil {
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+				http.Redirect(w, r, "/", 301)
+				return
+			}
+		}
+		//fmt.Println("product Details to search>>>", productDetails)
+
+		myNumbers := Numbers{0, 1, 3}
+		newEnity := items.ViewProduct2{productDetails.ItemId, productDetails.ItemName, productDetails.ItemBrand, productDetails.Price, productDetails.Description, productDetails.Quantity, productDetails.Colors}
+		fmt.Println("product Details to search>>>", newEnity)
+
+		type PageData struct {
+			Entity  items.ViewProduct2
+			Myimage []ImageItems2
+			Numbers
+		}
+		data := PageData{newEnity, GetImageItem2(productDetails.Pictures), myNumbers}
+		files := []string{
+			app.Path + "items/single-product.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
 	}
 }
 
 type ImageItems struct {
 	Pic string
 }
+type ImageItems2 struct {
+	Pic      string
+	Number   int
+	Class    string
+	Position string
+}
 
+func GetImageItem2(image [][]byte) []ImageItems2 {
+	var myList []ImageItems2
+	position := [3]string{"First slide", "Second slide", "Third slide"}
+	for index, value := range image {
+		if index == 0 {
+			myList = append(myList, ImageItems2{readImage(value), index, "active", position[index]})
+		} else if index != 0 {
+			myList = append(myList, ImageItems2{readImage(value), index, "", position[index]})
+		}
+	}
+	return myList
+}
 func GetImageItem(image []string) []ImageItems {
 	entity := []ImageItems{}
 	for _, value := range image {
@@ -926,6 +997,7 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 		file2, handler, err := r.FormFile("file2")
 		fmt.Println(" read successful")
 		var data string
+		var res = Results{}
 
 		fmt.Println("********")
 		if err != nil {
@@ -973,12 +1045,13 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println("sending to backend successful")
 
 		//fmt.Println(encoded, " ", B) //
-		if err != nil {
+		if err != nil && result == false {
 			app.ErrorLog.Println(err.Error())
 			data = " could not upload the details"
 			fmt.Println(err, "  this is the erro")
+			res = Results{data, "danger"}
 		}
-		app.InfoLog.Println("create response is :", result)
+		//app.InfoLog.Println("create response is :", result)
 		//http.Redirect(w, r, "/", 301)
 
 		files := []string{
@@ -1028,8 +1101,10 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 			app.ErrorLog.Println(nill.Error())
 			return
 		}
-		data = "upload successful"
-		res := Results{data}
+		if result != false {
+			data = "upload successful"
+			res = Results{data, "success"}
+		}
 		datatypes := PageData{mygender, mysize, color, myitemType, mybraind, res}
 
 		err = ts.Execute(w, datatypes)
@@ -1131,7 +1206,7 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 			BraindData   []items.Braind
 			Result       Results
 		}
-		res := Results{StringValidatio}
+		res := Results{StringValidatio, ""}
 		gender, nill := types.GetGenders()
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())

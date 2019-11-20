@@ -20,3 +20,15 @@ func GetAllItems() ([]items.ItemView, error) {
 	}
 	return entities, nil
 }
+func GetOneItemDetails(id string) (items.ViewProduct, error) {
+	entity := items.ViewProduct{}
+	resp, _ := api.Rest().Get(itemviewURL + "/read?id=" + id)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}

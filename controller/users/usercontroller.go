@@ -13,9 +13,9 @@ import (
 	"strings"
 )
 
-type PageDate struct {
-	email string
-	name  string
+type PageData struct {
+	Title string
+	Info  string
 }
 
 func User(app *config.Env) http.Handler {
@@ -34,6 +34,15 @@ func User(app *config.Env) http.Handler {
 
 func ManagementLoginHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		message := app.Session.GetString(r.Context(), "message")
+
+		var data PageData
+
+		if message != "" {
+			data = PageData{"Login Error!", message}
+		} else {
+			data = PageData{}
+		}
 		files := []string{
 			app.Path + "managementLogin.html",
 		}
@@ -42,7 +51,7 @@ func ManagementLoginHandler(app *config.Env) http.HandlerFunc {
 			app.ErrorLog.Println(err.Error())
 			return
 		}
-		err = ts.Execute(w, nil)
+		err = ts.Execute(w, data)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 		}
@@ -66,9 +75,10 @@ func ManagementHandler(app *config.Env) http.HandlerFunc {
 	}
 }
 
-func ManagerLogHandler(env *config.Env) http.HandlerFunc {
+func ManagerLogHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
+		var stat string
 		email := r.PostFormValue("email")
 		password := r.PostFormValue("password")
 		fmt.Println("email: ", email+"password: ", password)
@@ -76,19 +86,43 @@ func ManagerLogHandler(env *config.Env) http.HandlerFunc {
 		logingDetails := login.LoginHelper{email, password}
 		resp, err := login2.UserLogin(logingDetails)
 		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			app.Session.Put(r.Context(), "message", "Wrong Credentials!")
 			http.Redirect(w, r, "/user/management", 301)
 		}
-
+		type PageData struct {
+			LoginStat string
+		}
 		fmt.Println("user type is: ", resp)
 		if resp.UserTupe == "admin" {
+			app.Session.Cookie.Name = "UserID"
+			app.Session.Put(r.Context(), "userEmail", logingDetails.Email)
+			app.Session.Put(r.Context(), "password", logingDetails.Pasword)
+			app.InfoLog.Println("Login is successful. Result is ", logingDetails)
 			http.Redirect(w, r, "/user/managementwelcom", 301)
 		}
-		http.Redirect(w, r, "/user/login", 301)
+		if resp.UserTupe != "admin" {
+			stat = "Please Login here "
+		}
+		fmt.Println("user type is: ", stat)
+		files := []string{
+			app.Path + "loginpage.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, nil)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
 	}
 }
 
 func CustomerLogHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		r.ParseForm()
 		email := r.PostFormValue("email")
 		password := r.PostFormValue("password")
@@ -97,12 +131,18 @@ func CustomerLogHandler(app *config.Env) http.HandlerFunc {
 		//var data PageDate
 
 		logingDetails := login.LoginHelper{email, password}
-
 		resp, err := login2.UserLogin(logingDetails)
 
 		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			app.Session.Put(r.Context(), "message", "Wrong Credentials!")
 			http.Redirect(w, r, "/user/login", 301)
+			return
 		}
+		app.Session.Cookie.Name = "UserID"
+		app.Session.Put(r.Context(), "userEmail", email)
+		app.Session.Put(r.Context(), "password", password)
+		app.InfoLog.Println("Login is successful. Result is ", logingDetails)
 
 		userName, erro := customer.GetCustomer(strings.TrimSpace(resp.Email))
 
@@ -115,26 +155,6 @@ func CustomerLogHandler(app *config.Env) http.HandlerFunc {
 			http.Redirect(w, r, "/user/login", 301)
 		}
 		http.Redirect(w, r, "/", 301)
-		/*
-			app.Session.Cookie.Name = "UserID"
-			app.Session.Put(r.Context(), "userId", userName.Email)
-			app.Session.Put(r.Context(), "userName", userName.Name) {{if.name}}{{.email}}{{else}} User {{end}}
-			app.Session.Put(r.Context(),"userFirstName",userName.SurName)
-			app.InfoLog.Println("Login successful. the userName is: ",userName.Name)
-			fmt.Println(" The Response ", resp)
-
-			files := []string{
-				app.Path+"index.html",
-			}
-			ts, err := template.ParseFiles(files...)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-				return
-			}
-			err = ts.Execute(w, data)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-			}*/
 	}
 }
 
@@ -158,6 +178,15 @@ func CreateCustomerHandler(app *config.Env) http.HandlerFunc {
 
 func userLoginHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		message := app.Session.GetString(r.Context(), "message")
+
+		var data PageData
+
+		if message != "" {
+			data = PageData{"Login Error!", message}
+		} else {
+			data = PageData{}
+		}
 		files := []string{
 			app.Path + "loginpage.html",
 		}
@@ -166,7 +195,7 @@ func userLoginHandler(app *config.Env) http.HandlerFunc {
 			app.ErrorLog.Println(err.Error())
 			return
 		}
-		err = ts.Execute(w, nil)
+		err = ts.Execute(w, data)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 		}
