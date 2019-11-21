@@ -2,13 +2,13 @@ package order
 
 import (
 	"OKVS2/api"
-	"OKVS2/domain/order"
+	"OKVS2/domain/orders"
 	"errors"
 )
 
 const orderURL = api.BASE_URL + "/order"
 
-type Order order.Orders
+type Order orders.Orders
 
 func GetCustomers() ([]Order, error) {
 	entities := []Order{}

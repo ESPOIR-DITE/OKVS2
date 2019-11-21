@@ -57,7 +57,7 @@ func Home(app *config.Env) http.Handler {
 	r.Get("/types/address", TypesAddressHandler(app))
 
 	r.Get("/searchProduct/{resetkey}", ReadProductHandler(app))
-	r.Get("/addToCard/{resetkeys}", AddToCardHandler(app))
+	//r.Get("/addToCard/{resetkeys}", AddToCardHandler(app))
 
 	/**r.Post("/create/soulier", CreateSoulierHandler(app))
 	r.Post("/create/soulier", CreateChemiseHandler(app))
@@ -99,6 +99,7 @@ type Numbers struct {
 	One, Two, Three int
 }
 
+//this method help to set the single product page of the selected item
 func ReadProductHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		resetKey := chi.URLParam(r, "resetkey")
@@ -106,11 +107,9 @@ func ReadProductHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println("product id to search>>>", resetKey)
 		productDetails, err := makeUp.GetOneItemDetails(resetKey)
 		if err != nil {
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-				http.Redirect(w, r, "/", 301)
-				return
-			}
+			app.ErrorLog.Println(err.Error())
+			http.Redirect(w, r, "/", 301)
+			return
 		}
 		//fmt.Println("product Details to search>>>", productDetails)
 

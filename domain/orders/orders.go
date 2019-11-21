@@ -1,4 +1,4 @@
-package order
+package orders
 
 type Orders struct {
 	Id         string `json:"id"`
@@ -10,4 +10,9 @@ type OrderLine struct {
 	Linecode    string `json:"linecode"`
 	ItemNumber  string `json:"item_number"`
 	OrderNumber string `json:"order_number"`
+}
+type orderHelper struct {
+	ItemNumber string `json:"itemNumber"`
+	Quantity   int    `json:"quantity"`
+	CustomerId string `json:"customerId"`
 }

@@ -10,7 +10,6 @@ import (
 	"github.com/go-chi/chi"
 	"html/template"
 	"net/http"
-	"strings"
 )
 
 type PageData struct {
@@ -140,20 +139,10 @@ func CustomerLogHandler(app *config.Env) http.HandlerFunc {
 			return
 		}
 		app.Session.Cookie.Name = "UserID"
-		app.Session.Put(r.Context(), "userEmail", email)
-		app.Session.Put(r.Context(), "password", password)
-		app.InfoLog.Println("Login is successful. Result is ", logingDetails)
+		app.Session.Put(r.Context(), "userEmail", resp.Email)
+		app.Session.Put(r.Context(), "password", resp.Password)
+		app.InfoLog.Println("Login is successful. Result is ", resp)
 
-		userName, erro := customer.GetCustomer(strings.TrimSpace(resp.Email))
-
-		fmt.Println("the user is ", userName)
-
-		//data :=PageDate{userName.Email,userName.Name}
-		if erro != nil {
-			fmt.Println("Login fail The Response1>>>", strings.TrimSpace(resp.Email), "<<<<")
-			fmt.Println("Login fail The Response2 ", userName)
-			http.Redirect(w, r, "/user/login", 301)
-		}
 		http.Redirect(w, r, "/", 301)
 	}
 }
