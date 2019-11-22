@@ -70,7 +70,7 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 		*/
 		var itemsdetals []items.ItemViewHtml
 		homePageElements, err := makeUp.GetAllItems()
-		if err != nil {
+		if err != nil && homePageElements == nil {
 			app.ErrorLog.Println(err.Error())
 			http.Redirect(w, r, "/home/homeError/homeError", 301)
 			return

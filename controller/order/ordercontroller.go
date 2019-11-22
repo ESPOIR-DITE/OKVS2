@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi"
 	"html/template"
 	"net/http"
+	"strconv"
 )
 
 func Order(app *config.Env) http.Handler {
@@ -15,15 +16,89 @@ func Order(app *config.Env) http.Handler {
 	r.Get("/addToCard/{resetkeys}", AddToCardHandler(app))
 	r.Get("/home", OrderTableHandler(app))
 	r.Get("/read/card", ReadCardHandler(app))
-
+	r.Post("/card/item", AddItemToCardHandler(app))
 	return r
+}
+
+func AddItemToCardHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+
+		var message string
+		var class string
+
+		r.ParseForm()
+		quantity, _ := strconv.Atoi(r.PostFormValue("qty"))
+		itemId := r.PostFormValue("itemId")
+		fmt.Println("checking the card>>>", quantity, "<<<< itemId>>>", itemId, "<<<< User email>>>", userEmail)
+		if userEmail == "" {
+			app.ErrorLog.Println("User need to logIn")
+			http.Redirect(w, r, "/user/login", 301)
+			return
+		}
+		makeCard := orders.Card{"", itemId, userEmail, quantity}
+		card, err := order.CreateCard(makeCard)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			message = "An error has occured please try again"
+		}
+		if card.ItemId == "" {
+			app.ErrorLog.Println("card.ItemId is empty")
+			message = "You have an Item in your Card"
+			class = "warning"
+		}
+		type PageData struct {
+			Entity CardeData
+		}
+		data1 := CardeData{message, class}
+		data := PageData{data1}
+		fmt.Println(data)
+		http.Redirect(w, r, "/", 301)
+		return
+	}
+}
+func readImage(byteImage []byte) string {
+	mybyte := string(byteImage)
+	return mybyte
 }
 
 func ReadCardHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userEmail := app.Session.GetString(r.Context(), "userEmail")
-		cardList, _ := order.GetCardWithCustId(userEmail)
 
+		var check []orders.CheckOutHelper
+		if userEmail == "" {
+			app.ErrorLog.Println("User need to logIn")
+			http.Redirect(w, r, "/user/login", 301)
+			return
+		}
+		cardList, _ := order.GetCardWithCustId(userEmail)
+		fmt.Println("product id to add to the card>>>", cardList, "<<<< User email>>>", userEmail)
+
+		for _, card := range cardList {
+			cardCheck, _ := order.GetCheckOut(card)
+			check = append(check, orders.CheckOutHelper{readImage(cardCheck.Image), cardCheck.Description, cardCheck.Price, cardCheck.Quantity, cardCheck.Total})
+		}
+
+		fmt.Println("product id to add to the card>>>", cardList, "<<<< User email>>>", userEmail)
+		type PageData struct {
+			Entity []orders.CheckOutHelper
+		}
+		//fmt.Println("check >>>", check)
+		data := PageData{check}
+
+		files := []string{
+			app.Path + "items/item_cart.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
 	}
 }
 
@@ -46,7 +121,12 @@ func AddToCardHandler(app *config.Env) http.HandlerFunc {
 			http.Redirect(w, r, "/user/login", 301)
 			return
 		}
-		makeCard := orders.Card{"", itemId, userEmail}
+		if len(userEmail) > 0 {
+			app.ErrorLog.Println("User need to logIn")
+			http.Redirect(w, r, "/user/login", 301)
+			return
+		}
+		makeCard := orders.Card{"", itemId, userEmail, 00}
 		card, err := order.CreateCard(makeCard)
 
 		if err != nil {

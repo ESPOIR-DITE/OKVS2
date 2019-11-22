@@ -233,31 +233,38 @@
               <thead>
                 <tr>
                   <th scope="col">Product</th>
+                  <th scope="col">Description</th>
                   <th scope="col">Price</th>
                   <th scope="col">Quantity</th>
                   <th scope="col">Total</th>
                 </tr>
               </thead>
               <tbody>
+              {{with .Entity}}
+              {{range .}}
                 <tr>
                   <td>
                     <div class="media">
                       <div class="d-flex">
-                        <img
-                          src="../assets/img/product/single-product/cart-1.jpg"
+                        <img  id='base64image' style=":width 147px;  height: 100px"
+                                src='data:image/jpeg;base64,{{.Image}}'
                           alt=""
                         />
                       </div>
                       <div class="media-body">
-                        <p>Minimalistic shop for multipurpose use</p>
+                        <p>{{.Description}}</p>
                       </div>
                     </div>
                   </td>
                   <td>
-                    <h5>$360.00</h5>
+                    <h5>{{.Description}}</h5>
                   </td>
                   <td>
-                    <div class="product_count">
+                    <h5>{{.Price}}</h5>
+                  </td>
+                  <td>
+                    <h5>{{.Quantity}}</h5>
+                   <!-- <div class="product_count">
                       <input
                         type="text"
                         name="qty"
@@ -281,13 +288,15 @@
                       >
                         <i class="lnr lnr-chevron-down"></i>
                       </button>
-                    </div>
+                    </div>-->
                   </td>
                   <td>
-                    <h5>$720.00</h5>
+                    <h5>{{.Total}}</h5>
                   </td>
                 </tr>
-
+              {{end}}
+              {{else}} Empty containt
+              {{end}}
                 <tr class="bottom_button">
                   <td>
                     <a class="gray_btn" href="#">Update Cart</a>

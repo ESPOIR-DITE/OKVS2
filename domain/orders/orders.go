@@ -16,3 +16,17 @@ type orderHelper struct {
 	Quantity   int    `json:"quantity"`
 	CustomerId string `json:"customerId"`
 }
+type CheckOut struct {
+	Image       []byte  `json:"image"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price"`
+	Quantity    int     `json:"quantity"`
+	Total       float64 `json:"total"`
+}
+type CheckOutHelper struct {
+	Image       string  `json:"image"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price"`
+	Quantity    int     `json:"quantity"`
+	Total       float64 `json:"total"`
+}
