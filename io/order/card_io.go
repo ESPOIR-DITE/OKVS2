@@ -22,6 +22,17 @@ func CreateCard(myEntity orders.Card) (orders.Card, error) {
 	}
 	return entity, nil
 }
+func RemoveCard(myEntity orders.Card) (bool, error) {
+	entity1 := orders.Card{"00", myEntity.ItemId, myEntity.CustomerId, myEntity.Quantity}
+	//entity := orders.Card{}
+	resp, _ := api.Rest().SetBody(entity1).Post(cardURL + "/remove")
+	if resp.IsError() {
+		return false, errors.New(resp.Status())
+	}
+	//err := api.JSON.Unmarshal(resp.Body(), &entity)
+
+	return true, nil
+}
 func GetCardWithItemId(itemId string) (orders.Card, error) {
 	entity := orders.Card{}
 	resp, _ := api.Rest().Get(cardURL + "/readWithItemId?id=" + itemId)

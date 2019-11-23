@@ -7,7 +7,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <link rel="icon" href="../assets/img/favicon.png" type="image/png" />
+    <link rel="icon" href="../../assets/img/favicon.png" type="image/png" />
     <title>Eiser ecommerce</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../assets/css/bootstrap.css" />
@@ -89,7 +89,7 @@
                 <div class="col-lg-7 pr-0">
                   <ul class="nav navbar-nav center_nav pull-right">
                     <li class="nav-item">
-                      <a class="nav-link" href="index.html">Home</a>
+                      <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item active submenu dropdown">
                       <a
@@ -237,6 +237,7 @@
                   <th scope="col">Price</th>
                   <th scope="col">Quantity</th>
                   <th scope="col">Total</th>
+                  <th scope="col">Update</th>
                 </tr>
               </thead>
               <tbody>
@@ -293,6 +294,14 @@
                   <td>
                     <h5>{{.Total}}</h5>
                   </td>
+
+                  <td>
+                    <div class="button-group-area mt-40">
+                      <a href="/order/addToCard/remove/{{.ItemId}}" class="genric-btn default-border circle">Remove</a>
+                      <a href="/item/searchProduct/{{.ItemId}}" class="genric-btn primary-border circle">Update</a>
+                    </div>
+
+                  </td>
                 </tr>
               {{end}}
               {{else}} Empty containt
@@ -301,6 +310,8 @@
                   <td>
                     <a class="gray_btn" href="#">Update Cart</a>
                   </td>
+                  <td></td>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td>
@@ -314,6 +325,8 @@
                 <tr>
                   <td></td>
                   <td></td>
+                  <td></td>
+                  <td></td>
                   <td>
                     <h5>Subtotal</h5>
                   </td>
@@ -322,6 +335,8 @@
                   </td>
                 </tr>
                 <tr class="shipping_area">
+                  <td></td>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td>

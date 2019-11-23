@@ -135,12 +135,13 @@
                       <i class="ti-search" aria-hidden="true"></i>
                     </a>
                   </li>
-
+                  {{if .Entity.Class}}
                   <li class="nav-item">
-                    <a href="/order/read/card" class="icons {{.Entity.Class}} ">
+                    <a href="/order/order/readCard" class="icons">
                       <i class="ti-shopping-cart {{.Entity.Class}}"></i>
                     </a>
                   </li>
+                  {{end}}
 
                   <li class="nav-item submenu dropdown ">
                     <a href="#" class="nav-link dropdown-toggle icons"  data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -246,9 +247,21 @@
         <button type="button" aria-hidden="true" class="close" data-dismiss="alert">
           <i class="nc-icon nc-simple-remove"></i>
         </button>
-        <span>{{.Entity.Mesage}}</span>
+        <a  href="/order/order/readCard">
+        <span>{{.Entity.Mesage}}</span></a>
       </div>
+      {{else}} {{if not .MyUser.User}}
+      <div class="alert warning">
+        <button type="button" aria-hidden="true" class="close" data-dismiss="alert">
+          <i class="nc-icon nc-simple-remove"></i>
+        </button>
+        <a  href="/user/login">
+          <span>Please Login to view your card</span></a>
+      </div>
+    {{else}}
      {{end}}
+      {{end}}
+
       <div class="row justify-content-center">
         <div class="col-lg-12">
           <div class="main_title">
@@ -275,7 +288,7 @@
                 <a href="#">
                   <i class="ti-heart"></i>
                 </a>
-                <a href="#">
+                <a href="/order/addToCard/{{.ItemNumber}}">
                   <i class="ti-shopping-cart"></i>
                 </a>
               </div>
@@ -285,7 +298,7 @@
                 <h4>{{.Description}}<br>{{.ProductName}}</h4>
               </a>
               <div class="mt-3">
-                <span class="mr-4">{{.Price}}</span>
+                <span class="mr-4">R {{.Price}}</span>
                 <del>$35.00</del>
               </div>
             </div>

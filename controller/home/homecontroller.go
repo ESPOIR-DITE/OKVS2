@@ -54,12 +54,20 @@ func indexErrorHanler(app *config.Env) http.HandlerFunc {
 type ImageItems struct {
 	Pic string
 }
+type User struct {
+	TheUser string
+}
 
 // this method help for converting []byte to strings
 func readImage(byteImage []byte) string {
 	mybyte := string(byteImage)
 	return mybyte
 }
+
+type MyUser struct {
+	User string
+}
+
 func homeHanler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -109,9 +117,10 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 		type PageData struct {
 			Entities []items.ItemViewHtml
 			Entity   CardeData
+			MyUser
 		}
 		data1 := CardeData{message, class}
-		data := PageData{itemsdetals, data1}
+		data := PageData{itemsdetals, data1, MyUser{userEmail}}
 		files := []string{
 			app.Path + "index.html",
 		}
