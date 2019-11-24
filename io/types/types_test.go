@@ -12,7 +12,7 @@ func TestGetTypes(t *testing.T) {
 	assert.Nil(t, err)
 }
 func TestCreateType(t *testing.T) {
-	resp, err := CreateType("shoes")
+	resp, err := CreateType("pants tshirt")
 	assert.Nil(t, err)
 	fmt.Println("result is: ", resp)
 }

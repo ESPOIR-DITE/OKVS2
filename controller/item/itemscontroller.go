@@ -972,31 +972,35 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 		}
 		res := Results{StringValidatio}
 		gender, nill := types.GetGenders()
+		fmt.Println("  reading gender", gender)
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())
 			fmt.Println(" Error reading gender", nill)
 			return
 		}
 		color, nill := types.GetColors()
-		fmt.Println("  reading itemType", color)
+		fmt.Println("  reading color", color)
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())
 			fmt.Println(" Error reading color", nill)
 			return
 		}
 		braind, nill := types.GetBrainds()
+		fmt.Println("  reading braind", braind)
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())
 			fmt.Println(" Error reading braind", nill)
 			return
 		}
 		size, nill := types.GetSizes()
+		fmt.Println("  reading size", size)
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())
 			fmt.Println(" Error reading size", nill)
 			return
 		}
 		itemType, nill := types.GetTypes()
+		fmt.Println("  reading itemType", itemType)
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())
 			fmt.Println(" Error reading itemType", nill)
