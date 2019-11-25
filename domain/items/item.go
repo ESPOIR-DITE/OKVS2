@@ -79,8 +79,8 @@ type Color struct {
 	ColorName string `json:"colorName"`
 }
 type ItemColor struct {
-	ItemId  string `json:"item_id"`
-	ColorId string `json:"color_id"`
+	ItemId  string `json:"itemId"`
+	ColorId string `json:"colorId"`
 }
 type Braind struct {
 	BraindId   string `json:"braindId"`
@@ -101,22 +101,69 @@ type Size struct {
 	SizeNumber string `json:"sizeNumber"`
 }
 type ProductSize struct {
-	ItemId string `json:"item_id"`
-	SizeId string `json:"size_id"`
+	ItemId string `json:"itemId"`
+	SizeId string `json:"sizeId"`
 }
 type AddressType struct {
 	AddressTypeId string `json:"addressTypeId"`
 	AddressType   string `json:"addressType"`
 }
 type ProductType struct {
-	ItemId   string `json:"item_id"`
-	TypeName string `json:"type_name"`
+	ItemId string `json:"itemId"`
+	TypeId string `json:"typeId"`
 }
 type ItemType struct {
 	ItemId string `json:"item_id"`
 	TypeId string `json:"type_id"`
 }
-type Type struct {
+type Types struct {
 	Id       string `json:"id"`
 	TypeName string `json:"typeName"`
+}
+type ItemBraind struct {
+	BraindId string `json:"braindId"`
+	ItemId   string `json:"itemId"`
+}
+type ItemGender struct {
+	ItemId   string `json:"itemId"`
+	GenderId string `json:"genderId"`
+}
+type ItemView struct {
+	ItemNumber  string  `json:"itemNumber"`
+	ProductName string  `json:"productName"`
+	Price       float64 `json:"price"`
+	Description string  `json:"description"`
+	Image       []byte  `json:"image"`
+}
+type ItemViewHtml struct {
+	ItemNumber  string  `json:"itemNumber"`
+	ProductName string  `json:"productName"`
+	Price       float64 `json:"price"`
+	Description string  `json:"description"`
+	Image       string  `json:"image"`
+}
+
+//this entity help to read individua product
+type ViewProduct struct {
+	ItemId      string   `json:"itemId"`
+	ItemName    string   `json:"itemName"`
+	ItemBrand   string   `json:"itemBrand"`
+	Price       float64  `json:"price"`
+	Description string   `json:"description"`
+	Quantity    int      `json:"quantity"`
+	Pictures    [][]byte `json:"pictures"`
+	Colors      []Color  `json:"colors"`
+}
+
+//this entity help ViewProduct
+type ViewProduct2 struct {
+	ItemId      string  `json:"itemId"`
+	ItemName    string  `json:"itemName"`
+	ItemBrand   string  `json:"itemBrand"`
+	Price       float64 `json:"price"`
+	Description string  `json:"description"`
+	Quantity    int     `json:"quantity"`
+	Colors      []Color `json:"colors"`
+}
+type Specials struct {
 }

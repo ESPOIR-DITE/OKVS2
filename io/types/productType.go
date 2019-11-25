@@ -7,14 +7,14 @@ import (
 	"fmt"
 )
 
-const productURL = api.BASE_URL + "product"
+const productTypeURL = api.BASE_URL + "productType"
 
-type Product items.Products
+type ProductType items.ProductType
 
-func GetProducts() ([]items.Products, error) {
+func GetProductTypes() ([]items.ProductType, error) {
 	//entity :=Color{}
-	entities := []items.Products{}
-	resp, _ := api.Rest().Get(productURL + "/reads")
+	entities := []items.ProductType{}
+	resp, _ := api.Rest().Get(productTypeURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
 	}
@@ -24,9 +24,9 @@ func GetProducts() ([]items.Products, error) {
 	}
 	return entities, nil
 }
-func GetProduct(id string) (items.Products, error) {
-	entity := items.Products{}
-	resp, _ := api.Rest().Get(productURL + "read?id=" + id)
+func GetProductType(id string) (items.ProductType, error) {
+	entity := items.ProductType{}
+	resp, _ := api.Rest().Get(productTypeURL + "/read?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -34,18 +34,22 @@ func GetProduct(id string) (items.Products, error) {
 	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
+	fmt.Println("In Product Types", entity)
 	return entity, nil
 }
-func CreateProduct(productName, desc string) (items.Products, error) {
-	fmt.Println(" we are about to creating product", productName)
-	entity := items.Products{}
+
+/***
+!!!! can not create !!!!
+*/
+func CreateProductType(productName, desc string) (items.ProductType, error) {
+	fmt.Println(" we are about to creating type", productName)
+	entity := items.ProductType{}
 	myType := items.Products{"000", productName, desc}
-	resp, _ := api.Rest().SetBody(myType).Post(productURL + "/create")
+	resp, _ := api.Rest().SetBody(myType).Post(productTypeURL + "/create")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
-
 	fmt.Println(" we have create product", entity)
 	if err != nil {
 		fmt.Println(" erro when marshaling", err)
@@ -54,10 +58,10 @@ func CreateProduct(productName, desc string) (items.Products, error) {
 	}
 	return entity, nil
 }
-func DeleteProduct(productId string) (items.Products, error) {
+func DeleteProductType(productId string) (items.ProductType, error) {
 	//entities:=[]Color{}
-	entity := items.Products{}
-	resp, _ := api.Rest().Get(productURL + "/delete?id=" + productId)
+	entity := items.ProductType{}
+	resp, _ := api.Rest().Get(productTypeURL + "/delete?id=" + productId)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}

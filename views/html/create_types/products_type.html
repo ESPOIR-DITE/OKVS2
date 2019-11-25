@@ -231,6 +231,7 @@
                     <a href="/item/soulier/table">items view</a>
                     <a href="/item/soulier/add">items add</a>
                     <a href="/managers/table">managers</a>
+                    <a href="/item/types">Create Types</a>
                 </div>
             </div>
         </div>
@@ -270,14 +271,13 @@
         </div>
         <!-- ================ contact section end ================= -->
         <div class="col-lg-8 col-md-8">
-            <h3 class="mb-30 title_color">Braind Types<br></h3>
+            <h3 class="mb-30 title_color">Product Types<br></h3>
             <div class="container">
                 <table class="table">
                     <thead>
                     <tr>
                         <th>ID</th>
                         <th>Product Name</th>
-                        <th>Description</th>
 
                     </tr>
                     </thead>
@@ -286,8 +286,8 @@
                     {{range .}}
                     <tr>
                         <td> {{.Id}}</td>
-                        <td> {{.Name}}</td>
-                        <td> {{.Description}}</td>
+                        <td> {{.TypeName}}</td>
+
                         {{end}}
                         {{end}}
                     </tr>
@@ -296,7 +296,7 @@
             </div>
 
             <div class="l_w_title">
-                <h3>Delete Braind</h3>
+                <h3>Delete Product Type</h3>
             </div>
 
             <form method="post" action="/item/delete/product">
@@ -315,7 +315,7 @@
 
 
             <div class="l_w_title">
-                <h3>Create Braind Types</h3>
+                <h3>Create Product Types</h3>
             </div>
             <form method="post" action="/item/create/product">
 
@@ -325,11 +325,11 @@
                            required class="single-input">
                 </div>
 
-                <div class="mt-10">
+               <!-- <div class="mt-10">
                     <label>Product Description</label>
                     <input type="text" name="Description" placeholder="appareil cellulaire"
                            required class="single-input">
-                </div>
+                </div>-->
                 <button  class="mt-10" type="submit"style="background-color: #FFFFFF; border: #FFFFFF">
                     <a class="genric-btn primary circle">Add new Product</a>
                 </button>

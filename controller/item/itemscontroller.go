@@ -6,6 +6,7 @@ import (
 	"OKVS2/domain/items"
 	"OKVS2/io/image_oi"
 	itemsIO "OKVS2/io/items"
+	"OKVS2/io/makeUp"
 	"OKVS2/io/types"
 	"bufio"
 	"fmt"
@@ -16,15 +17,9 @@ import (
 	"strconv"
 )
 
-/**
-type Soulier items.Shoes
-type Perique items.Hair
-type Items items.Items
-type ItemSold items.ItemSold
-type Cloths items.Cloths
-type Beate items.BeautyMakeup*/
 type Results struct {
-	Name string
+	Name  string
+	Class string
 }
 
 //type Gender gender.Gender
@@ -51,8 +46,11 @@ func Home(app *config.Env) http.Handler {
 	r.Get("/types/gender", TypesGenderHandler(app))
 	r.Get("/types/color", TypesColorHandler(app))
 	r.Get("/types/braind", TypesBraindHandler(app))
-	r.Get("/types/product", TypesProductHandler(app))
+	r.Get("/types/product", TypesProductTypeHandler(app))
 	r.Get("/types/address", TypesAddressHandler(app))
+
+	r.Get("/searchProduct/{resetkey}", ReadProductHandler(app))
+	//r.Get("/addToCard/{resetkeys}", AddToCardHandler(app))
 
 	/**r.Post("/create/soulier", CreateSoulierHandler(app))
 	r.Post("/create/soulier", CreateChemiseHandler(app))
@@ -61,60 +59,285 @@ func Home(app *config.Env) http.Handler {
 	r.Post("/create/gender", CreateGenderHandler(app))
 	r.Post("/create/color", CreateColorHandler(app))
 	r.Post("/create/braind", CreateBraindHandler(app))
-	r.Post("/create/product", CreateProductHandler(app))
+	r.Post("/create/product", CreateTypeHandler(app))
 	r.Post("/create/address", CreateAddressHandler(app))
 
 	r.Post("/delete/color", DeleteColorHandler(app))
 	r.Post("/delete/gender", DeleteGenderHandler(app))
 	r.Post("/delete/braind", DeleteBraindHandler(app))
-	r.Post("/delete/product", DeleteProductHandler(app))
+	r.Post("/delete/product", DeleteProductTypeHandler(app))
 	r.Post("/delete/address", DeleteAddressHandler(app))
 
+	r.Post("/search/productType", SearchProductTypeHandler(app))
 	r.Post("/search/product", SearchProductHandler(app))
 
 	return r
+}
+
+func AddToCardHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		resetKey := chi.URLParam(r, "resetkeys")
+		//productTypeId := r.PostFormValue("productpic")
+		fmt.Println("product id to add to the card>>>", resetKey, "<<<< User email>>>", userEmail)
+
+		//fmt.Println("product Details to search>>>", productDetails)
+
+		//http.Redirect(w, r, "/", 301)
+		return
+	}
+}
+
+type Numbers struct {
+	One, Two, Three int
+}
+
+//this method help to set the single product page of the selected item
+func ReadProductHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		resetKey := chi.URLParam(r, "resetkey")
+		//productTypeId := r.PostFormValue("productpic")
+		fmt.Println("product id to search>>>", resetKey)
+		productDetails, err := makeUp.GetOneItemDetails(resetKey)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			http.Redirect(w, r, "/", 301)
+			return
+		}
+		//fmt.Println("product Details to search>>>", productDetails)
+
+		myNumbers := Numbers{0, 1, 3}
+		newEnity := items.ViewProduct2{productDetails.ItemId, productDetails.ItemName, productDetails.ItemBrand, productDetails.Price, productDetails.Description, productDetails.Quantity, productDetails.Colors}
+		fmt.Println("product Details to search>>>", newEnity)
+
+		type PageData struct {
+			Entity  items.ViewProduct2
+			Myimage []ImageItems2
+			Numbers
+		}
+		data := PageData{newEnity, GetImageItem2(productDetails.Pictures), myNumbers}
+		files := []string{
+			app.Path + "items/single-product.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+type ImageItems struct {
+	Pic string
+}
+type ImageItems2 struct {
+	Pic      string
+	Number   int
+	Class    string
+	Position string
+}
+
+func GetImageItem2(image [][]byte) []ImageItems2 {
+	var myList []ImageItems2
+	position := [3]string{"First slide", "Second slide", "Third slide"}
+	for index, value := range image {
+		if index == 0 {
+			myList = append(myList, ImageItems2{readImage(value), index, "active", position[index]})
+		} else if index != 0 {
+			myList = append(myList, ImageItems2{readImage(value), index, "", position[index]})
+		}
+	}
+	return myList
+}
+func GetImageItem(image []string) []ImageItems {
+	entity := []ImageItems{}
+	for _, value := range image {
+		entity = append(entity, ImageItems{value})
+	}
+	return entity
+}
+
+func SearchProductHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		r.ParseForm()
+		productTypeId := r.PostFormValue("productId")
+		fmt.Println("product to search>>>", productTypeId)
+		var myimages []string
+		var colorListe []items.Color
+		var sizeListe []items.Size
+
+		productType, _ := types.GetTypes()
+		//productId, _ := types.GetProductType(productTypeId)
+		product, _ := itemsIO.GetProduct(productTypeId)
+		fmt.Println("product product to search>>>", product)
+
+		accounting, _ := itemsIO.GetAccounting(product.Id)
+		fmt.Println("product accounting to search>>>", accounting)
+		itemColorList, _ := types.GetItemColorList(product.Id)
+		fmt.Println("product itemColorList to search>>>", itemColorList)
+
+		for _, itemColor := range itemColorList {
+			color, _ := types.GetColor(itemColor.ColorId)
+			colorListe = append(colorListe, color)
+		}
+		fmt.Println("product product to search>>>", colorListe)
+
+		itemBrand, _ := types.GetItemBraind(product.Id)
+		fmt.Println("product itemBrand to search>>>", itemBrand)
+
+		braind, _ := types.GetBrand(itemBrand.BraindId)
+		fmt.Println("product braind to search>>>", braind)
+
+		itemGender, _ := types.GetItemGender(product.Id)
+		fmt.Println("product itemGender to search>>>", itemGender)
+
+		genderdate, _ := types.GetGender(itemGender.GenderId)
+		fmt.Println("product genderdate to search>>>", genderdate)
+
+		itemImag, _ := image_oi.GetItemImage(product.Id)
+		fmt.Println("product itemImag to search>>>", itemImag)
+
+		productSizes, _ := types.GetPtoductSizeWithItemId(product.Id)
+		fmt.Println("product productSizes to search>>>", productSizes)
+		for _, itemSize := range productSizes {
+			size, _ := types.GetSize(itemSize.SizeId)
+			sizeListe = append(sizeListe, size)
+		}
+		fmt.Println("product sizeListe to search>>>", sizeListe)
+
+		if itemImag != nil {
+			for _, itemImageId := range itemImag {
+				myImage, _ := image_oi.GetImage(itemImageId.ImageId)
+				myimages = append(myimages, readImage(myImage.Image))
+			}
+		}
+		imageStringArry := GetImageItem(myimages)
+		fmt.Println("product myimages to search>>>", myimages)
+
+		fmt.Println(" In  product...", product)
+		fmt.Println(" In  accounting...", accounting)
+
+		products, _ := itemsIO.GetProducts()
+		type PageData struct {
+			Product  items.Products
+			Account  items.Accounting
+			Color    []items.Color
+			Braind   items.Braind
+			Gender   gender.Gender
+			MySize   []items.Size
+			Myimage  []ImageItems
+			Entities []items.Types
+			Products []items.Products
+		}
+		data := PageData{product, accounting, colorListe, braind, genderdate, sizeListe, imageStringArry, productType, products}
+		files := []string{
+			app.Path + "items/productsSearchResult.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
 }
 func readImage(byteImage []byte) string {
 	mybyte := string(byteImage)
 	return mybyte
 }
-func SearchProductHandler(app *config.Env) http.HandlerFunc {
+
+func SearchProductTypeHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseForm()
-		productId := r.PostFormValue("productId")
 
-		var myimages []string
-		product, _ := types.GetProduct(productId)
-		accounting, _ := itemsIO.GetAccounting(productId)
-		color, _ := types.GetColor(productId)
-		braind, _ := types.GetBrand(productId)
-		genderdate, _ := types.GetGender(productId)
-		itemImag, _ := image_oi.GetItemImage(productId)
-		theSize, _ := types.GetSize(productId)
+		productType := []items.Types{}
+		product := items.Products{}
 
-		if itemImag != nil {
-			for _, imageId := range itemImag {
-				myImage, _ := image_oi.GetImage(imageId.Id)
-				myimages = append(myimages, readImage(myImage.Image))
-			}
+		productTypeId := r.PostFormValue("productId")
+		fmt.Println("product to search>>>", productTypeId)
+		productId, err := types.GetProductType(productTypeId)
+		/**var myimages []string
+		var colorListe []items.Color
+		var sizeListe []items.Size*/
+
+		if err == nil {
+			productType, _ = types.GetTypes()
+			product, _ := itemsIO.GetProduct(productId.ItemId)
+			fmt.Println("product product to search>>>", product)
 		}
 
-		fmt.Println(" In  product...", product)
-		fmt.Println(" In  accounting...", accounting)
+		//fmt.Println("product product to search>>>", product)
 
+		/**accounting, _ := itemsIO.GetAccounting(product.Id)
+				fmt.Println("product accounting to search>>>", accounting)
+				itemColorList, _ := types.GetItemColorList(product.Id)
+				fmt.Println("product itemColorList to search>>>", itemColorList)
+
+
+				for _, itemColor := range itemColorList {
+					color, _ := types.GetColor(itemColor.ColorId)
+					colorListe = append(colorListe, color)
+				}
+				fmt.Println("product product to search>>>", colorListe)
+
+
+				itemBrand, _ := types.GetBrand(product.Id)
+				fmt.Println("product itemBrand to search>>>", itemBrand)
+
+				braind, _ := types.GetBrand(itemBrand.BraindId)
+				fmt.Println("product braind to search>>>", braind)
+
+
+				itemGender, _ := types.GetItemGender(product.Id)
+				fmt.Println("product itemGender to search>>>", itemGender)
+
+				genderdate, _ := types.GetGender(itemGender.GenderId)
+				fmt.Println("product genderdate to search>>>", genderdate)
+
+
+				itemImag, _ := image_oi.GetItemImage(product.Id)
+				fmt.Println("product itemImag to search>>>", itemImag)
+
+				productSizes, _ := types.GetPtoductSizeWithItemId(product.Id)
+				for _, itemSize := range productSizes {
+					size, _ := types.GetSize(itemSize.SizeId)
+					sizeListe = append(sizeListe, size)
+				}
+				fmt.Println("product sizeListe to search>>>", sizeListe)
+
+
+				if itemImag != nil {
+					for _, imageId := range itemImag {
+						myImage, _ := image_oi.GetImage(imageId.Id)
+						myimages = append(myimages, readImage(myImage.Image))
+					}
+				}
+
+				fmt.Println(" In  product...", product)
+				fmt.Println(" In  accounting...", accounting)
+		**/
 		type PageData struct {
-			Product items.Products
-			Account items.Accounting
-			Color   items.Color
+			Product  items.Products
+			Entities []items.Types
+			/**Account items.Accounting
+			Color   []items.Color
 			Braind  items.Braind
 			Gender  gender.Gender
-			MySize  items.Size
-			Myimage []string
+			MySize  []items.Size
+			Myimage []string*/
 		}
-		data := PageData{product, accounting, color, braind, genderdate, theSize, myimages}
+		data := PageData{product, productType}
 		files := []string{
-			app.Path + "items/productsSearchResult.html",
+			app.Path + "items/itemProduct.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -267,7 +490,7 @@ func TypesAddressHandler(app *config.Env) http.HandlerFunc {
 	}
 }
 
-func DeleteProductHandler(app *config.Env) http.HandlerFunc {
+func DeleteProductTypeHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(" In  DeleteColorHandler...")
 
@@ -275,16 +498,16 @@ func DeleteProductHandler(app *config.Env) http.HandlerFunc {
 		ProductdId := r.PostFormValue("ProductdId")
 		fmt.Println(" what we are delete ", ProductdId)
 		type PageData struct {
-			Entities []items.Products
+			Entities []items.Types
 		}
 		if ProductdId != "" {
-			_, nill := types.DeleteProduct(ProductdId)
+			_, nill := types.DeleteType(ProductdId)
 
 			if nill != nil {
 				app.ErrorLog.Println(nill.Error())
 			}
 		}
-		data2, err := types.GetProducts()
+		data2, err := types.GetTypes()
 
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
@@ -308,36 +531,34 @@ func DeleteProductHandler(app *config.Env) http.HandlerFunc {
 	}
 }
 
-func CreateProductHandler(app *config.Env) http.HandlerFunc {
+func CreateTypeHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(" In  CreateColorHandler...")
 
 		r.ParseForm()
-		ProductdName := r.PostFormValue("ProductdName")
-		Description := r.PostFormValue("Description")
-		fmt.Println(" what we are creating ", ProductdName, " and ", Description)
+		typeName := r.PostFormValue("ProductdName")
+		//Description := r.PostFormValue("Description")
+		fmt.Println(" what we are creating ", typeName)
 
 		type PageData struct {
-			Entities []items.Products
+			Entities []items.Types
 		}
 
-		if ProductdName != "" && Description != "" {
-			_, nill := types.CreateProduct(ProductdName, Description)
+		if typeName != "" {
+			//_, nill := types.CreateProductType(ProductdName, Description)
+			_, nill := types.CreateType(typeName)
 
 			if nill != nil {
 				app.ErrorLog.Println(nill.Error())
 				fmt.Println(" Error when creating ")
-
 			}
 		}
-		data2, err := types.GetProducts()
+		data2, err := types.GetTypes()
 
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
-			fmt.Println(" Error when reading ", ProductdName)
-
+			fmt.Println(" Error when reading GetTypes ", data2)
 		}
-
 		Data := PageData{data2}
 		fmt.Println(" we are creating colore", Data)
 		files := []string{
@@ -355,20 +576,20 @@ func CreateProductHandler(app *config.Env) http.HandlerFunc {
 	}
 }
 
-func TypesProductHandler(app *config.Env) http.HandlerFunc {
+func TypesProductTypeHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		fmt.Println(" In  TypesProductHandler...")
+		fmt.Println(" In  TypesProductTypeHandler...")
 		type PageData struct {
-			Entities []items.Products
+			Entities []items.Types
 		}
-		data, nill := types.GetProducts()
+		itemType, nill := types.GetTypes()
 
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())
 		}
-		Data := PageData{data}
-		fmt.Println(" we are calling product page", Data)
+		Data := PageData{itemType}
+		fmt.Println(" we are calling product page", itemType)
 		files := []string{
 			app.Path + "create_types/products_type.html",
 		}
@@ -766,6 +987,7 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 		file2, handler, err := r.FormFile("file2")
 		fmt.Println(" read successful")
 		var data string
+		var res = Results{}
 
 		fmt.Println("********")
 		if err != nil {
@@ -813,12 +1035,13 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println("sending to backend successful")
 
 		//fmt.Println(encoded, " ", B) //
-		if err != nil {
+		if err != nil && result == false {
 			app.ErrorLog.Println(err.Error())
 			data = " could not upload the details"
 			fmt.Println(err, "  this is the erro")
+			res = Results{data, "danger"}
 		}
-		app.InfoLog.Println("create response is :", result)
+		//app.InfoLog.Println("create response is :", result)
 		//http.Redirect(w, r, "/", 301)
 
 		files := []string{
@@ -837,7 +1060,7 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 			GenderData   []gender.Gender
 			SizeData     []items.Size
 			ColorData    []items.Color
-			ItemTypeData []items.Type
+			ItemTypeData []items.Types
 			BraindData   []items.Braind
 			Result       Results
 		}
@@ -848,6 +1071,7 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 			return
 		}
 		color, nill := types.GetColors()
+		fmt.Println("the read colors>>>", color)
 		if nill != nil {
 			app.ErrorLog.Println(nill.Error())
 			return
@@ -867,8 +1091,10 @@ func CreateBeauteHandler(app *config.Env) http.HandlerFunc {
 			app.ErrorLog.Println(nill.Error())
 			return
 		}
-		data = "upload successful"
-		res := Results{data}
+		if result != false {
+			data = "upload successful"
+			res = Results{data, "success"}
+		}
 		datatypes := PageData{mygender, mysize, color, myitemType, mybraind, res}
 
 		err = ts.Execute(w, datatypes)
@@ -966,11 +1192,11 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 			GenderData   []gender.Gender
 			SizeData     []items.Size
 			ColorData    []items.Color
-			ItemTypeData []items.Type
+			ItemTypeData []items.Types
 			BraindData   []items.Braind
 			Result       Results
 		}
-		res := Results{StringValidatio}
+		res := Results{StringValidatio, ""}
 		gender, nill := types.GetGenders()
 		fmt.Println("  reading gender", gender)
 		if nill != nil {
@@ -1025,15 +1251,16 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 
 func SoulierItemHanler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		resp, err := types.GetProducts()
+		//productTypes, err := types.GetTypes()
+		products, err := itemsIO.GetProducts()
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			return
 		}
 		type PageData struct {
-			Entities []items.Products
+			Products []items.Products
 		}
-		data := PageData{resp}
+		data := PageData{products}
 		files := []string{
 			app.Path + "items/itemProduct.html",
 		}

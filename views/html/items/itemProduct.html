@@ -108,7 +108,7 @@
                                             >
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="single-product.html"
+                                            <a class="nav-link" href="../itemAdd/single-product.html"
                                             >Product Details</a
                                             >
                                         </li>
@@ -277,18 +277,14 @@
     <div class="col-lg-9">
         <h4 class="product_top_bar">Choose The Product You Want to View</h4>
 
-<form method="get" action="item/search/product">
+<!--<form method="post" action="/item/search/productType">
 
     <div class="mt-10">
         <select name="productId" class="selectpicker" data-title="Single Select"
                 data-style="btn-default btn-outline"
                 data-menu-style="dropdown-blue">
             <option  disabled selected>Select One Item Type</option>
-                    {{with .ColorData}}
-                        {{range .}}
-                            <option value={{.Id}}>{{.Name}}</option>
-                        {{end}}
-                    {{end}}
+
                 </select>
 
     </div>
@@ -296,8 +292,30 @@
         <a  class="genric-btn primary circle">Search</a>
     </button>
 
-</form>
+</form>-->
+        <form method="post" action="/item/search/product">
 
+            <div class="mt-10">
+                <select name="productId" class="selectpicker" data-title="Single Select"
+                        data-style="btn-default btn-outline"
+                        data-menu-style="dropdown-blue">
+                    <option  disabled selected>Select One Item Type</option>
+
+                    {{with .Products}}
+                        {{range .}}
+                            <option value={{.Id}}>{{.Name}}</option>
+                        {{end}}
+                        {{else}} Emplty
+                    {{end}}
+
+                </select>
+
+            </div>
+            <button class="mt-10" id="customerDetais" type="submit" style="background-color: #FFFFFF; border: #FFFFFF">
+                <a  class="genric-btn primary circle">Search</a>
+            </button>
+
+        </form>
 
             <div class="l_w_title">
                 <h3>Item de Beate</h3>
@@ -451,28 +469,28 @@
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="../assets/js/jquery-3.2.1.min.js"></script>
-<script src="../assets/js/popper.js"></script>
-<script src="../assets/js/bootstrap.min.js"></script>
-<script src="../assets/js/stellar.js"></script>
-<script src="../assets/vendors/lightbox/simpleLightbox.min.js"></script>
-<script src="../assets/vendors/nice-select/js/jquery.nice-select.min.js"></script>
-<script src="../assets/vendors/isotope/imagesloaded.pkgd.min.js"></script>
-<script src="../assets/vendors/isotope/isotope-min.js"></script>
-<script src="../assets/vendors/owl-carousel/owl.carousel.min.js"></script>
-<script src="../assets/vendors/jquery-ui/jquery-ui.js"></script>
-<script src="../assets/js/jquery.ajaxchimp.min.js"></script>
-<script src="../assets/js/mail-script.js"></script>
-<script src="../assets/vendors/counter-up/jquery.waypoints.min.js"></script>
-<script src="../assets/vendors/counter-up/jquery.counterup.js"></script>
+<script src="../../assets/js/jquery-3.2.1.min.js"></script>
+<script src="../../assets/js/popper.js"></script>
+<script src="../../assets/js/bootstrap.min.js"></script>
+<script src="../../assets/js/stellar.js"></script>
+<script src="../../assets/vendors/lightbox/simpleLightbox.min.js"></script>
+<script src="../../assets/vendors/nice-select/js/jquery.nice-select.min.js"></script>
+<script src="../../assets/vendors/isotope/imagesloaded.pkgd.min.js"></script>
+<script src="../../assets/vendors/isotope/isotope-min.js"></script>
+<script src="../../assets/vendors/owl-carousel/owl.carousel.min.js"></script>
+<script src="../../assets/vendors/jquery-ui/jquery-ui.js"></script>
+<script src="../../assets/js/jquery.ajaxchimp.min.js"></script>
+<script src="../../assets/js/mail-script.js"></script>
+<script src="../../assets/vendors/counter-up/jquery.waypoints.min.js"></script>
+<script src="../../assets/vendors/counter-up/jquery.counterup.js"></script>
 <!-- contact js -->
-<script src="../assets/js/jquery.form.js"></script>
-<script src="../assets/js/jquery.validate.min.js"></script>
-<script src="../assets/js/contact.js"></script>
+<script src="../../assets/js/jquery.form.js"></script>
+<script src="../../assets/js/jquery.validate.min.js"></script>
+<script src="../../assets/js/contact.js"></script>
 <!--gmaps Js-->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
-<script src="../assets/js/gmaps.min.js"></script>
-<script src="../assets/js/theme.js"></script>
+<script src="../../assets/js/gmaps.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
 </body>
 
 </html>

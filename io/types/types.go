@@ -9,11 +9,11 @@ import (
 
 const typesURL = api.BASE_URL + "type"
 
-type Type items.Type
+type Type items.Types
 
-func GetTypes() ([]items.Type, error) {
+func GetTypes() ([]items.Types, error) {
 	//entity :=Color{}
-	entities := []items.Type{}
+	entities := []items.Types{}
 	resp, _ := api.Rest().Get(typesURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
@@ -42,9 +42,9 @@ func CreateType(braind string) (Type, error) {
 	}
 	return entity, nil
 }
-func DeleteType(braind string) (items.Type, error) {
+func DeleteType(braind string) (items.Types, error) {
 	//entities:=[]Color{}
-	entity := items.Type{}
+	entity := items.Types{}
 	resp, _ := api.Rest().Get(typesURL + "/delete?id=" + braind)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())

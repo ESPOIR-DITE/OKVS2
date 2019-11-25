@@ -26,7 +26,7 @@ func GetSizes() ([]items.Size, error) {
 }
 func GetSize(id string) (items.Size, error) {
 	entity := items.Size{}
-	resp, _ := api.Rest().Get(sizeURL + "read?id=" + id)
+	resp, _ := api.Rest().Get(sizeURL + "/read?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}

@@ -114,22 +114,22 @@
                                     >
                                     <ul class="dropdown-menu">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="category.html"
+                                            <a class="nav-link" href="#"
                                             >Shop Category</a
                                             >
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="single-product.html"
+                                            <a class="nav-link" href="#"
                                             >Product Details</a
                                             >
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="checkout.html"
+                                            <a class="nav-link" href="#"
                                             >Product Checkout</a
                                             >
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="/category">Shopping Cart</a>
+                                            <a class="nav-link" href="#">Shopping Cart</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -145,10 +145,10 @@
                                     >
                                     <ul class="dropdown-menu">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="blog.html">Blog</a>
+                                            <a class="nav-link" href="#">Blog</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="single-blog.html"
+                                            <a class="nav-link" href="#"
                                             >Blog Details</a
                                             >
                                         </li>
@@ -166,10 +166,10 @@
                                     >
                                     <ul class="dropdown-menu">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="tracking.html">Tracking</a>
+                                            <a class="nav-link" href="#">Tracking</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="elements.html">Elements</a>
+                                            <a class="nav-link" href="#">Elements</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -240,7 +240,8 @@
                     <a href="/order/table">Orders</a>
                     <a href="/item/soulier/table">items view</a>
                     <a href="/item/soulier/add">items add</a>
-                    <a href="/managers/table">managers</a>
+                    <a href="/managers/table">Managers</a>
+                    <a href="/item/types">Create Types</a>
                 </div>
             </div>
         </div>
@@ -259,7 +260,7 @@
 
                         <div class="card ">
                             <div class="card-header ">
-                                <h4 class="card-title">New Items<br>{{if.Result.Name}}{{.Result.Name}} {{end}}</h4>
+                                <h4 class="card-title {{.Result.Class}}">New Items<br>{{if.Result.Name}}{{.Result.Name}} {{end}}</h4>
                             </div>
                             <div class="card-body ">
                                 <form action="/item/create/soulier" method="post" enctype="multipart/form-data" class="form-horizontal">

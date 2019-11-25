@@ -12,9 +12,9 @@ const loginURL = api.BASE_URL + "login"
 type userLogin login.Login
 type userDetail login.LoginHelper
 
-func UserLogin(user interface{}) (userLogin, error) {
+func UserLogin(user interface{}) (login.Login, error) {
 	fmt.Println("user: ", user)
-	entity := userLogin{}
+	entity := login.Login{}
 
 	resp, _ := api.Rest().SetBody(user).Post(loginURL + "/log")
 
