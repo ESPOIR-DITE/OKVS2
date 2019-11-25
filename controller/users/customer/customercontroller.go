@@ -3,7 +3,7 @@ package customer
 import (
 	"OKVS2/config"
 	"OKVS2/domain/users"
-	customerIO "OKVS2/io/users/customer"
+	customerIO "OKVS2/io/users_io/customer"
 	"github.com/go-chi/chi"
 	"html/template"
 	"net/http"

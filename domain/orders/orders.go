@@ -32,3 +32,11 @@ type CheckOutHelper struct {
 	Total       float64 `json:"total"`
 	ItemId      string  `json:"itemId"`
 }
+type OrderHelper struct {
+	OrderId   string  `json:"orderId"`
+	Date      string  `json:"date"`
+	ItemName  string  `json:"itemName"`
+	Quantity  int     `json:"quantity"`
+	Price     float64 `json:"price"`
+	OrderStat string  `json:"orderStat"`
+}

@@ -6,7 +6,7 @@ import (
 	"OKVS2/domain/users"
 	"OKVS2/io/makeUp"
 	"OKVS2/io/order"
-	"OKVS2/io/users/customer"
+	"OKVS2/io/users_io/customer"
 	"fmt"
 	"github.com/go-chi/chi"
 	"html/template"
@@ -79,7 +79,7 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 		var itemsdetals []items.ItemViewHtml
 
 		homePageElements, err := makeUp.GetAllItems()
-		fmt.Println("User may not have logIn or may not have ordered yet ", homePageElements)
+		//fmt.Println("User may not have logIn or may not have ordered yet ", homePageElements)
 		if err != nil && homePageElements == nil {
 			app.ErrorLog.Println(err.Error())
 			http.Redirect(w, r, "/home/homeError/homeError", 301)

@@ -31,15 +31,15 @@ func GetCustomer(id string) (Order, error) {
 	}
 	return entity, nil
 }
-func CreateCustomer(entit interface{}) (Order, error) {
-	entity := Order{}
+func CreateCustomer(entit orders.Card) (bool, error) {
+	var entity bool
 	resp, _ := api.Rest().SetBody(entit).Post(orderURL + "/create")
 	if resp.IsError() {
-		return entity, errors.New(resp.Status())
+		return false, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
 	if err != nil {
-		return entity, errors.New(resp.Status())
+		return false, errors.New(resp.Status())
 	}
 	return entity, nil
 }
@@ -58,6 +58,18 @@ func DeleteAdmin(id string) (Order, error) {
 func UpdateCustomer(entit interface{}) (Order, error) {
 	entity := Order{}
 	resp, _ := api.Rest().SetBody(entit).Post(orderURL + "/update")
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}
+func OrderTracking(orderNumber string) (orders.OrderHelper, error) {
+	entity := orders.OrderHelper{}
+	resp, _ := api.Rest().Get(orderURL + "/track?id=" + orderNumber)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
