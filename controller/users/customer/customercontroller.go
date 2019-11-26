@@ -2,7 +2,9 @@ package customer
 
 import (
 	"OKVS2/config"
+	login2 "OKVS2/domain/login"
 	"OKVS2/domain/users"
+	"OKVS2/io/login"
 	customerIO "OKVS2/io/users/customer"
 	"github.com/go-chi/chi"
 	"html/template"
@@ -15,7 +17,34 @@ func Customer(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/home", CustomerMethod(app))
 	r.Get("/table", CustomerTableHandler(app))
+	r.Get("/register/{pasword}", RegisterCustomerTableHandler(app))
 	return r
+}
+
+func RegisterCustomerTableHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		pasword := chi.URLParam(r, "pasword")
+		logindetails, err := login.GetUserEmail(pasword)
+		if err != nil {
+
+		}
+		type PageData struct {
+			Entities login2.Login
+		}
+		data := PageData{logindetails}
+		files := []string{
+			app.Path + "customertable.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
 }
 
 func CustomerTableHandler(app *config.Env) http.HandlerFunc {
