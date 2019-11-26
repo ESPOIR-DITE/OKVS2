@@ -45,7 +45,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="tracking.html">
+                                <a href="/order/track">
                                     track order
                                 </a>
                             </li>
@@ -64,7 +64,7 @@
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-light w-100">
                 <!-- Brand and toggle get grouped for better mobile display -->
-                <a class="navbar-brand logo_h" href="index.html">
+                <a class="navbar-brand logo_h" href="/">
                     <img src="../assets/img/logo.png" alt=""/>
                 </a>
                 <button
@@ -91,7 +91,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="/">Home</a>
                                 </li>
-                                <li class="nav-item active submenu dropdown">
+                                <li class="nav-item submenu dropdown">
                                     <a
                                             href="#"
                                             class="nav-link dropdown-toggle"
@@ -143,7 +143,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="nav-item submenu dropdown">
+                                <li class="nav-item active submenu dropdown">
                                     <a
                                             href="#"
                                             class="nav-link dropdown-toggle"
@@ -155,7 +155,7 @@
                                     >
                                     <ul class="dropdown-menu">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="tracking.html">Tracking</a>
+                                            <a class="nav-link" href="/order/order/track">Tracking</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="elements.html">Elements</a>
@@ -211,12 +211,12 @@
                     class="banner_content d-md-flex justify-content-between align-items-center"
             >
                 <div class="mb-3 mb-md-0">
-                    <h2>Cart</h2>
+                    <h2>Order Tracking</h2>
                     <p>Very us move be blessed multiply night</p>
                 </div>
                 <div class="page_link">
                     <a href="/">Home</a>
-                    <a href="#">Cart</a>
+                    <a href="/order/order/track">Order Tracking</a>
                 </div>
             </div>
         </div>
@@ -224,188 +224,69 @@
 </section>
 <!--================End Home Banner Area =================-->
 
-<!--================Cart Area =================-->
-<section class="blog_area section_gap">
-
+<!--================Tracking Box Area =================-->
+{{if .Mesage}}
+<div class="alert danger">
+    <button type="button" aria-hidden="true" class="close" data-dismiss="alert">
+        <i class="nc-icon nc-simple-remove"></i>
+    </button>
+        <span>{{.Mesage}}</span>
+</div>
+{{end}}
+<section class="tracking_box_area section_gap">
+    <div class="container">
+        <div class="tracking_box_inner">
+            <p>To track your order please enter your Order ID in the box below and press the "Track" button. This was
+                given
+                to you on your receipt and in the confirmation email you should have received.</p>
+            <form class="row tracking_form" action="/order/mytracking" method="post" novalidate="novalidate">
+                <div class="col-md-12 form-group">
+                    <input type="text" class="form-control" id="order" name="orderNumber" placeholder="Order ID">
+                </div>
+                <div class="col-md-12 form-group">
+                    <input type="email" class="form-control" id="email" name="email"
+                           placeholder="Billing Email Address">
+                </div>
+                <div class="col-md-12 form-group">
+                    <button type="submit" value="submit" class="btn submit_btn">Track Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<div></div>
     <div class="container">
         <div class="row">
-
-
             <div class="progress-table-wrap">
-                <table class="table">
+                <table class="table table-dark">
                     <thead>
                     <tr>
-                        <th scope="col">Product</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Update</th>
+                        <th>Order Number</th>
+                        <th>Date</th>
+                        <th>Item name</th>
+                        <th>Quantity</th>
+                        <th>Unite Price</th>
+                        <th>Order State</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {{with .Entity}}
-                        {{range .}}
-                            <tr>
-                                <td>
-                                    <div class="media">
-                                        <div class="d-flex">
-                                            <img id='base64image' style=":width 147px;  height: 100px"
-                                                 src='data:image/jpeg;base64,{{.Image}}'
-                                                 alt=""
-                                            />
-                                        </div>
-                                        <div class="media-body">
-                                            <p>{{.Description}}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>{{.Description}}</h5>
-                                </td>
-                                <td>
-                                    <h5>{{.Price}}</h5>
-                                </td>
-                                <td>
-                                    <h5>{{.Quantity}}</h5>
-                                    <!-- <div class="product_count">
-                                       <input
-                                         type="text"
-                                         name="qty"
-                                         id="sst"
-                                         maxlength="12"
-                                         value="1"
-                                         title="Quantity:"
-                                         class="input-text qty"
-                                       />
-                                       <button
-                                         onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                                         class="increase items-count"
-                                         type="button"
-                                       >
-                                         <i class="lnr lnr-chevron-up"></i>
-                                       </button>
-                                       <button
-                                         onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-                                         class="reduced items-count"
-                                         type="button"
-                                       >
-                                         <i class="lnr lnr-chevron-down"></i>
-                                       </button>
-                                     </div>-->
-                                </td>
-                                <td>
-                                    <h5>{{.Total}}</h5>
-                                </td>
 
-                                <td>
-                                    <div class="button-group-area mt-40">
-                                        <a href="/order/addToCard/remove/{{.ItemId}}"
-                                           class="genric-btn default-border circle">Remove</a>
-                                        <a href="/item/searchProduct/{{.ItemId}}"
-                                           class="genric-btn primary-border circle">Update</a>
-                                    </div>
-
-                                </td>
-                            </tr>
-                        {{end}}
-                    {{else}} Empty containt
-                    {{end}}
-                    <tr class="bottom_button">
-                        <td>
-                            <a class="gray_btn" href="#">Update Cart</a>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <div class="cupon_text">
-                                <input type="text" placeholder="Coupon Code"/>
-                                <a class="main_btn" href="#">Apply</a>
-                                <a class="gray_btn" href="#">Close Coupon</a>
-                            </div>
-                        </td>
-                    </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <h5>Subtotal</h5>
-                        </td>
-                        <td>
-                            <h5>$2160.00</h5>
-                        </td>
-                    </tr>
-                    <tr class="shipping_area">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <h5>Shipping</h5>
-                        </td>
-                        <td>
-                            <div class="shipping_box">
-                                <ul class="list">
-                                    <li>
-                                        <a href="#">Flat Rate: $5.00</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Free Shipping</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Flat Rate: $10.00</a>
-                                    </li>
-                                    <li class="active">
-                                        <a href="#">Local Delivery: $2.00</a>
-                                    </li>
-                                </ul>
-                                <h6>
-                                    Calculate Shipping
-                                    <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                </h6>
-                                <select class="shipping_select">
-                                    <option value="1">Bangladesh</option>
-                                    <option value="2">India</option>
-                                    <option value="4">Pakistan</option>
-                                </select>
-                                <select class="shipping_select">
-                                    <option value="1">Select a State</option>
-                                    <option value="2">Select a State</option>
-                                    <option value="4">Select a State</option>
-                                </select>
-                                <input type="text" placeholder="Postcode/Zipcode"/>
-                                <a class="gray_btn" href="#">Update Details</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="out_button_area">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <div class="checkout_btn_inner">
-                                <div class="row">
-                                    <a class="gray_btn" href="#">Shopping</a>
-                                    <a class="main_btn" href="/order/order/myorder">Checkout</a>
-                                </div>
-                            </div>
-                        </td>
+                        <td> {{.Entity.OrderId}}</td>
+                        <td> {{.Entity.Date}}</td>
+                        <td> {{.Entity.ItemName}}</td>
+                        <td> {{.Entity.Quantity}}</td>
+                        <td> {{.Entity.Price}}</td>
+                        <td> {{.Entity.OrderStat}}</td>
+
                     </tr>
                     </tbody>
                 </table>
-
-
             </div>
         </div>
     </div>
+
 </section>
-<!--================End Cart Area =================-->
+<!--================End Tracking Box Area =================-->
 
 <!--================ start footer Area  =================-->
 <footer class="footer-area section_gap">
@@ -485,6 +366,7 @@
 </footer>
 <!--================ End footer Area  =================-->
 
+
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="../../assets/js/jquery-3.2.1.min.js"></script>
@@ -503,4 +385,5 @@
 <script src="../../assets/vendors/counter-up/jquery.counterup.js"></script>
 <script src="../../assets/js/theme.js"></script>
 </body>
+
 </html>

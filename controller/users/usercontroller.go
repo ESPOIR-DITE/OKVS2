@@ -5,7 +5,7 @@ import (
 	"OKVS2/domain/login"
 	"OKVS2/domain/users"
 	login2 "OKVS2/io/login"
-	"OKVS2/io/users/customer"
+	"OKVS2/io/users_io/customer"
 	"fmt"
 	"github.com/go-chi/chi"
 	"html/template"
