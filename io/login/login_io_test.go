@@ -13,3 +13,14 @@ func TestUserLogin(t *testing.T) {
 	assert.Nil(t, err)
 	fmt.Println("result is: ", rspo)
 }
+func TestGetUserEmail(t *testing.T) {
+	reslt, err := GetUserWithEmail("esp@yahoo.com")
+	assert.Nil(t, err)
+	fmt.Println("result is: ", reslt)
+}
+func TestUpdateLogin(t *testing.T) {
+	result := login.Login{"espoir@dite.com", "0000", "admin"}
+	rspo, err := UpdateLogin(result)
+	assert.Nil(t, err)
+	fmt.Println("result is: ", rspo)
+}

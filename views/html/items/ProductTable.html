@@ -259,7 +259,7 @@
                             <a href="/item/pantalon/table">pantalon</a>
                         </li>
                         <li>
-                            <a href="/item/beate/table">beate</a>
+                            <a href="/item/beate/table" >beate</a>
                         </li>
                         <li>
                             <a href="/item/perique/table">perique</a>
@@ -296,57 +296,37 @@
     </button>
 
 </form>-->
-        <form method="post" action="/item/search/product">
-
-            <div class="mt-10">
-                <select name="productId" class="selectpicker" data-title="Single Select"
-                        data-style="btn-default btn-outline"
-                        data-menu-style="dropdown-blue">
-                    <option  disabled selected>Select One Item Type</option>
-
-                    {{with .Products}}
-                        {{range .}}
-                            <option value={{.Id}}>{{.Name}}</option>
-                        {{end}}
-                        {{else}} Emplty
-                    {{end}}
-
-                </select>
-
-            </div>
-            <button class="mt-10" id="customerDetais" type="submit" style="background-color: #FFFFFF; border: #FFFFFF">
-                <a  class="genric-btn primary circle">Search</a>
-            </button>
-
-        </form>
 
             <div class="l_w_title">
-                <h3>Item de Beate</h3>
+                <h3>Products</h3>
             </div>
             <div class="progress-table-wrap">
             <table class="table table-dark">
                 <thead>
                 <tr>
                     <th>Product Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Description</th>
-                    <th>Color</th>
                     <th>Brand</th>
                     <th>Color</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+
+
                 </tr>
                 </thead>
                 <tbody>
+                {{with .Entity}}
+                {{range .}}
                 <tr>
-                    <td> </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-
+                    <td>{{.ItemName}}</td>
+                    <td>{{.ItemBrand}}</td>
+                    <td>{{with.Colors}} {{range.}}<a>{{.ColorName}}</a>{{end}}{{end}}</td>
+                    <td>{{.Description}}</td>
+                    <td>{{.Quantity}}</td>
+                    <td>{{.Price}}</td>
                 </tr>
+                {{end}}
+                {{end}}
                 </tbody>
             </table>
         </div>

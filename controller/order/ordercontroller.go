@@ -74,7 +74,6 @@ func MyTrackingHandler(app *config.Env) http.HandlerFunc {
 			if err != nil {
 				message = "Wrong OrderNumber please try again"
 			}
-			message = "Wrong OrderNumber please try again"
 		}
 		type PageData struct {
 			Entity orders.OrderHelper
@@ -159,7 +158,7 @@ func MyOrderHandler(app *config.Env) http.HandlerFunc {
 			result, _ = order.CreateCustomer(cardResult)
 		}
 		if result != false {
-			app.ErrorLog.Println(err.Error())
+
 			message = "You have placed an order"
 		}
 		fmt.Println("Result after placing the order ", result)

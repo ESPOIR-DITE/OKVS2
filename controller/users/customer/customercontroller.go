@@ -2,38 +2,178 @@ package customer
 
 import (
 	"OKVS2/config"
+	"OKVS2/domain/items"
 	login2 "OKVS2/domain/login"
 	"OKVS2/domain/users"
 	"OKVS2/io/login"
-	customerIO "OKVS2/io/users/customer"
+	"OKVS2/io/makeUp"
+	"OKVS2/io/order"
+	"OKVS2/io/users_io/customer"
+	"fmt"
 	"github.com/go-chi/chi"
 	"html/template"
 	"net/http"
 )
 
+type CardeData struct {
+	Mesage string
+	Class  string
+}
+type MyUser struct {
+	User string
+}
 type Customerse users.Customer
 
 func Customer(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/home", CustomerMethod(app))
 	r.Get("/table", CustomerTableHandler(app))
-	r.Get("/register/{pasword}", RegisterCustomerTableHandler(app))
+	r.Get("/register/{pasword}", RegisterCustomerHandler(app))
+	r.Post("/myregistration", CustomerRegistration(app))
 	return r
 }
 
-func RegisterCustomerTableHandler(app *config.Env) http.HandlerFunc {
+func CustomerRegistration(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+		email := r.PostFormValue("email")
+		password1 := r.PostFormValue("password1")
+		password2 := r.PostFormValue("password2")
+		fmt.Println("new password1>>: ", password1+"new password1>>: ", password2+"  userEmail", email)
+		if password1 != password2 {
+			fmt.Println("new password1>>: ", password1+"new password1>>: ", password2)
+			logindetails, err := login.GetUserWithEmail(email)
+			customerdetails, _ := customer.GetCustomer(logindetails.Email)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+				homeHanler(app)
+			}
+			type PageData struct {
+				Entities login2.Login
+				Customer users.Customer
+				Class    string
+				Message  string
+			}
+			data := PageData{logindetails, customerdetails, "danger", "please check if your password are the same"}
+			files := []string{
+				app.Path + "customerUser/passwordUpdate.html",
+			}
+			ts, err := template.ParseFiles(files...)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+				return
+			}
+			err = ts.Execute(w, data)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+			}
+		} else {
+			logindetails, err := login.GetUserWithEmail(email)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+				//homeHanler(app)
+			}
+			newLoging := login2.Login{logindetails.Email, password1, logindetails.UserTupe}
+			result, _ := login.UpdateLogin(newLoging)
+			fmt.Println("user login new details>>: ", result)
+
+			http.Redirect(w, r, "/", 301)
+			return
+		}
+	}
+}
+
+func RegisterCustomerHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		pasword := chi.URLParam(r, "pasword")
+		fmt.Println("generated pasword>>: ", pasword)
 		logindetails, err := login.GetUserEmail(pasword)
+		fmt.Println("user login details>>: ", logindetails)
+		customerdetails, _ := customer.GetCustomer(logindetails.Email)
+		fmt.Println("user login customerdetails>>: ", customerdetails)
 		if err != nil {
-
+			homeHanler(app)
 		}
 		type PageData struct {
 			Entities login2.Login
+			Customer users.Customer
+			Class    string
+			Message  string
 		}
-		data := PageData{logindetails}
+		data := PageData{logindetails, customerdetails, "", ""}
 		files := []string{
-			app.Path + "customertable.html",
+			app.Path + "customerUser/passwordUpdate.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+
+	}
+}
+
+func homeHanler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		/**
+		we first collect all the items that should appear on the home page
+		if any thing hapens we send the tamplete home page
+		we need to find out the data from the session so that we can che if the user has a card
+		*/
+		var itemsdetals []items.ItemViewHtml
+
+		homePageElements, err := makeUp.GetAllItems()
+		//fmt.Println("User may not have logIn or may not have ordered yet ", homePageElements)
+		if err != nil && homePageElements == nil {
+			app.ErrorLog.Println(err.Error())
+			http.Redirect(w, r, "/home/homeError/homeError", 301)
+			return
+		}
+
+		//reading the session
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		var message string
+		var class string
+
+		fmt.Println("User email from the session>>: ", userEmail)
+		//Checking the card table if there something for this User we will send a message and set a trolley color to danger
+		cardDetails, err := order.GetCardWithCustId(userEmail)
+		fmt.Println("User card>>: ", cardDetails)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println("User may not have logIn or may not have ordered yet ")
+		}
+		var itemIdfromcard string
+		for _, valeu := range cardDetails {
+			itemIdfromcard = valeu.ItemId
+		}
+
+		if itemIdfromcard != "" {
+			//app.ErrorLog.Println(err.Error())
+			message = "You have something in your Card please click on the trolley icon to view your card"
+			class = "primary"
+		}
+		println("homePageElements:  ", homePageElements)
+
+		if homePageElements != nil {
+			for _, itemImageId := range homePageElements {
+				itemsdetals = append(itemsdetals, items.ItemViewHtml{itemImageId.ItemNumber, itemImageId.ProductName, itemImageId.Price, itemImageId.Description, readImage(itemImageId.Image)})
+			}
+		}
+		type PageData struct {
+			Entities []items.ItemViewHtml
+			Entity   CardeData
+			MyUser
+		}
+		data1 := CardeData{message, class}
+		data := PageData{itemsdetals, data1, MyUser{userEmail}}
+		files := []string{
+			app.Path + "errorPage/error.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -46,17 +186,20 @@ func RegisterCustomerTableHandler(app *config.Env) http.HandlerFunc {
 		}
 	}
 }
-
+func readImage(byteImage []byte) string {
+	mybyte := string(byteImage)
+	return mybyte
+}
 func CustomerTableHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//var dust []customerIO.Customer
-		resp, err := customerIO.GetCustomers()
+		resp, err := customer.GetCustomers()
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			return
 		}
 		type PageData struct {
-			Entities []customerIO.Customer
+			Entities []users.Customer
 		}
 
 		data := PageData{resp}

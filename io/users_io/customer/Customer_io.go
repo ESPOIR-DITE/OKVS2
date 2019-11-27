@@ -10,8 +10,8 @@ const customerURL = api.BASE_URL + "/customer"
 
 type Customer users.Customer
 
-func GetCustomers() ([]Customer, error) {
-	entities := []Customer{}
+func GetCustomers() ([]users.Customer, error) {
+	entities := []users.Customer{}
 	resp, _ := api.Rest().Get(customerURL + "/reads")
 
 	if resp.IsError() {
@@ -23,8 +23,8 @@ func GetCustomers() ([]Customer, error) {
 	}
 	return entities, nil
 }
-func GetCustomer(id string) (Customer, error) {
-	entity := Customer{}
+func GetCustomer(id string) (users.Customer, error) {
+	entity := users.Customer{}
 
 	reso, _ := api.Rest().Get(customerURL + "/read?id=" + id)
 

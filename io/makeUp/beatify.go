@@ -32,3 +32,15 @@ func GetOneItemDetails(id string) (items.ViewProduct, error) {
 	}
 	return entity, nil
 }
+func ViewAllItems() ([]items.ViewProduct, error) {
+	entities := []items.ViewProduct{}
+	resp, _ := api.Rest().Get(itemviewURL + "/readAll")
+	if resp.IsError() {
+		return entities, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entities)
+	if err != nil {
+		return entities, errors.New(resp.Status())
+	}
+	return entities, nil
+}

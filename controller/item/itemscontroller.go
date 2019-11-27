@@ -41,6 +41,8 @@ func Home(app *config.Env) http.Handler {
 	r.Get("/beate/add", BeauteAddHandler(app))
 	r.Get("/perique/add", PeriqueAddHandler(app))
 
+	r.Get("/viewProducts/table", ViewProductHandler(app))
+
 	/***TYPES*/
 	r.Get("/types", TypesHandler(app))
 	r.Get("/types/gender", TypesGenderHandler(app))
@@ -72,6 +74,35 @@ func Home(app *config.Env) http.Handler {
 	r.Post("/search/product", SearchProductHandler(app))
 
 	return r
+}
+
+func ViewProductHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		type PageData struct {
+			Entity []items.ViewProduct
+		}
+
+		products, err := makeUp.ViewAllItems()
+		//fmt.Println(products)
+		if err != nil {
+			fmt.Println("an error in ViewProductHandler in itemsController")
+			app.ErrorLog.Println(err.Error())
+		}
+		data := PageData{products}
+		files := []string{
+			app.Path + "items/ProductTable.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
 }
 
 func AddToCardHandler(app *config.Env) http.HandlerFunc {
