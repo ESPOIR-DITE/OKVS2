@@ -63,7 +63,7 @@
       <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light w-100">
           <!-- Brand and toggle get grouped for better mobile display -->
-          <a class="navbar-brand logo_h" href="index.html">
+          <a class="navbar-brand logo_h" href="/">
             <img src="../assets/img/logo.png" alt="" />
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -98,7 +98,22 @@
                       </li>
                     </ul>
                   </li>
-                  <li class="nav-item submenu dropdown">
+                  <li class="nav-item submenu dropdown ">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">User</a>
+                    <ul class="dropdown-menu">
+                      <li class="nav-item">
+                        <a class="nav-link" href="/user/register">Register</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/user/login">Login</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/user/management">Manager</a>
+                      </li>
+                    </ul>
+                  </li>
+                 <!-- <li class="nav-item submenu dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                       aria-expanded="false">Blog</a>
                     <ul class="dropdown-menu">
@@ -121,7 +136,7 @@
                         <a class="nav-link" href="elements.html">Elements</a>
                       </li>
                     </ul>
-                  </li>
+                  </li>-->
                   <li class="nav-item">
                     <a class="nav-link" href="contact.html">Contact</a>
                   </li>
@@ -143,21 +158,13 @@
                   </li>
                   {{end}}
 
-                  <li class="nav-item submenu dropdown ">
-                    <a href="#" class="nav-link dropdown-toggle icons"  data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">  <i class="ti-user" aria-hidden="true"></i> <label class="user" style=""></label></a>
-                    <ul class="dropdown-menu">
-                      <li class="nav-item">
-                        <a class="nav-link" href="/user/register">Register</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/user/login">Login</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/user/management">Manager</a>
-                      </li>
-                    </ul>
+                  {{if  .MyUser.User}}
+                  <li class="nav-item">
+                    <a href="#" class="icons">
+                      <i class="ti-user" aria-hidden="true"></i>
+                    </a>
                   </li>
+                  {{end}}
 
                   <li class="nav-item">
                     <a href="#" class="icons">
