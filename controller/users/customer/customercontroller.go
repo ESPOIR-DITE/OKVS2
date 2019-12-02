@@ -8,6 +8,7 @@ import (
 	"OKVS2/io/login"
 	"OKVS2/io/makeUp"
 	"OKVS2/io/order"
+	address2 "OKVS2/io/users_io/address"
 	"OKVS2/io/users_io/customer"
 	"fmt"
 	"github.com/go-chi/chi"
@@ -30,7 +31,47 @@ func Customer(app *config.Env) http.Handler {
 	r.Get("/table", CustomerTableHandler(app))
 	r.Get("/register/{pasword}", RegisterCustomerHandler(app))
 	r.Post("/myregistration", CustomerRegistration(app))
+	r.Post("/create/address", CreateAddressHandler(app))
 	return r
+}
+
+func CreateAddressHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		if userEmail == "" {
+			files := []string{
+				app.Path + "loginpage.html",
+			}
+			ts, err := template.ParseFiles(files...)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+				return
+			}
+			err = ts.Execute(w, nil)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+			}
+		}
+		r.ParseForm()
+		gender := r.PostFormValue("gender")
+		surname := r.PostFormValue("surname")
+		name := r.PostFormValue("name")
+		addressType := r.PostFormValue("addressType")
+		cellphone := r.PostFormValue("cellphone")
+		address := r.PostFormValue("address")
+
+		addressObj := users.Address{"00", address, cellphone}
+		customerAddress, err := address2.CreateAddress(addressObj)
+		if err != nil {
+			fmt.Println("error in creating address>>: ")
+			app.ErrorLog.Println(err.Error())
+		}
+		customerDetails := users.Customer{userEmail, name, surname, "active"}
+		if err != nil {
+			fmt.Println("error in creating address>>: ")
+			app.ErrorLog.Println(err.Error())
+		}
+	}
 }
 
 func CustomerRegistration(app *config.Env) http.HandlerFunc {
