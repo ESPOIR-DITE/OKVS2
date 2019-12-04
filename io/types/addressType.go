@@ -57,3 +57,16 @@ func DeleteAddressType(addressT string) (items.AddressType, error) {
 	}
 	return entity, nil
 }
+func ReadWithAddressType(typeName string) (items.AddressType, error) {
+	entity := items.AddressType{}
+	resp, _ := api.Rest().Get(addressTypeURL + "/readwithType?id=" + typeName)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	fmt.Println(" we are Deleting Color", entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}

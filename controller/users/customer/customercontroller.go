@@ -2,12 +2,15 @@ package customer
 
 import (
 	"OKVS2/config"
+	gender2 "OKVS2/domain/gender"
 	"OKVS2/domain/items"
 	login2 "OKVS2/domain/login"
 	"OKVS2/domain/users"
+	gender3 "OKVS2/io/gender"
 	"OKVS2/io/login"
 	"OKVS2/io/makeUp"
 	"OKVS2/io/order"
+	"OKVS2/io/types"
 	address2 "OKVS2/io/users_io/address"
 	"OKVS2/io/users_io/customer"
 	"fmt"
@@ -53,23 +56,41 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 			}
 		}
 		r.ParseForm()
-		gender := r.PostFormValue("gender")
+		genderData := r.PostFormValue("gender")
 		surname := r.PostFormValue("surname")
 		name := r.PostFormValue("name")
 		addressType := r.PostFormValue("addressType")
 		cellphone := r.PostFormValue("cellphone")
 		address := r.PostFormValue("address")
+		age := r.PostFormValue("age")
 
-		addressObj := users.Address{"00", address, cellphone}
-		customerAddress, err := address2.CreateAddress(addressObj)
-		if err != nil {
-			fmt.Println("error in creating address>>: ")
-			app.ErrorLog.Println(err.Error())
-		}
-		customerDetails := users.Customer{userEmail, name, surname, "active"}
-		if err != nil {
-			fmt.Println("error in creating address>>: ")
-			app.ErrorLog.Println(err.Error())
+		if genderData != "" || age != "" {
+			readgender, _ := gender3.ResdWithGender(genderData)
+			customerGenderObj := gender2.CustomerGender{userEmail, readgender.GenderId, age}
+			customerGender, err := customer.CreateCustomerGender(customerGenderObj)
+			if err != nil {
+				fmt.Println("error in creating customerGender>>: ", customerGender)
+				app.ErrorLog.Println(err.Error())
+			}
+
+			if addressType != "" || address != "" || cellphone != "" {
+				addressobj, _ := types.ReadWithAddressType(addressType)
+
+				addressObj := users.AddressHelper{"00", userEmail, address, addressobj.AddressTypeId, cellphone}
+				customerAddress, err := address2.CreateAddress(addressObj)
+				if err != nil {
+					fmt.Println("error in creating address>>: ")
+					app.ErrorLog.Println(err.Error())
+				}
+				if name != "" || surname != "" {
+					customerDetails := users.Customer{userEmail, name, surname, "active"}
+					newcustomerDetails, err := customer.UpdateCustomer(customerDetails)
+					if err != nil {
+						fmt.Println("error in creating address>>: ")
+						app.ErrorLog.Println(err.Error())
+					}
+				}
+			}
 		}
 	}
 }
