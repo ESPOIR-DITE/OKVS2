@@ -106,7 +106,7 @@
                         <a class="nav-link" href="/user/register">Register</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="/user/login">Login</a>
+                        <a class="nav-link" {{if not .MyUser.User}}href="/user/login" {{else}} href="/customer/profile"{{end}}>{{if not .MyUser.User}}Login {{else}} Profile{{end}}</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link" href="/user/management">Manager</a>

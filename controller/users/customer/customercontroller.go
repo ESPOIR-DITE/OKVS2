@@ -33,14 +33,70 @@ func Customer(app *config.Env) http.Handler {
 	r.Get("/home", CustomerMethod(app))
 	r.Get("/table", CustomerTableHandler(app))
 	r.Get("/register/{pasword}", RegisterCustomerHandler(app))
+	r.Get("/profile", CustomerProfileHandler(app))
+	r.Get("/profile/edite", CustomerEditeProfileHandler(app))
 	r.Post("/myregistration", CustomerRegistration(app))
 	r.Post("/create/address", CreateAddressHandler(app))
+
 	return r
 }
 
-func CreateAddressHandler(app *config.Env) http.HandlerFunc {
+func CustomerEditeProfileHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		files := []string{
+			app.Path + "loginpage.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, nil)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func CustomerProfileHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		customerDetail, err := customer.GetCustomer(userEmail)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			fmt.Println("error in reading customerDetaild>>: ")
+			http.Redirect(w, r, "/", 301)
+			return
+		}
+		var reportor = "update successeful"
+		var Class = "success"
+		var checker = true
+
+		customerGender, err := customer.GetCustomerGender(userEmail)
+		if err != nil {
+			fmt.Println("error in reading customerGender>>: ")
+			app.ErrorLog.Println(err.Error())
+		}
+		gender, err := gender3.GetGender(customerGender.GenderId)
+		if err != nil {
+			fmt.Println("error in reading Gender>>: ")
+			app.ErrorLog.Println(err.Error())
+		}
+		customerAddress, err := address2.GetAddress(userEmail)
+		if err != nil {
+			fmt.Println("error in reading customerAddress>>: ")
+			app.ErrorLog.Println(err.Error())
+		}
+
+		type PageDate struct {
+			Reportor        string
+			Class           string
+			Checker         bool
+			Customer        users.Customer
+			CustomerGender  gender2.Gender
+			CustomerAddress users.Address
+		}
+		date := PageDate{reportor, Class, checker, customerDetail, gender, customerAddress}
 		if userEmail == "" {
 			files := []string{
 				app.Path + "loginpage.html",
@@ -50,11 +106,39 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 				app.ErrorLog.Println(err.Error())
 				return
 			}
-			err = ts.Execute(w, nil)
+			err = ts.Execute(w, date)
 			if err != nil {
 				app.ErrorLog.Println(err.Error())
 			}
 		}
+		files := []string{
+			app.Path + "/customerUser/profile.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, date)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
+
+func CreateAddressHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		_, err := customer.GetCustomer(userEmail)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			http.Redirect(w, r, "/", 301)
+			return
+		}
+		var reportor = "update successeful"
+		var Class = "success"
+		var checker = false
+
 		r.ParseForm()
 		genderData := r.PostFormValue("gender")
 		surname := r.PostFormValue("surname")
@@ -71,26 +155,88 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 			if err != nil {
 				fmt.Println("error in creating customerGender>>: ", customerGender)
 				app.ErrorLog.Println(err.Error())
+				reportor = "An error has occured"
+				Class = "danger"
+				checker = false
 			}
-
 			if addressType != "" || address != "" || cellphone != "" {
 				addressobj, _ := types.ReadWithAddressType(addressType)
-
 				addressObj := users.AddressHelper{"00", userEmail, address, addressobj.AddressTypeId, cellphone}
-				customerAddress, err := address2.CreateAddress(addressObj)
+				_, err := address2.CreateAddress(addressObj)
 				if err != nil {
 					fmt.Println("error in creating address>>: ")
 					app.ErrorLog.Println(err.Error())
+					reportor = "An error has occured"
+					Class = "danger"
+					checker = false
 				}
 				if name != "" || surname != "" {
 					customerDetails := users.Customer{userEmail, name, surname, "active"}
-					newcustomerDetails, err := customer.UpdateCustomer(customerDetails)
+					_, err := customer.UpdateCustomer(customerDetails)
 					if err != nil {
-						fmt.Println("error in creating address>>: ")
+						fmt.Println("error in creating customerDetails>>: ")
 						app.ErrorLog.Println(err.Error())
+						reportor = "An error has occured"
+						Class = "danger"
+						checker = false
 					}
 				}
 			}
+		}
+		customerDetail, err := customer.GetCustomer(userEmail)
+		if err != nil {
+			fmt.Println("error in reading customerDetaild>>: ")
+			app.ErrorLog.Println(err.Error())
+		}
+		customerGender, err := customer.GetCustomerGender(userEmail)
+		if err != nil {
+			fmt.Println("error in reading customerGender>>: ")
+			app.ErrorLog.Println(err.Error())
+		}
+		gender, err := gender3.GetGender(customerGender.GenderId)
+		if err != nil {
+			fmt.Println("error in reading Gender>>: ")
+			app.ErrorLog.Println(err.Error())
+		}
+		customerAddress, err := address2.GetAddress(userEmail)
+		if err != nil {
+			fmt.Println("error in reading customerAddress>>: ")
+			app.ErrorLog.Println(err.Error())
+		}
+		type PageDate struct {
+			Reportor        string
+			Class           string
+			Checker         bool
+			Customer        users.Customer
+			CustomerGender  gender2.Gender
+			CustomerAddress users.Address
+		}
+		date := PageDate{reportor, Class, checker, customerDetail, gender, customerAddress}
+		if userEmail == "" {
+			files := []string{
+				app.Path + "loginpage.html",
+			}
+			ts, err := template.ParseFiles(files...)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+				return
+			}
+			err = ts.Execute(w, nil)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+			}
+		}
+		files := []string{
+			app.Path + "/customerUser/profile.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, date)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
 		}
 	}
 }
