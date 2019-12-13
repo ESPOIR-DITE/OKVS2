@@ -282,9 +282,12 @@
                 <label class=" control-label">Gender</label>
                 <div class="form-select " id="default-select">
                   <select name="gender">
-                    <option value="1">Home</option>
-                    <option value="1">Dhaka</option>
-                    <option value="1">Dilli</option>
+                    <option selected disabled value="">select one Address type</option>
+                    {{with .GenderType}}
+                      {{range .}}
+                        <option value="{{.GenderId}}">{{.GenderName}}</option>
+                      {{end}}
+                    {{end}}
                   </select>
                 </div>
               </div>
@@ -293,12 +296,15 @@
               <div class="input-group">
                 <label class=" control-label">Address Type</label>
                 <div class="form-select " id="default-select">
+
                   <select name="addressType">
-                    <option value="1">Home</option>
-                    <option value="1">Dhaka</option>
-                    <option value="1">Dilli</option>
-                    <option value="1">Newyork</option>
-                    <option value="1">Islamabad</option>
+                    <option selected disabled value="">select one Address type</option>
+                    {{with .AddressTypes}}
+                      {{range .}}
+                        <option value="{{.AddressTypeId}}">{{.AddressType}}</option>
+                      {{end}}
+                    {{end}}
+
                   </select>
                 </div>
               </div>
@@ -313,20 +319,30 @@
             <div class="col-12">
               <label class=" control-label">Address <p>ex: 3 Rosemead str. Buttonwood, California</p> </label>
               <div class="form-group">
-                <input class="form-control  "  name="address" type="address"   placeholder="house number,str,sub, sity">
+                <input class="form-control  "  name="address" type="address" value="{{if .CustomerAddress.Id}}{{.CustomerAddress.Email}} {{end}}"  placeholder="house number,str,sub, sity">
               </div>
             </div>
               <div class="col-12 ">
                 <label class=" control-label">phone number</label>
                 <div class="form-group ">
-                  <input class="form-control " name="cellphone"  type="cellphone" placeholder="Enter your phone number">
+                  <input class="form-control " name="cellphone" value="{{if .CustomerAddress.PhoneNumber}}{{.CustomerAddress.PhoneNumber}} {{end}}" type="cellphone" placeholder="Enter your phone number">
                 </div>
               </div>
-            <div class="col-12 ">
-              <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
-                <input class="form-control" type="text" readonly />
-                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+            <div class='col-sm-12'>
+              <div class="form-group">
+                <label class=" control-label">Date of birth</label>
+                <div class='input-group date' id='datetime'>
+                  <input type='text'value="{{if .Gender.Age}}{{.Gender.Age}} {{end}}" name="deteOfBirth" class="form-control" />
+                  <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
               </div>
+              <script type="text/javascript">
+                $(function () {
+                  $('#datetime').datetimepicker();
+                });
+              </script>
             </div>
             <div class="form-group mt-lg-3 text-center">
               <button type="submit" class="main_btn">Submit</button>
@@ -470,13 +486,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <script src="../../assets/js/gmaps.min.js"></script>
     <script src="../../assets/js/theme.js"></script>
   </body>
-<script>
-  $(function () {
-    $("#datepicker").datepicker({
-      autoclose: true,
-      todayHighlight: true
-    }).datepicker('update', new Date());
-  });
-</script>
+
 
 </html>

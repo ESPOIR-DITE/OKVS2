@@ -6,7 +6,7 @@ import (
 	"OKVS2/domain/items"
 	login2 "OKVS2/domain/login"
 	"OKVS2/domain/users"
-	gender3 "OKVS2/io/gender"
+	genderIO "OKVS2/io/gender"
 	"OKVS2/io/login"
 	"OKVS2/io/makeUp"
 	"OKVS2/io/order"
@@ -34,24 +34,97 @@ func Customer(app *config.Env) http.Handler {
 	r.Get("/table", CustomerTableHandler(app))
 	r.Get("/register/{pasword}", RegisterCustomerHandler(app))
 	r.Get("/profile", CustomerProfileHandler(app))
-	r.Get("/profile/edite", CustomerEditeProfileHandler(app))
+	r.Get("/profileEdite", CustomerEditeProfileHandler(app))
 	r.Post("/myregistration", CustomerRegistration(app))
 	r.Post("/create/address", CreateAddressHandler(app))
+	r.Post("/profile/update", UpdateProfileHandler(app))
 
 	return r
 }
 
+func UpdateProfileHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		r.ParseForm()
+		name := r.PostFormValue("name")
+		surName := r.PostFormValue("surname")
+		dateOfBirth := r.PostFormValue("deteOfBirth")
+		addressTypeId := r.PostFormValue("addressType")
+		address := r.PostFormValue("address")
+		genderId := r.PostFormValue("gender")
+		phoneNumber := r.PostFormValue("cellphone")
+
+		myCustomer := users.Customer{userEmail, name, surName, "active"}
+		_, err := customer.UpdateCustomer(myCustomer)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+		/**getting the id of the gender that**/
+		customerGender := gender2.CustomerGender{surName, genderId, dateOfBirth}
+		_, errr := customer.UpdateCustomerGender(customerGender)
+		if errr != nil {
+			app.ErrorLog.Println(errr.Error())
+		}
+		/**getting the customer address**/
+		customerAddress := users.Address{"", userEmail, address, addressTypeId, phoneNumber}
+		_, errrr := address2.UpdateAddress(customerAddress)
+		if errrr != nil {
+			app.ErrorLog.Println(errrr.Error())
+		}
+
+		http.Redirect(w, r, "/customer/profile", 301)
+
+	}
+}
+
 func CustomerEditeProfileHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
 		files := []string{
-			app.Path + "loginpage.html",
+			app.Path + "/customerUser/profileEdite.html",
 		}
+		mycustomer, err := customer.GetCustomer(userEmail)
+		if err != nil {
+			fmt.Println("in mycustomer")
+			app.ErrorLog.Println(err.Error())
+		}
+
+		customerGender, err := customer.GetCustomerGender(userEmail)
+		if err != nil {
+			fmt.Println("in customerGender")
+			app.ErrorLog.Println(err.Error())
+		}
+		customerAddress, err := address2.GetAddress(userEmail)
+		if err != nil {
+			fmt.Println("in customerAddress")
+			app.ErrorLog.Println(err.Error())
+		}
+
+		genderType, err := types.GetGenders()
+		if err != nil {
+			fmt.Println("in genderType")
+			app.ErrorLog.Println(err.Error())
+		}
+		addressTypes, err := types.GetAddressTypes()
+		if err != nil {
+			fmt.Print("in addressTypes")
+			app.ErrorLog.Println(err.Error())
+		}
+
+		type PageData struct {
+			AddressTypes    []types.AddressType
+			GenderType      []gender2.Gender
+			Customer        users.Customer
+			CustomerAddress users.Address
+			Gender          gender2.CustomerGender
+		}
+		data := PageData{addressTypes, genderType, mycustomer, customerAddress, customerGender}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			return
 		}
-		err = ts.Execute(w, nil)
+		err = ts.Execute(w, data)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 		}
@@ -62,11 +135,11 @@ func CustomerProfileHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userEmail := app.Session.GetString(r.Context(), "userEmail")
 		customerDetail, err := customer.GetCustomer(userEmail)
+		fmt.Println(" in reading customerDetaild>>: customerDetail")
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			fmt.Println("error in reading customerDetaild>>: ")
-			http.Redirect(w, r, "/", 301)
-			return
+
 		}
 		var reportor = "update successeful"
 		var Class = "success"
@@ -77,7 +150,7 @@ func CustomerProfileHandler(app *config.Env) http.HandlerFunc {
 			fmt.Println("error in reading customerGender>>: ")
 			app.ErrorLog.Println(err.Error())
 		}
-		gender, err := gender3.GetGender(customerGender.GenderId)
+		gender, err := genderIO.GetGender(customerGender.GenderId)
 		if err != nil {
 			fmt.Println("error in reading Gender>>: ")
 			app.ErrorLog.Println(err.Error())
@@ -149,7 +222,7 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 		age := r.PostFormValue("age")
 
 		if genderData != "" || age != "" {
-			readgender, _ := gender3.ResdWithGender(genderData)
+			readgender, _ := genderIO.ResdWithGender(genderData)
 			customerGenderObj := gender2.CustomerGender{userEmail, readgender.GenderId, age}
 			customerGender, err := customer.CreateCustomerGender(customerGenderObj)
 			if err != nil {
@@ -193,7 +266,7 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 			fmt.Println("error in reading customerGender>>: ")
 			app.ErrorLog.Println(err.Error())
 		}
-		gender, err := gender3.GetGender(customerGender.GenderId)
+		gender, err := genderIO.GetGender(customerGender.GenderId)
 		if err != nil {
 			fmt.Println("error in reading Gender>>: ")
 			app.ErrorLog.Println(err.Error())

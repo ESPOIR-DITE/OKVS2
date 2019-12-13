@@ -33,7 +33,7 @@ func GetAddress(id string) (users.Address, error) {
 	}
 	return entity, nil
 }
-func GetAddresss(id string) ([]users.Address, error) {
+func GetAddresss() ([]users.Address, error) {
 	entity := []users.Address{}
 	resp, _ := api.Rest().Get(addressURL + "/reads")
 	if resp.IsError() {

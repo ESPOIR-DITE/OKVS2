@@ -44,8 +44,8 @@ func DeleteGender(id string) (gender.Gender, error) {
 	}
 	return entity, nil
 }
-func GetGenders() (gender.Gender, error) {
-	entity := gender.Gender{}
+func GetGenders() ([]gender.Gender, error) {
+	entity := []gender.Gender{}
 	resp, _ := api.Rest().Get("/reads")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())

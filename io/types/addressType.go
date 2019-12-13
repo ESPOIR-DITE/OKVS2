@@ -12,7 +12,6 @@ const addressTypeURL = api.BASE_URL + "addressType"
 type AddressType items.AddressType
 
 func GetAddressTypes() ([]AddressType, error) {
-	//entity :=Color{}
 	entities := []AddressType{}
 	resp, _ := api.Rest().Get(addressTypeURL + "/reads")
 	if resp.IsError() {
@@ -34,7 +33,7 @@ func CreateAddressType(addressT string) (AddressType, error) {
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
 
-	fmt.Println(" we have create addressT", entity)
+	//fmt.Println(" we have create addressT", entity)
 	if err != nil {
 		fmt.Println(" erro when marshaling", err)
 		return entity, errors.New(resp.Status())
