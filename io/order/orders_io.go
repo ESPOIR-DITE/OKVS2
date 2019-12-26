@@ -10,7 +10,7 @@ const orderURL = api.BASE_URL + "/order"
 
 type Order orders.Orders
 
-func GetCustomers() ([]Order, error) {
+func GetOrders() ([]Order, error) {
 	entities := []Order{}
 	resp, _ := api.Rest().Get(orderURL + "/reads")
 
@@ -23,7 +23,7 @@ func GetCustomers() ([]Order, error) {
 	}
 	return entities, nil
 }
-func GetCustomer(id string) (Order, error) {
+func GetOrder(id string) (Order, error) {
 	entity := Order{}
 	reso, _ := api.Rest().Get(orderURL + "/read" + id)
 	if reso.IsError() {
@@ -31,7 +31,7 @@ func GetCustomer(id string) (Order, error) {
 	}
 	return entity, nil
 }
-func CreateCustomer(entit orders.Card) (bool, error) {
+func CreateOrder(entit orders.Card) (bool, error) {
 	var entity bool
 	resp, _ := api.Rest().SetBody(entit).Post(orderURL + "/create")
 	if resp.IsError() {
@@ -43,7 +43,7 @@ func CreateCustomer(entit orders.Card) (bool, error) {
 	}
 	return entity, nil
 }
-func DeleteAdmin(id string) (Order, error) {
+func DeleteOrder(id string) (Order, error) {
 	entity := Order{}
 	resp, _ := api.Rest().Get(orderURL + "/delete")
 	if resp.IsError() {
@@ -55,7 +55,7 @@ func DeleteAdmin(id string) (Order, error) {
 	}
 	return entity, nil
 }
-func UpdateCustomer(entit interface{}) (Order, error) {
+func UpdateOrder(entit interface{}) (Order, error) {
 	entity := Order{}
 	resp, _ := api.Rest().SetBody(entit).Post(orderURL + "/update")
 	if resp.IsError() {

@@ -5,8 +5,8 @@
   <!-- Required meta tags -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <link rel="icon" href="../assets/img/fevicon.png" type="image/png" />
-  <title>Eiser ecommerce</title>
+    <link rel="icon" href="../assets/img/feviconek.png" type="image/png"/>
+    <title>OKVS</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="../assets/css/bootstrap.css" />
   <link rel="stylesheet" href="../assets/vendors/linericon/style.css" />
@@ -106,7 +106,8 @@
                         <a class="nav-link" href="/user/register">Register</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" {{if not .MyUser.User}}href="/user/login" {{else}} href="/customer/profile"{{end}}>{{if not .MyUser.User}}Login {{else}} Profile{{end}}</a>
+                          <a class="nav-link" {{if .Manager}}href="/user/managementwelcom"
+                             {{end}}{{if not .MyUser.User}}href="/user/login" {{else}} href="/customer/profile"{{end}}>{{if not .MyUser.User}}Login {{else}} Profile{{end}}</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link" href="/user/management">Manager</a>
@@ -150,6 +151,7 @@
                       <i class="ti-search" aria-hidden="true"></i>
                     </a>
                   </li>
+
                   {{if .Entity.Class}}
                   <li class="nav-item">
                     <a href="/order/order/readCard" class="icons">
@@ -158,15 +160,16 @@
                   </li>
                   {{end}}
 
-                  {{if  .MyUser.User}}
-                  <li class="nav-item">
-                    <a href="#" class="icons">
+
+                    <li class="nav-item">
+                        <a {{if not .MyUser.User}}href="/user/login" {{else}} href="/customer/profile"{{end}}
+                           class="icons">
                       <i class="ti-user" aria-hidden="true"></i>
                     </a>
                   </li>
-                  {{end}}
 
-                  <li class="nav-item">
+
+                    <li class="nav-item">
                     <a href="#" class="icons">
                       <i class="ti-heart" aria-hidden="true"></i>
                     </a>

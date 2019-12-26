@@ -4,6 +4,7 @@ import (
 	"OKVS2/config"
 	"OKVS2/domain/items"
 	"OKVS2/domain/users"
+	"OKVS2/io/login"
 	"OKVS2/io/makeUp"
 	"OKVS2/io/order"
 	"OKVS2/io/users_io/customer"
@@ -82,16 +83,36 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 		//fmt.Println("User may not have logIn or may not have ordered yet ", homePageElements)
 		if err != nil && homePageElements == nil {
 			app.ErrorLog.Println(err.Error())
-			http.Redirect(w, r, "/home/homeError/homeError", 301)
-			return
+			http.Redirect(w, r, "/homeError/homeError", 301)
 		}
 
 		//reading the session
 		userEmail := app.Session.GetString(r.Context(), "userEmail")
+
 		var message string
 		var class string
+		var Manager bool
 
 		fmt.Println("User email from the session>>: ", userEmail)
+		user, err := customer.GetCustomer(userEmail)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		} else {
+			userLog, err := login.GetUserWithEmail(user.Email)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+			} else {
+				if userLog.UserTupe == "admin" {
+					Manager = true
+					http.Redirect(w, r, "/user/managementwelcom", 301)
+					return
+				} else {
+					Manager = false
+				}
+			}
+
+		}
+
 		//Checking the card table if there something for this User we will send a message and set a trolley color to danger
 		cardDetails, err := order.GetCardWithCustId(userEmail)
 		fmt.Println("User card>>: ", cardDetails)
@@ -120,9 +141,10 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 			Entities []items.ItemViewHtml
 			Entity   CardeData
 			MyUser
+			Manager bool
 		}
 		data1 := CardeData{message, class}
-		data := PageData{itemsdetals, data1, MyUser{userEmail}}
+		data := PageData{itemsdetals, data1, MyUser{userEmail}, Manager}
 		files := []string{
 			app.Path + "index.html",
 		}

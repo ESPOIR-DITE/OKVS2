@@ -59,8 +59,20 @@ func ManagementLoginHandler(app *config.Env) http.HandlerFunc {
 
 func ManagementHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		userLog, err := login2.GetUserWithEmail(userEmail)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			http.Redirect(w, r, "/user/management", 301)
+			return
+		} else if userLog.UserTupe != "admin" {
+			app.Session.Put(r.Context(), "loging", "Wrong Credentials!")
+			http.Redirect(w, r, "/user/management", 301)
+			return
+		}
+
 		files := []string{
-			app.Path + "welcommanagement.html",
+			app.Path + "/admin/welcommanagement.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -145,7 +157,12 @@ func CustomerLogHandler(app *config.Env) http.HandlerFunc {
 		app.Session.Put(r.Context(), "password", resp.Password)
 		app.InfoLog.Println("Login is successful. Result is ", resp)
 
-		http.Redirect(w, r, "/", 301)
+		if resp.UserTupe == "admin" {
+			http.Redirect(w, r, "/user/managementwelcom", 301)
+		} else {
+
+			http.Redirect(w, r, "/", 301)
+		}
 	}
 }
 

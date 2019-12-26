@@ -15,7 +15,7 @@ func CreateAddress(obj users.AddressHelper) (users.Address, error) {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
-	if err == nil {
+	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
 	return entity, nil
@@ -28,7 +28,7 @@ func GetAddress(id string) (users.Address, error) {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
-	if err == nil {
+	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
 	return entity, nil
@@ -40,7 +40,7 @@ func GetAddresss() ([]users.Address, error) {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
-	if err == nil {
+	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
 	return entity, nil
@@ -53,7 +53,7 @@ func DeleteAddress(id string) (users.Address, error) {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
-	if err == nil {
+	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
 	return entity, nil
@@ -65,7 +65,7 @@ func UpdateAddress(obj users.Address) (users.Address, error) {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
-	if err == nil {
+	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
 	return entity, nil

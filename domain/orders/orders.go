@@ -1,15 +1,25 @@
 package orders
 
+import "time"
+
 type Orders struct {
 	Id         string `json:"id"`
-	CustomerId string `json:"customer_id"`
+	CustomerId string `json:"customerId"`
 	Date       string `json:"date"`
 }
 
 type OrderLine struct {
-	Linecode    string `json:"linecode"`
-	ItemNumber  string `json:"item_number"`
-	OrderNumber string `json:"order_number"`
+	Linecode    string  `json:"linecode"`
+	ItemNumber  string  `json:"itemNumber"`
+	OrderNumber string  `json:"orderNumber"`
+	Quantity    float64 `json:"quantity"`
+}
+type OrderStatus struct {
+	Id         string    `json:"id"`
+	OrderId    string    `json:"orderId"`
+	Date       time.Time `json:"date"`
+	ModifiedBy string    `json:"modifiedBy"`
+	Stat       string    `json:"stat"`
 }
 type orderHelper struct {
 	ItemNumber string `json:"itemNumber"`

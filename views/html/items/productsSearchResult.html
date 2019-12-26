@@ -7,8 +7,9 @@
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <link rel="icon" href="../../assets/img/fevicon.png" type="image/png"/>
-    <title>Eiser ecommerce</title>
+    <base href="/">
+    <link rel="icon" href="../../assets/img/feviconek.png" type="image/png"/>
+    <title>OKVS</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../assets/css/bootstrap.css"/>
     <link rel="stylesheet" href="../../assets/vendors/linericon/style.css"/>
@@ -64,7 +65,7 @@
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-light w-100">
                 <!-- Brand and toggle get grouped for better mobile display -->
-                <a class="navbar-brand logo_h" href="index.html">
+                <a class="navbar-brand logo_h" href="/user/managementwelcom">
                     <img src="../../assets/img/logo.png" alt=""/>
                 </a>
                 <button
@@ -89,7 +90,7 @@
                         <div class="col-lg-7 pr-0">
                             <ul class="nav navbar-nav center_nav pull-right">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/">Home</a>
+                                    <a class="nav-link" href="/user/managementwelcom">Home</a>
                                 </li>
                                 <li class="nav-item submenu dropdown">
                                     <a
@@ -249,15 +250,13 @@
                         </div>
                         <div class="widgets_inner">
                             <ul class="list">
-                                <li>
-                                    <a href="#">Edit</a>
-                                </li>
-                                <li>
-                                    <a href="#">Remove</a>
-                                </li>
-                                <li>
-                                    <a href="#">Update</a>
-                                </li>
+                                {{with .Entities}}
+                                    {{range .}}
+                                        <li>
+                                            <a href="/item/search/product/typeId/{{.Id}}">{{.TypeName}}</a>
+                                        </li>
+                                    {{end}}
+                                {{end}}
 
                             </ul>
                         </div>
@@ -287,31 +286,7 @@
                     </button>
 
                 </form>-->
-                <form method="post" action="/item/search/product">
 
-                    <div class="mt-10">
-                        <select name="productId" class="selectpicker" data-title="Single Select"
-                                data-style="btn-default btn-outline"
-                                data-menu-style="dropdown-blue">
-                            <option  disabled selected>Select One Item Type</option>
-
-                            {{with .Products}}
-                                {{range .}}
-                                    <option value={{.Id}}>{{.Name}}</option>
-                                {{end}}
-                            {{else}} Emplty
-                            {{end}}
-
-                        </select>
-
-                    </div>
-                    <div class="mt-10">
-                    <button class="mt-10" id="customerDetais" type="submit" style="background-color: #FFFFFF; border: #FFFFFF">
-                        <a  class="genric-btn primary circle">Search</a>
-                    </button>
-                    </div>
-
-                </form>
 
                 <div class="l_w_title">
                     <h3>Item de Beate</h3>
@@ -352,13 +327,13 @@
                                     <div class="col-lg-4 col-md-6">
                                         <div class="single-product">
                                             <div class="product-img">
-                                                <img
-                                                        class="card-img" style="width:200px;height:200px;"
-                                                        id='base64image'
-                                                        src='data:image/jpeg;base64,{{.Pic}}'
-                                                        alt=""
-                                                />
-                                                <div class="p_icon">
+                                                <a href="">
+                                                    <img
+                                                            class="card-img" style="width:200px;height:200px;"
+                                                            id='base64image'
+                                                            src='data:image/jpeg;base64,{{.Pic}}'
+                                                            alt=""/> </a>
+                                                <!--div class="p_icon">
                                                     <a href="#">
                                                         <i class="ti-eye"></i>
                                                     </a>
@@ -368,9 +343,9 @@
                                                     <a href="#">
                                                         <i class="ti-shopping-cart"></i>
                                                     </a>
-                                                </div>
+                                                </div-->
                                             </div>
-                                            <div class="product-btm">
+                                            <!--div class="product-btm">
                                                 <a href="#" class="d-block">
                                                     <h4>Latest men’s sneaker</h4>
                                                 </a>
@@ -378,7 +353,7 @@
                                                     <span class="mr-4">$25.00</span>
                                                     <del>$35.00</del>
                                                 </div>
-                                            </div>
+                                            </div-->
                                         </div>
                                     </div>
 

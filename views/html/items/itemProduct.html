@@ -7,8 +7,8 @@
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <link rel="icon" href="../../assets/img/fevicon.png" type="image/png"/>
-    <title>Eiser ecommerce</title>
+    <link rel="icon" href="../../assets/img/feviconek.png" type="image/png"/>
+    <title>OKVS</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../assets/css/bootstrap.css"/>
     <link rel="stylesheet" href="../../assets/vendors/linericon/style.css"/>
@@ -64,7 +64,7 @@
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-light w-100">
                 <!-- Brand and toggle get grouped for better mobile display -->
-                <a class="navbar-brand logo_h" href="index.html">
+                <a class="navbar-brand logo_h" href="/user/managementwelcom">
                     <img src="../../assets/img/logo.png" alt=""/>
                 </a>
                 <button
@@ -89,7 +89,7 @@
                         <div class="col-lg-7 pr-0">
                             <ul class="nav navbar-nav center_nav pull-right">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/">Home</a>
+                                    <a class="nav-link" href="/user/managementwelcom">Home</a>
                                 </li>
                                 <li class="nav-item submenu dropdown">
                                     <a
@@ -230,6 +230,7 @@
                     <a href="/item/soulier/table">items view</a>
                     <a href="/item/soulier/add">items add</a>
                     <a href="/managers/table">managers</a>
+                    <a href="/item/types">Create Types</a>
                 </div>
             </div>
         </div>
@@ -249,10 +250,14 @@
                 </div>
                 <div class="widgets_inner">
                     <ul class="list">
-                        <li>
-                            <a href="/item/soulier/table">soulier</a>
-                        </li>
-                        <li>
+                        {{with .ProductTypes}}
+                            {{range .}}
+                                <li>
+                                    <a href="/item/search/product/typeId/{{.Id}}">{{.TypeName}}</a>
+                                </li>
+                            {{end}}
+                        {{end}}
+                        <!--li>
                             <a href="/item/chemise/table">chemise</a>
                         </li>
                         <li>
@@ -266,7 +271,7 @@
                         </li>
                         <li>
                             <a href="/item/viewProducts/table">View All</a>
-                        </li>
+                        </li-->
 
                     </ul>
                 </div>
@@ -296,29 +301,7 @@
     </button>
 
 </form>-->
-        <form method="post" action="/item/search/product">
 
-            <div class="mt-10">
-                <select name="productId" class="selectpicker" data-title="Single Select"
-                        data-style="btn-default btn-outline"
-                        data-menu-style="dropdown-blue">
-                    <option  disabled selected>Select One Item Type</option>
-
-                    {{with .Products}}
-                        {{range .}}
-                            <option value={{.Id}}>{{.Name}}</option>
-                        {{end}}
-                        {{else}} Emplty
-                    {{end}}
-
-                </select>
-
-            </div>
-            <button class="mt-10" id="customerDetais" type="submit" style="background-color: #FFFFFF; border: #FFFFFF">
-                <a  class="genric-btn primary circle">Search</a>
-            </button>
-
-        </form>
 
             <div class="l_w_title">
                 <h3>Item de Beate</h3>

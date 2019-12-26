@@ -7,8 +7,8 @@
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <link rel="icon" href="../../assets/img/fevicon.png" type="image/png"/>
-    <title>Eiser ecommerce</title>
+    <link rel="icon" href="../../assets/img/feviconek.png" type="image/png"/>
+    <title>OKVS</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../assets/css/bootstrap.css"/>
     <link rel="stylesheet" href="../../assets/vendors/linericon/style.css"/>
@@ -64,7 +64,7 @@
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-light w-100">
                 <!-- Brand and toggle get grouped for better mobile display -->
-                <a class="navbar-brand logo_h" href="index.html">
+                <a class="navbar-brand logo_h" href="/user/managementwelcom">
                     <img src="../../assets/img/logo.png" alt=""/>
                 </a>
                 <button
@@ -89,7 +89,7 @@
                         <div class="col-lg-7 pr-0">
                             <ul class="nav navbar-nav center_nav pull-right">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/">Home</a>
+                                    <a class="nav-link" href="/user/managementwelcom">Home</a>
                                 </li>
                                 <li class="nav-item submenu dropdown">
                                     <a
@@ -277,8 +277,8 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Gender Name</th>
+                    <th></th>
 
                 </tr>
                 </thead>
@@ -286,8 +286,10 @@
                 {{with .Entities }}
                 {{range .}}
                 <tr>
-                    <td> {{.GenderId}}</td>
                     <td> {{.GenderName}}</td>
+                    <td><a href="/item/delete/gender/{{.GenderId}}" type="button" class="genric-btn danger circle">Delete</a>
+                    </td>
+
                     {{end}}
                     {{end}}
                 </tr>
@@ -295,22 +297,6 @@
             </table>
         </div>
 
-        <div class="l_w_title">
-            <h3>Delete Gender</h3>
-        </div>
-
-        <form method="post"  action="/item/delete/gender"  >
-
-            <div class="mt-10">
-                <input type="text" name="GenderName"  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Gender Name'"
-                       required class="single-input">
-            </div>
-
-            <button class="mt-10" type="submit" style="background-color: #FFFFFF; border: #FFFFFF">
-                <a  class="genric-btn danger circle">Add new Type</a>
-            </button>
-
-        </form>
 
         <div class="l_w_title">
             <h3>Create Gender Types</h3>

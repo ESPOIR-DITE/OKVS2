@@ -21,17 +21,17 @@ func AdminTableHandler(app *config.Env) http.HandlerFunc {
 		type PageData struct {
 			name string
 		}
-		data := PageData{""}
+		//data := PageData{""}
 
 		files := []string{
-			app.Path + "admintable.html",
+			app.Path + "admin/admintable.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			return
 		}
-		err = ts.ExecuteTemplate(writer, "base", data)
+		err = ts.Execute(writer, nil)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 		}

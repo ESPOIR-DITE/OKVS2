@@ -14,7 +14,7 @@ func TestCreateCustomer(t *testing.T) {
 	fmt.Println("new customer is: ", resp)
 }
 func TestGetCustomer(t *testing.T) {
-	resp, err := GetCustomer("espoirdite@gmail.com")
+	resp, err := GetCustomer("espoirditekemena@gmail.com")
 	assert.Nil(t, err)
 	fmt.Println("new customer is: ", resp)
 }

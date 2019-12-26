@@ -33,9 +33,7 @@ func Home(app *config.Env) http.Handler {
 	r.Get("/pantalon/table", PantalonHanler(app))
 	r.Get("/beate/table", BeauteItemHanler(app))
 	r.Get("/perique/table", PeriqueItemHanler(app))
-
 	r.Get("/item/add", ItemAddHandler(app))
-
 	r.Get("/soulier/add", SoulierAddHandler(app))
 	r.Get("/chemise/add", ChemiseAddHandler(app))
 	r.Get("/beate/add", BeauteAddHandler(app))
@@ -51,6 +49,9 @@ func Home(app *config.Env) http.Handler {
 	r.Get("/types/product", TypesProductTypeHandler(app))
 	r.Get("/types/address", TypesAddressHandler(app))
 
+	r.Get("/search/product/typeId/{resetkey}", ReadProductTypeIdHandler(app))
+	r.Get("/search/product/type", ReadProductTypeHandler(app))
+	/**this link return the product details for a customer to view the product before adding to the card**/
 	r.Get("/searchProduct/{resetkey}", ReadProductHandler(app))
 	//r.Get("/addToCard/{resetkeys}", AddToCardHandler(app))
 
@@ -65,7 +66,7 @@ func Home(app *config.Env) http.Handler {
 	r.Post("/create/address", CreateAddressHandler(app))
 
 	r.Post("/delete/color", DeleteColorHandler(app))
-	r.Post("/delete/gender", DeleteGenderHandler(app))
+	r.Get("/delete/gender/{genderId}", DeleteGenderHandler(app))
 	r.Post("/delete/braind", DeleteBraindHandler(app))
 	r.Post("/delete/product", DeleteProductTypeHandler(app))
 	r.Post("/delete/address", DeleteAddressHandler(app))
@@ -75,21 +76,133 @@ func Home(app *config.Env) http.Handler {
 
 	return r
 }
+func ReadProductTypeIdHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		productType := chi.URLParam(r, "resetkey")
+
+		fmt.Println("productType>>>> ", productType)
+		app.Session.Put(r.Context(), "typeId", productType)
+
+		//productTypeObje, err := types.GetProductType(productType)
+
+		http.Redirect(w, r, "/item/search/product/type", 301)
+		return
+	}
+}
+
+func ReadProductTypeHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		//productType := chi.URLParam(r, "resetkey")
+		productType := app.Session.GetString(r.Context(), "typeId")
+		fmt.Println("productType>>>>", productType)
+
+		productTypeObje, err := types.GetProductType(productType)
+		if err != nil {
+			fmt.Println("an error in productTypeObje in ReadProductTypeHandler")
+			app.ErrorLog.Println(err.Error())
+		}
+		var myimages []string
+		var colorListe []items.Color
+		var sizeListe []items.Size
+
+		productTypes, _ := types.GetTypes()
+		//productId, _ := types.GetProductType(productTypeId)
+		product, _ := itemsIO.GetProduct(productTypeObje.ItemId)
+		fmt.Println("product product to search>>>", product)
+
+		accounting, _ := itemsIO.GetAccounting(product.Id)
+		fmt.Println("product accounting to search>>>", accounting)
+		itemColorList, _ := types.GetItemColorList(product.Id)
+		fmt.Println("product itemColorList to search>>>", itemColorList)
+
+		for _, itemColor := range itemColorList {
+			color, _ := types.GetColor(itemColor.ColorId)
+			colorListe = append(colorListe, color)
+		}
+		fmt.Println("product product to search>>>", colorListe)
+
+		itemBrand, _ := types.GetItemBraind(product.Id)
+		fmt.Println("product itemBrand to search>>>", itemBrand)
+
+		braind, _ := types.GetBrand(itemBrand.BraindId)
+		fmt.Println("product braind to search>>>", braind)
+
+		itemGender, _ := types.GetItemGender(product.Id)
+		fmt.Println("product itemGender to search>>>", itemGender)
+
+		genderdate, _ := types.GetGender(itemGender.GenderId)
+		fmt.Println("product genderdate to search>>>", genderdate)
+
+		itemImag, _ := image_oi.GetItemImage(product.Id)
+		fmt.Println("product itemImag to search>>>", itemImag)
+
+		productSizes, _ := types.GetPtoductSizeWithItemId(product.Id)
+		fmt.Println("product productSizes to search>>>", productSizes)
+		for _, itemSize := range productSizes {
+			size, _ := types.GetSize(itemSize.SizeId)
+			sizeListe = append(sizeListe, size)
+		}
+		fmt.Println("product sizeListe to search>>>", sizeListe)
+
+		if itemImag != nil {
+			for _, itemImageId := range itemImag {
+				myImage, _ := image_oi.GetImage(itemImageId.ImageId)
+				myimages = append(myimages, readImage(myImage.Image))
+			}
+		}
+		imageStringArry := GetImageItem(myimages)
+		fmt.Println("product myimages to search>>>", myimages)
+
+		fmt.Println(" In  product...", product)
+		fmt.Println(" In  accounting...", accounting)
+
+		products, _ := itemsIO.GetProducts()
+		type PageData struct {
+			Product  items.Products
+			Account  items.Accounting
+			Color    []items.Color
+			Braind   items.Braind
+			Gender   gender.Gender
+			MySize   []items.Size
+			Myimage  []ImageItems
+			Entities []items.Types
+			Products []items.Products
+		}
+		data := PageData{product, accounting, colorListe, braind, genderdate, sizeListe, imageStringArry, productTypes, products}
+		files := []string{
+			app.Path + "/items/productsSearchResult.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
+}
 
 func ViewProductHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		type PageData struct {
-			Entity []items.ViewProduct
+			Entity       []items.ViewProduct
+			ProductTypes []items.Types
 		}
-
 		products, err := makeUp.ViewAllItems()
 		//fmt.Println(products)
 		if err != nil {
 			fmt.Println("an error in ViewProductHandler in itemsController")
 			app.ErrorLog.Println(err.Error())
 		}
-		data := PageData{products}
+		productType, err := types.GetTypes()
+		if err != nil {
+			fmt.Println("an error in ViewProductHandler when reading productType")
+			app.ErrorLog.Println(err.Error())
+		}
+		data := PageData{products, productType}
 		files := []string{
 			app.Path + "items/ProductTable.html",
 		}
@@ -872,8 +985,7 @@ func DeleteGenderHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(" In  DeleteGenderHandler...")
 
-		r.ParseForm()
-		genderName := r.PostFormValue("GenderName")
+		genderName := chi.URLParam(r, "genderId")
 		fmt.Println(" what we are delete ", genderName)
 		type PageData struct {
 			Entities []gender.Gender
@@ -1285,13 +1397,19 @@ func SoulierItemHanler(app *config.Env) http.HandlerFunc {
 		//productTypes, err := types.GetTypes()
 		products, err := itemsIO.GetProducts()
 		if err != nil {
+			fmt.Println("error reading products")
 			app.ErrorLog.Println(err.Error())
-			return
+		}
+		productTypes, err := types.GetTypes()
+		if err != nil {
+			fmt.Println("error reading types")
+			app.ErrorLog.Println(err.Error())
 		}
 		type PageData struct {
-			Products []items.Products
+			Products     []items.Products
+			ProductTypes []items.Types
 		}
-		data := PageData{products}
+		data := PageData{products, productTypes}
 		files := []string{
 			app.Path + "items/itemProduct.html",
 		}

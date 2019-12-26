@@ -2,7 +2,10 @@ package order
 
 import (
 	"OKVS2/config"
+	"OKVS2/domain/items"
 	"OKVS2/domain/orders"
+	"OKVS2/domain/users"
+	items2 "OKVS2/io/items"
 	"OKVS2/io/order"
 	customer2 "OKVS2/io/users_io/customer"
 	"fmt"
@@ -15,7 +18,8 @@ import (
 func Order(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/addToCard/{resetkeys}", AddToCardHandler(app))
-	r.Get("/home", OrderTableHandler(app))
+	r.Get("/table", OrderTableHandler(app))
+	//r.Get("/home", OrderTableHandler(app))
 	r.Get("/order/readCard", ReadCardHandler(app))
 	r.Get("/order/myorder", MyOrderHandler(app))
 	r.Post("/card/item", AddItemToCardHandler(app))
@@ -155,7 +159,7 @@ func MyOrderHandler(app *config.Env) http.HandlerFunc {
 		}
 		fmt.Println("Result after remove ", card)
 		for _, cardResult := range card {
-			result, _ = order.CreateCustomer(cardResult)
+			result, _ = order.CreateOrder(cardResult)
 		}
 		if result != false {
 
@@ -376,22 +380,78 @@ func AddToCardHandler(app *config.Env) http.HandlerFunc {
 		}*/
 	}
 }
+
+type orderDateils struct {
+	Order      order.Order
+	Customer   users.Customer
+	OderStatus orders.OrderStatus
+	OrderLine  []orders.OrderLine
+	Items      []myItem
+}
+type myItem struct {
+	Item     items.Products
+	Price    float64
+	Quantity float64
+}
+
 func OrderTableHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		var myOrderLine []orders.OrderLine
+		var itemlist []myItem
+		var orderData []orderDateils
 		type PageData struct {
-			name string
+			OrderDetails []orderDateils
 		}
-		data := PageData{""}
+		orders, err := order.GetOrders()
+		if err != nil {
+			fmt.Println("error reading orsers in OrderTableHandler")
+			app.ErrorLog.Println(err.Error())
+		}
+		if orders != nil {
+			for _, myorder := range orders {
+				fmt.Println("my customer>>>", myorder)
+				customer, err := customer2.GetCustomer(myorder.CustomerId)
+				if err != nil {
+					fmt.Println("error reading orsers in OrderTableHandler")
+					app.ErrorLog.Println(err.Error())
+				}
+				myOrderLine, err = order.GetOrderLineWithOrderId(myorder.Id)
+				if err != nil {
+					fmt.Println("error reading orsers in OrderTableHandler")
+					app.ErrorLog.Println(err.Error())
+				} else {
+					for _, orderL := range myOrderLine {
+						product, err := items2.GetProduct(orderL.ItemNumber)
+						if err != nil {
+							fmt.Println("error reading items in OrderTableHandler")
+							app.ErrorLog.Println(err.Error())
+						}
+						account, err := items2.GetAccounting(product.Id)
+						if account.Price != 0 {
+							price := account.Price * orderL.Quantity
+							itemlist = append(itemlist, myItem{product, price, orderL.Quantity})
+						}
+					}
+				}
+				orderStatus, err := order.GetWithOrderId(myorder.Id)
+
+				orderData = append(orderData, orderDateils{myorder, customer, orderStatus, myOrderLine, itemlist})
+
+				fmt.Println("orderData>>>> ", orderData)
+			}
+		}
+
+		data := PageData{orderData}
 
 		files := []string{
-			app.Path + "ordertable.html",
+			app.Path + "/admin/ordertable.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			return
 		}
-		err = ts.ExecuteTemplate(w, "base", data)
+		err = ts.Execute(w, data)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 		}
