@@ -245,17 +245,13 @@
     <table class="table">
         <thead>
         <tr>
-            <th>Customer Name</th>
-            <th>Customer FirstName</th>
+            <th>Customer </th>
             <th>Email</th>
             <th>Order Date</th>
-            <th></th>
-            <th>Item</th>
-            <th>Quantity</th>
-            <th>Price</th>
             <th>Status</th>
             <th>Modifier</th>
-            <th>Date Mod</th>
+            <th>Date Modified</th>
+            <th>Action</th>
 
         </tr>
         </thead>
@@ -263,24 +259,56 @@
         {{with .OrderDetails }}
         {{range .}}
         <tr>
-            <td> {{.Customer.Name}}</td>
-            <td> {{.Customer.SurName}}</td>
-            <td> {{.Customer.Email}}</td>
+            <td> {{.Customer.Name}} {{.Customer.SurName}}</td>
+
+            <td><a class="nav-link" href="/order/read-customer/{{.Customer.Email}}">{{.Customer.Email}}</a> </td>
             <td> {{.Order.Date}}</td>
-            <td> {{with .Items }}
-                {{range .}}
-            <td> {{.Item.Name}}</td>
-            <td> {{.Quantity}}</td>
-            <td> {{.Price}}</td>
-            {{end}}
-            {{end}}
-            </td>
+
             <td> {{.OderStatus.Stat}}</td>
             <td> {{.OderStatus.ModifiedBy}}</td>
             <td> {{.OderStatus.Date}}</td>
-            {{end}}
-            {{end}}
+            <td>
+
+
+                    <ul class="">
+                        <li class="nav-item submenu dropdown">
+                            <a
+                                    href="#"
+                                    class="nav-link dropdown-toggle"
+                                    data-toggle="dropdown"
+                                    role="button"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                            >Select Action</a
+                            >
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="edit" title="Edit"
+                                       data-toggle="modal" data-target="#editModal" href=""
+                                       onclick="editForm({{.}})">Details</a>
+                                    <a class="nav-link" href="/order/read-Details/{{.Order.Id}}">Details</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/order/update-Status/{{.OderStatus.Id}}">Update</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/order/complete/{{.OderStatus.Id}}">Complete</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/order/read-Item-Details/{{.Order.Id}}">Check Items</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/order/read-customer/{{.Customer.Email}}">Customer</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+
+            </td>
+
         </tr>
+        {{end}}
+        {{end}}
         </tbody>
     </table>
 </div>

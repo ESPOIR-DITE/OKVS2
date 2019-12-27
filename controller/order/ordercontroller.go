@@ -403,21 +403,24 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 			OrderDetails []orderDateils
 		}
 		orders, err := order.GetOrders()
+		//fmt.Println("All the orders >>>",orders)
 		if err != nil {
 			fmt.Println("error reading orsers in OrderTableHandler")
 			app.ErrorLog.Println(err.Error())
 		}
 		if orders != nil {
 			for _, myorder := range orders {
-				fmt.Println("my customer>>>", myorder)
+				//fmt.Println("my customer>>>", myorder)
 				customer, err := customer2.GetCustomer(myorder.CustomerId)
 				if err != nil {
-					fmt.Println("error reading orsers in OrderTableHandler")
+					fmt.Println("error reading customer in OrderTableHandler")
+					fmt.Println("error reading this customer>>>", myorder.CustomerId)
+					fmt.Println("error reading customer>>>", customer)
 					app.ErrorLog.Println(err.Error())
 				}
 				myOrderLine, err = order.GetOrderLineWithOrderId(myorder.Id)
 				if err != nil {
-					fmt.Println("error reading orsers in OrderTableHandler")
+					fmt.Println("error reading myOrderLine in OrderTableHandler")
 					app.ErrorLog.Println(err.Error())
 				} else {
 					for _, orderL := range myOrderLine {
@@ -437,7 +440,9 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 
 				orderData = append(orderData, orderDateils{myorder, customer, orderStatus, myOrderLine, itemlist})
 
-				fmt.Println("orderData>>>> ", orderData)
+				fmt.Println("<<<<<<<<orderData>>>>>>>>>>>> ")
+				//fmt.Println("", orderData)
+				fmt.Println("<<<<<<<<orderData>>>>>>>>>>>> ")
 			}
 		}
 
