@@ -284,9 +284,9 @@
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
                                     <a class="edit" title="Edit"
-                                       data-toggle="modal" data-target="#editModal" href=""
-                                       onclick="editForm({{.}})">Details</a>
-                                    <a class="nav-link" href="/order/read-Details/{{.Order.Id}}">Details</a>
+                                       data-toggle="modal" data-target="#detailForm"
+                                       onclick="DetailForm({{.}})">Details</a>
+
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="/order/update-Status/{{.OderStatus.Id}}">Update</a>
@@ -405,6 +405,38 @@
     </div>
 </div>
 
+
+<!--================order details and Error message Area =================-->
+<div id="detailForm" class="modal modal-message fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-close"></i>
+                </button>
+                <!--h2>Thank you</h2>
+                <p>Your message is successfully sent...</p-->
+                <div class="container">
+                    <table class="table" id="myTable" >
+                        <thead>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>First Name</th>
+                        <th>status</th>
+                        </thead>
+                        <tbody>
+                                <tr >
+
+                                </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Modals error -->
 
 <div id="error" class="modal modal-message fade" role="dialog">
@@ -448,5 +480,41 @@
 <script src="../../assets/js/gmaps.min.js"></script>
 <script src="../../assets/js/theme.js"></script>
 </body>
+<script>
+    var table = document.getElementById("myTable");
+    function DetailForm(app) {
+       // table.removeAttribute(tr)
+        var i=0;
+        var row ;
+
+        var cell1 ;
+        var cell2 ;
+        var cell3 ;
+        var cell4;
+        //table.deleteCell(i)
+        for(var i = table.rows.length - 1; i > 0; i--)
+        {
+            table.deleteRow(i);
+
+        }
+
+        for (i = 0; i < app.length; i++) {
+             row = table.insertRow(i+1);
+
+             cell1 = row.insertCell(0);
+             cell2 = row.insertCell(1);
+             cell3 = row.insertCell(2);
+             cell4 = row.insertCell(3);
+
+            cell1.innerHTML = app[i].Items.Item.name;
+            cell2.innerHTML = app[i].Items.Item.description;
+            cell3.innerHTML = app[i].Items.Quantity;
+            cell4.innerHTML = app[i].Items.Price;
+
+        }
+
+
+    }
+</script>
 
 </html>

@@ -430,7 +430,7 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 							app.ErrorLog.Println(err.Error())
 						}
 						account, err := items2.GetAccounting(product.Id)
-						if account.Price != 0 {
+						if err != nil {
 							price := account.Price * orderL.Quantity
 							itemlist = append(itemlist, myItem{product, price, orderL.Quantity})
 						}
@@ -438,8 +438,10 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 				}
 				orderStatus, err := order.GetWithOrderId(myorder.Id)
 
+				fmt.Println("<<<<<<<<orderData>>>>>>>>>>>> ", itemlist)
+				fmt.Println("<<<<<<<<orderData>>>>>>>>>>>> ", customer.Email)
 				orderData = append(orderData, orderDateils{myorder, customer, orderStatus, myOrderLine, itemlist})
-
+				itemlist = itemlist[:0]
 				fmt.Println("<<<<<<<<orderData>>>>>>>>>>>> ")
 				//fmt.Println("", orderData)
 				fmt.Println("<<<<<<<<orderData>>>>>>>>>>>> ")
