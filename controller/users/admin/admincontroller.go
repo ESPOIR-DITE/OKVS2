@@ -41,19 +41,20 @@ func AdminGetCustomerHandler(app *config.Env) http.HandlerFunc {
 
 		custAddress, err := users_io.GetAddress(customerId)
 		if err != nil {
+			fmt.Println("error reading customer address>>>>", custAddress)
 			app.ErrorLog.Println(err.Error())
-			return
 		}
 		customer, err := customer2.GetCustomer(customerId)
 		if err != nil {
+			fmt.Println("error reading customer>>>>", customer)
 			app.ErrorLog.Println(err.Error())
-			return
 		}
 		fmt.Println("customer data: ", customer)
 		fmt.Println("custAddress data: ", custAddress)
 		if custAddress.Address != "" || customer.Name != "" {
 			cust = customerData{customer.Name, customer.SurName, customer.Status, custAddress.Address, custAddress.PhoneNumber}
 		}
+		fmt.Println("customer>>>>", cust)
 		render.JSON(w, r, cust)
 	}
 

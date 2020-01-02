@@ -7,6 +7,7 @@ import (
 	"OKVS2/domain/users"
 	items2 "OKVS2/io/items"
 	"OKVS2/io/order"
+	admin2 "OKVS2/io/users_io/admin"
 	customer2 "OKVS2/io/users_io/customer"
 	"fmt"
 	"github.com/go-chi/chi"
@@ -28,7 +29,61 @@ func Order(app *config.Env) http.Handler {
 	r.Get("/track", OrderTrackingHandler(app))
 
 	r.Post("/mytracking", MyTrackingHandler(app))
+	r.Post("/update", UpdateOrderHandler(app))
 	return r
+}
+
+func UpdateOrderHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+
+		var notice string
+		var class string
+
+		if userEmail == "" {
+			notice = "Could not update because there is an error with your identities"
+			class = "danger"
+			app.ErrorLog.Println("User need to logIn")
+			http.Redirect(w, r, "/user/login", 301)
+			return
+		}
+		admin, err := admin2.GetAdmin(userEmail)
+		if err != nil {
+			notice = "Could not update because there is an error"
+			class = "danger"
+			app.ErrorLog.Println("User need to logIn as an Admin")
+			http.Redirect(w, r, "/user/login", 301)
+			return
+		}
+
+		if admin.Email == "" {
+			notice = "Could not update because there is an error you should login with admin details"
+			class = "danger"
+			app.ErrorLog.Println("User need to logIn as an Admin")
+			http.Redirect(w, r, "/user/login", 301)
+			return
+		}
+
+		r.ParseForm()
+
+		theOrderId := r.PostFormValue("theOrderId")
+		statId := r.PostFormValue("statId")
+		orderStatus := orders.OrderStatus{"", theOrderId, time.Now(), userEmail, statId}
+		newOrderStatus, err := order.CreateOrderStatus(orderStatus)
+		if err != nil {
+			notice = "Could not update because there is an error"
+			class = "danger"
+			fmt.Println("error creating newOrderStatus", newOrderStatus)
+			app.ErrorLog.Println(err.Error())
+		}
+		notice = "You have successfully updated order stat"
+		class = "success"
+
+		app.Session.Put(r.Context(), "notice", notice)
+		app.Session.Put(r.Context(), "class", class)
+		http.Redirect(w, r, "/order/table", 301)
+		return
+	}
 }
 
 func MyTrackingHandler(app *config.Env) http.HandlerFunc {
@@ -415,35 +470,88 @@ func getOrder(orderLine orders.OrderLine) myItem {
 
 type TheOrderStat struct {
 	OrderId    string
-	Date       time.Time
+	Date       string
 	ModifiedBy string
 	Stat       string
 }
 
 func OrderTableHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		notice := app.Session.GetString(r.Context(), "notice")
+		class := app.Session.GetString(r.Context(), "class")
+		fmt.Println(userEmail)
+
+		if userEmail == "" {
+			files := []string{
+				app.Path + "loginpage.html",
+			}
+			ts, err := template.ParseFiles(files...)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+				return
+			}
+			err = ts.Execute(w, nil)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+			}
+			//fmt.Println("error the userEmail is empty",userEmail)
+			//app.ErrorLog.Println("User need to logIn")
+			//http.Redirect(w, r, "/user/login", 301)
+		}
+		admin, err := admin2.GetAdmin(userEmail)
+		if err != nil {
+			files := []string{
+				app.Path + "loginpage.html",
+			}
+			ts, err := template.ParseFiles(files...)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+				return
+			}
+			err = ts.Execute(w, nil)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+			}
+			//fmt.Println("error the reading admin",admin)
+			//app.ErrorLog.Println("User need to logIn as an Admin")
+			//http.Redirect(w, r, "/user/login", 301)
+		}
+
+		if admin.Email == "" {
+			files := []string{
+				app.Path + "loginpage.html",
+			}
+			ts, err := template.ParseFiles(files...)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+				return
+			}
+			err = ts.Execute(w, nil)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+			}
+			//fmt.Println("error the reading admin.Email",admin.Email)
+			//app.ErrorLog.Println("User need to logIn as an Admin")
+			//http.Redirect(w, r, "/user/login", 301)
+		}
+
 		var theOrderLine []orders.OrderLine
 		var theCustomer users.Customer
 		var theorderDateils []orderDateils
-		var statList [] TheOrderStat
-
+		var statList []TheOrderStat
 		var Order order.Order
-		//var Customer   users.Customer
 		var OderStatus []orders.OrderStatus
-
-		//var theProduct []items.Products
-		//var theAccount items.Accounting
 		var theLocalItemList []myItem
 		statusList, err := order.GetStatues()
+
 		if err != nil {
 			fmt.Println("err reading statusList", statusList)
 			app.ErrorLog.Println(err.Error())
-			//return
 		}
 		ordersList, err := order.GetOrders()
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
-			//return
 		}
 
 		//looping through each order to get the following details: 1) order . 2)orderLine
@@ -475,7 +583,9 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 					fmt.Println("err reading stat", stat)
 					app.ErrorLog.Println(err.Error())
 				}
-				theStat := TheOrderStat{orderSt.OrderId, orderSt.Date, orderSt.ModifiedBy, stat.Stat}
+				thedate := getDate_YYYYMMDD(orderSt.Date.String())
+				fmt.Println("thedate>>>", thedate)
+				theStat := TheOrderStat{orderSt.OrderId, thedate, orderSt.ModifiedBy, stat.Stat}
 				statList = append(statList, theStat)
 			}
 
@@ -512,8 +622,10 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 		type PageData struct {
 			OrderDetails []orderDateils
 			StatusL      []orders.Status
+			Notice       string
+			Class        string
 		}
-		data := PageData{theorderDateils, statusList}
+		data := PageData{theorderDateils, statusList, notice, class}
 		files := []string{
 			app.Path + "/admin/ordertable.html",
 		}
@@ -527,4 +639,11 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 			app.ErrorLog.Println(err.Error())
 		}
 	}
+}
+func getDate_YYYYMMDD(dateString string) string {
+	//return strings.Split(dateString, " ")[0]
+	layout := "Mon Jan 02 2006 15:04:05 GMT-0700"
+	str := dateString
+	t, _ := time.Parse(layout, str)
+	return t.Format(layout)
 }

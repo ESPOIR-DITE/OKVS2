@@ -142,10 +142,9 @@ func CustomerLogHandler(app *config.Env) http.HandlerFunc {
 
 		//var data PageDate
 
-		logingDetails := login.LoginHelper{email, password}
-		customerDetails := login.Login{logingDetails.Email, logingDetails.Pasword, "customer"}
-		resp, err := login2.UserLogin(customerDetails)
-
+		//logingDetails := login.LoginHelper{email, password}
+		//customerDetails := login.Login{logingDetails.Email, logingDetails.Pasword, "customer"}
+		resp, err := login2.UniversalLogin(email, password)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			app.Session.Put(r.Context(), "message", "Wrong Credentials!")

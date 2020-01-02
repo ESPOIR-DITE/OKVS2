@@ -8,7 +8,7 @@ import (
 )
 
 func TestCreateStatus(t *testing.T) {
-	obj := orders.Status{"", "Completed"}
+	obj := orders.Status{"", "Testing"}
 	result, err := CreateStatus(obj)
 	assert.Nil(t, err)
 	fmt.Println("result: ", result)

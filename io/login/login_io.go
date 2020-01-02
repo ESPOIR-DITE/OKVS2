@@ -65,3 +65,15 @@ func UpdateLogin(user login.Login) (login.Login, error) {
 	}
 	return entity, nil
 }
+func UniversalLogin(email, password string) (login.Login, error) {
+	entity := login.Login{}
+	resp, _ := api.Rest().Get(loginURL + "/univelogin?email=" + email + "&password=" + password)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}

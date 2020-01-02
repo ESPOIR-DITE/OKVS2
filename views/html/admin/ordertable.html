@@ -242,6 +242,17 @@
 
 <!-- ================ contact section end ================= -->
 <div class="container">
+
+    {{if .Notice}}
+    <div class="alert {{.Class}}">
+        <button type="button" aria-hidden="true" class="close" data-dismiss="alert">
+            <i class="fa fa-close"></i>
+        </button>
+        <a  href="#">
+            <span>{{.Notice}}</span></a>
+    </div>
+    {{end}}
+
     <table class="table">
         <thead>
         <tr>
@@ -288,13 +299,13 @@
                                     <li class="nav-item">
                                         <a class="edit nav-link" title="Edit" href=""
                                            data-toggle="modal" data-target="#orderStat"
-                                           onclick="OrderStatForm({{.OrderStat}},{{.Status}})">Update</a>
+                                           onclick="OrderStatForm({{.OrderStat}},{{.Order.Id}})">Update</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="/order/complete/">Complete</a>
+                                        <a class="nav-link" href="#">Complete</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="/order/read-Item-Details/">Check Items</a>
+                                        <a class="nav-link" href="#">Check Items</a>
                                     </li>
                                 </ul>
                             </li>
@@ -407,20 +418,26 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="row col-12">
-                    <p class="text-center">Order Stat</p>
+
+                    <div class="row col-12">
+                    <div class="justify-content-center">
+                    <h2 >Order Stat</h2>
+                    </div>
+
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="fa fa-close"></i>
                     </button>
-                    <!--h2>Thank you</h2>
 
-                    <p>Your message is successfully sent...</p-->
+                    </div>
+            </div>
+                <div class="row col-12">
                     <div class="container">
                         <table class="table" id="orderStatmyTable">
                             <thead>
                             <th>Status</th>
                             <th>Modifier</th>
                             <th>Date Modified</th>
+                            <th>Status</th>
                             </thead>
                             <tbody>
                             <tr>
@@ -428,13 +445,13 @@
                             </tr>
                             </tbody>
                         </table>
-                        <div class="row">
-                            <form method="post" action="" class="col-12 justify-content-center">
+
+                            <form method="post" action="/order/update" class="col-12 justify-content-center">
                                 <div class="form-group">
                                     <div class="row">
                                         <label class="col-10 text-left control-label">Change the stat</label>
                                         <div class="col-10 text-center">
-                                            <select name="itemType" class="selectpicker text-center"
+                                            <select name="statId" class="selectpicker text-center"
                                                     data-title="Single Select"
                                                     data-style="btn-default btn-outline"
                                                     data-menu-style="dropdown-blue">
@@ -446,6 +463,7 @@
                                                 {{end}}
                                             </select>
                                         </div>
+                                        <input class=""type="hidden" value="" id="theOrderId" name="theOrderId">
                                     </div>
                                 </div>
                                 <div class="col-10 justify-content-center">
@@ -455,10 +473,10 @@
                                     </button>
                                 </div>
                             </form>
-                        </div>
+
                     </div>
                 </div>
-            </div>
+
         </div>
     </div>
 </div>
@@ -469,13 +487,19 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="row">
-                    <p>Order Details</p>
+
+
+                    <div class="row col-12">
+                        <div class="justify-content-center">
+                            <h2 >Order Details</h2>
+                        </div>
+
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="fa fa-close"></i>
                     </button>
                     <!--h2>Thank you</h2-->
 
+                        <div class="row col-12">
                     <div class="container">
                         <table class="table" id="myTable">
                             <thead>
@@ -491,6 +515,7 @@
                             </tbody>
                         </table>
                     </div>
+                        </div>
                 </div>
             </div>
         </div>
@@ -628,6 +653,7 @@
     function GetCustomer(custome) {
         const url = "http://localhost:4009/manager/getcustomer/" + custome;
         $.get(url, function (data) {
+            alert(data.CustomerName)
             document.getElementById("customerForm");
             document.getElementById("CustomerName").value = data.CustomerName;
             document.getElementById("CustomerSurName").value = data.CustomerSurName;
@@ -637,7 +663,7 @@
         });
     }
 
-    function OrderStatForm(orderStat, statList) {
+    function OrderStatForm(orderStat, orderId) {
         // table.removeAttribute(tr)
         var i = 0;
         var row;
@@ -665,6 +691,7 @@
             cell3.innerHTML = orderStat[i].ModifiedBy;
             cell4.innerHTML = orderStat[i].Stat;
         }
+        document.getElementById("theOrderId").value = orderId;;
 
     }
 </script>

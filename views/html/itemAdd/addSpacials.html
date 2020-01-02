@@ -264,121 +264,65 @@
                             </div>
                             <div class="card-body ">
                                 <form action="/item/create/soulier" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <label class="col-sm-2 control-label">Item Name</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" name="ItemName" class="form-control">
 
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
                                     <fieldset>
                                         <div class="form-group">
                                             <div class="row">
-                                                <label class="col-sm-2 control-label">Item Description</label>
-                                                <div class="col-sm-10">
-                                                    <input name="decription" type="text" class="form-control">
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <label class="col-sm-2 control-label">Item Unit Price</label>
-                                                <div class="col-sm-5">
-                                                    <input name="price" type="text" class="form-control">
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <label class="col-sm-2 control-label">Item Quantity</label>
-                                                <div class="col-sm-5">
-                                                    <input name="quantity" type="text" class="form-control">
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <div class="row">
-
-                                                <label class="col-sm-2 control-label">Item Gender</label>
-                                                <div class="col-md-5">
-                                                    <select multiple data-title="Multiple Select" name="gender"
-                                                            class="selectpicker" data-style="btn-info btn-fill btn-block"
-                                                            data-menu-style="dropdown-blue">
-                                                        {{with .GenderData}}
-                                                        {{range .}}
-                                                        <option value={{.GenderId}}>{{.GenderName}}</option>
-                                                        {{end}}
-                                                        {{end}}
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <label class="col-sm-2 control-label">Item Size</label>
-                                                <div class="col-md-5">
-                                                    <select multiple data-title="Multiple Select" name="size"
-                                                            class="selectpicker" data-style="btn-info btn-fill btn-block"
-                                                            data-menu-style="dropdown-blue">
-                                                        {{with .SizeData}}
-                                                        {{range .}}
-                                                        <option value={{.Id}}>{{.SizeNumber}}</option>
-                                                        {{end}}
-                                                        {{end}}
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <label class="col-sm-2 control-label">Item color</label>
-                                                <div class="col-md-5">
-                                                    <select multiple data-title="Multiple Select" name="colors"
-                                                            class="selectpicker" data-style="btn-info btn-fill btn-block"
-                                                            data-menu-style="dropdown-blue">
-
-                                                        {{with .ColorData}}
-                                                        {{range .}}
-                                                        <option value={{.ColorId}}>{{.ColorName}}</option>
-                                                        {{end}}
-                                                        {{end}}
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <label class="col-sm-2 control-label">Item Type</label>
+                                                <label class="col-sm-2 control-label">Select Item</label>
                                                 <div class="col-md-5">
                                                     <select name="itemType" class="selectpicker" data-title="Single Select"
                                                             data-style="btn-default btn-outline"
                                                             data-menu-style="dropdown-blue">
                                                         <option  disabled selected>Select One Item Type</option>
                                                         {{with .ItemTypeData}}
-                                                        {{range .}}
-                                                        <option value={{.Id}}>{{.TypeName}}</option>
-                                                        {{end}}
+                                                            {{range .}}
+                                                                <option value={{.Id}}>{{.TypeName}}</option>
+                                                            {{end}}
                                                         {{end}}
                                                     </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label class="col-sm-2 control-label">Special Type</label>
+                                                <div class="col-md-5">
+                                                    <select name="itemType" class="selectpicker" data-title="Single Select"
+                                                            data-style="btn-default btn-outline"
+                                                            data-menu-style="dropdown-blue">
+                                                        <option  disabled selected>Select One Item Type</option>
+                                                        {{with .ItemTypeData}}
+                                                            {{range .}}
+                                                                <option value={{.Id}}>{{.TypeName}}</option>
+                                                            {{end}}
+                                                        {{end}}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label class="col-sm-2 control-label">Special Price</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" name="ItemName" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label class="col-sm-2 control-label">Item Description</label>
+                                                <div class="col-sm-10">
+                                                    <input name="decription" type="text" class="form-control">
                                                 </div>
                                             </div>
                                         </div>
@@ -386,19 +330,11 @@
                                     <fieldset>
                                         <div class="form-group">
                                             <div class="row">
-                                                <label class="col-sm-2 control-label">Item Braind</label>
-                                                <div class="col-md-5">
-                                                    <select name="braind" class="selectpicker" data-title="Single Select"
-                                                            data-style="btn-default btn-outline"
-                                                            data-menu-style="dropdown-blue">
-                                                        <option value="" disabled selected>Select One Item Braind</option>
-                                                        {{with .BraindData}}
-                                                        {{range .}}
-                                                        <option value={{.BraindId}}>{{.BraindName}}</option>
-                                                        {{end}}
-                                                        {{end}}
-                                                    </select>
+                                                <label class="col-sm-2 control-label">start and end date</label>
+                                                <div class="col-sm-5">
+                                                    <input name="price" type="text" class="form-control">
                                                 </div>
+
                                             </div>
                                         </div>
                                     </fieldset>
