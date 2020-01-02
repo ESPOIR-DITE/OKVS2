@@ -50,3 +50,8 @@ type OrderHelper struct {
 	Price     float64 `json:"price"`
 	OrderStat string  `json:"orderStat"`
 }
+
+type Status struct {
+	Id   string `json:"id"`
+	Stat string `json:"stat"`
+}

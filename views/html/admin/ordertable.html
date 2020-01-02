@@ -245,69 +245,65 @@
     <table class="table">
         <thead>
         <tr>
-            <th>Customer </th>
+            <th>Customer</th>
             <th>Email</th>
             <th>Order Date</th>
-            <th>Status</th>
-            <th>Modifier</th>
-            <th>Date Modified</th>
             <th>Action</th>
 
         </tr>
         </thead>
         <tbody>
         {{with .OrderDetails }}
-        {{range .}}
-        <tr>
-            <td> {{.Customer.Name}} {{.Customer.SurName}}</td>
+            {{range .}}
+                <tr>
+                    <td> {{.Customer.Name}} {{.Customer.SurName}}</td>
 
-            <td><a class="nav-link" href="/order/read-customer/{{.Customer.Email}}">{{.Customer.Email}}</a> </td>
-            <td> {{.Order.Date}}</td>
-
-            <td> {{.OderStatus.Stat}}</td>
-            <td> {{.OderStatus.ModifiedBy}}</td>
-            <td> {{.OderStatus.Date}}</td>
-            <td>
+                    <td><a class="edit nav-link" title="View Customer details" href=""
+                           data-toggle="modal" data-target="#customerForm"
+                           onclick="GetCustomer({{.Customer.Email}})">{{.Customer.Email}}</a></td>
+                    <td> {{.Order.Date}}</td>
 
 
-                    <ul class="">
-                        <li class="nav-item submenu dropdown">
-                            <a
-                                    href="#"
-                                    class="nav-link dropdown-toggle"
-                                    data-toggle="dropdown"
-                                    role="button"
-                                    aria-haspopup="true"
-                                    aria-expanded="false"
-                            >Select Action</a
-                            >
-                            <ul class="dropdown-menu">
-                                <li class="nav-item">
-                                    <a class="edit" title="Edit"
-                                       data-toggle="modal" data-target="#detailForm"
-                                       onclick="DetailForm({{.}})">Details</a>
+                    <td>
 
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/order/update-Status/{{.OderStatus.Id}}">Update</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/order/complete/{{.OderStatus.Id}}">Complete</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/order/read-Item-Details/{{.Order.Id}}">Check Items</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/order/read-customer/{{.Customer.Email}}">Customer</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
 
-            </td>
+                        <ul class="">
+                            <li class="nav-item submenu dropdown">
+                                <a
+                                        href="#"
+                                        class="nav-link dropdown-toggle"
+                                        data-toggle="dropdown"
+                                        role="button"
+                                        aria-haspopup="true"
+                                        aria-expanded="false"
+                                >Select Action</a
+                                >
+                                <ul class="dropdown-menu">
+                                    <li class="nav-item">
+                                        <a class="edit nav-link" title="Edit" href=""
+                                           data-toggle="modal" data-target="#detailForm"
+                                           onclick="DetailForm({{.Items}})">Details</a>
 
-        </tr>
-        {{end}}
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="edit nav-link" title="Edit" href=""
+                                           data-toggle="modal" data-target="#orderStat"
+                                           onclick="OrderStatForm({{.OrderStat}},{{.Status}})">Update</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/order/complete/">Complete</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/order/read-Item-Details/">Check Items</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    </td>
+
+                </tr>
+            {{end}}
         {{end}}
         </tbody>
     </table>
@@ -406,32 +402,95 @@
 </div>
 
 
+<!--================order stat details and Error message Area =================-->
+<div id="orderStat" class="modal modal-message fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row col-12">
+                    <p class="text-center">Order Stat</p>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-close"></i>
+                    </button>
+                    <!--h2>Thank you</h2>
+
+                    <p>Your message is successfully sent...</p-->
+                    <div class="container">
+                        <table class="table" id="orderStatmyTable">
+                            <thead>
+                            <th>Status</th>
+                            <th>Modifier</th>
+                            <th>Date Modified</th>
+                            </thead>
+                            <tbody>
+                            <tr>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <form method="post" action="" class="col-12 justify-content-center">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-10 text-left control-label">Change the stat</label>
+                                        <div class="col-10 text-center">
+                                            <select name="itemType" class="selectpicker text-center"
+                                                    data-title="Single Select"
+                                                    data-style="btn-default btn-outline"
+                                                    data-menu-style="dropdown-blue">
+                                                <option disabled selected>Select One Stat</option>
+                                                {{with .StatusL}}
+                                                    {{range .}}
+                                                        <option value={{.Id}}>{{.Stat}}</option>
+                                                    {{end}}
+                                                {{end}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-10 justify-content-center">
+                                    <button class="mt-10" id="customerDetais" type="submit"
+                                            style="background-color: #FFFFFF; border: #FFFFFF">
+                                        <a class="genric-btn primary circle">Add Item</a>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!--================order details and Error message Area =================-->
 <div id="detailForm" class="modal modal-message fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="row">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i class="fa fa-close"></i>
-                </button>
-                <!--h2>Thank you</h2>
-                <p>Your message is successfully sent...</p-->
-                <div class="container">
-                    <table class="table" id="myTable" >
-                        <thead>
-                        <th>Email</th>
-                        <th>Name</th>
-                        <th>First Name</th>
-                        <th>status</th>
-                        </thead>
-                        <tbody>
-                                <tr >
+                    <p>Order Details</p>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-close"></i>
+                    </button>
+                    <!--h2>Thank you</h2-->
 
-                                </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    <div class="container">
+                        <table class="table" id="myTable">
+                            <thead>
+                            <th>Item Name</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            </thead>
+                            <tbody>
+                            <tr>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -446,8 +505,60 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="fa fa-close"></i>
                 </button>
-                <h2>Sorry !</h2>
-                <p> Something went wrong </p>
+                <!--add containts here-->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modals error -->
+
+<div id="customerForm" class="modal modal-message fade" role="dialog">
+    <div class="row">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p>Customer Details</p>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-close"></i>
+                    </button>
+
+                </div>
+
+                <form method="" class="col-12" action="">
+
+                    <label class=" control-label">Name</label>
+                    <div class="col-12">
+                        <input type="text" id="CustomerName" name="CustomerName" onfocus="this.placeholder = ''"
+                               onblur="this.placeholder = 'First Name'"
+                               required class="single-input">
+                    </div>
+                    <label class=" control-label">Surname</label>
+                    <div class="col-12">
+                        <input type="text" id="CustomerSurName" name="CustomerSurName" onfocus="this.placeholder = ''"
+                               onblur="this.placeholder = 'Last Name'"
+                               required class="single-input">
+                    </div>
+                    <label class=" control-label">Status</label>
+                    <div class="col-12">
+                        <input type="email" id="Statust" name="Statust" onfocus="this.placeholder = ''"
+                               onblur="this.placeholder = 'Email address'"
+                               required class="single-input">
+                    </div>
+                    <label class=" control-label">Address</label>
+                    <div class="col-12">
+                        <input type="email" id="Address" name="Address" onfocus="this.placeholder = ''"
+                               onblur="this.placeholder = 'Email address'"
+                               required class="single-input">
+                    </div>
+                    <label class=" control-label">Phone Number</label>
+                    <div class="col-12">
+                        <input type="email" name="PhoneNumber" id="PhoneNumber" onfocus="this.placeholder = ''"
+                               onblur="this.placeholder = 'Email address'"
+                               required class="single-input">
+                    </div>
+
+                </form>
+
             </div>
         </div>
     </div>
@@ -482,37 +593,78 @@
 </body>
 <script>
     var table = document.getElementById("myTable");
+    var orderStatTable = document.getElementById("orderStatmyTable");
+
     function DetailForm(app) {
-       // table.removeAttribute(tr)
-        var i=0;
-        var row ;
+        // table.removeAttribute(tr)
+        var i = 0;
+        var row;
 
-        var cell1 ;
-        var cell2 ;
-        var cell3 ;
+        var cell1;
+        var cell2;
+        var cell3;
         var cell4;
-        //table.deleteCell(i)
-        for(var i = table.rows.length - 1; i > 0; i--)
-        {
-            table.deleteRow(i);
 
+        for (var i = table.rows.length - 1; i > 0; i--) {
+            table.deleteRow(i);
         }
 
         for (i = 0; i < app.length; i++) {
-             row = table.insertRow(i+1);
+            row = table.insertRow(i + 1);
 
-             cell1 = row.insertCell(0);
-             cell2 = row.insertCell(1);
-             cell3 = row.insertCell(2);
-             cell4 = row.insertCell(3);
+            cell1 = row.insertCell(0);
+            cell2 = row.insertCell(1);
+            cell3 = row.insertCell(2);
+            cell4 = row.insertCell(3);
 
-            cell1.innerHTML = app[i].Items.Item.name;
-            cell2.innerHTML = app[i].Items.Item.description;
-            cell3.innerHTML = app[i].Items.Quantity;
-            cell4.innerHTML = app[i].Items.Price;
+            cell1.innerHTML = app[i].Item.name;
+            cell2.innerHTML = app[i].Item.description;
+            cell3.innerHTML = app[i].Quantity;
+            cell4.innerHTML = app[i].Price;
+        }
+    }
 
+
+    function GetCustomer(custome) {
+        const url = "http://localhost:4009/manager/getcustomer/" + custome;
+        $.get(url, function (data) {
+            document.getElementById("customerForm");
+            document.getElementById("CustomerName").value = data.CustomerName;
+            document.getElementById("CustomerSurName").value = data.CustomerSurName;
+            document.getElementById("Statust").value = data.Statust;
+            document.getElementById("Address").value = data.Address;
+            document.getElementById("PhoneNumber").value = data.PhoneNumber;
+        });
+    }
+
+    function OrderStatForm(orderStat, statList) {
+        // table.removeAttribute(tr)
+        var i = 0;
+        var row;
+
+        var cell1;
+        var cell2;
+        var cell3;
+        var cell4;
+
+        for (var i = orderStatTable.rows.length - 1; i > 0; i--) {
+            orderStatTable.deleteRow(i);
         }
 
+        for (i = 0; i < orderStat.length; i++) {
+            row = orderStatTable.insertRow(i + 1);
+
+            cell1 = row.insertCell(0);
+            cell2 = row.insertCell(1);
+            cell3 = row.insertCell(2);
+            cell4 = row.insertCell(3);
+
+
+            cell1.innerHTML = orderStat[i].OrderId;
+            cell2.innerHTML = orderStat[i].Date;
+            cell3.innerHTML = orderStat[i].ModifiedBy;
+            cell4.innerHTML = orderStat[i].Stat;
+        }
 
     }
 </script>

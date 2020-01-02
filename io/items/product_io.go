@@ -34,7 +34,7 @@ func GetProduct(id string) (items.Products, error) {
 	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
-	fmt.Println("In Product", entity)
+	//fmt.Println("In Product", entity)
 	return entity, nil
 }
 func CreateProduct(productName, desc string) (items.Products, error) {

@@ -2,7 +2,11 @@ package admin
 
 import (
 	"OKVS2/config"
+	users_io "OKVS2/io/users_io/address"
+	customer2 "OKVS2/io/users_io/customer"
+	"fmt"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 	"html/template"
 	"net/http"
 )
@@ -11,9 +15,48 @@ func Admin(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/home", AdminMethod(app))
 	r.Get("/table", AdminTableHandler(app))
+	r.Get("/getcustomer/{customerId}", AdminGetCustomerHandler(app))
 	//r.Get("/table", AdminTableHandler(app))
 
 	return r
+}
+
+type customerData struct {
+	CustomerName    string
+	CustomerSurName string
+	Statust         string
+	Address         string
+	PhoneNumber     string
+}
+
+func AdminGetCustomerHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var cust customerData
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		fmt.Println(userEmail)
+
+		customerId := chi.URLParam(r, "customerId")
+
+		fmt.Println("customer email: ", customerId)
+
+		custAddress, err := users_io.GetAddress(customerId)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		customer, err := customer2.GetCustomer(customerId)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		fmt.Println("customer data: ", customer)
+		fmt.Println("custAddress data: ", custAddress)
+		if custAddress.Address != "" || customer.Name != "" {
+			cust = customerData{customer.Name, customer.SurName, customer.Status, custAddress.Address, custAddress.PhoneNumber}
+		}
+		render.JSON(w, r, cust)
+	}
+
 }
 
 func AdminTableHandler(app *config.Env) http.HandlerFunc {

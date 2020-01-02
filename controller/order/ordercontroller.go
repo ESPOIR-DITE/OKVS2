@@ -13,6 +13,7 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func Order(app *config.Env) http.Handler {
@@ -382,74 +383,137 @@ func AddToCardHandler(app *config.Env) http.HandlerFunc {
 }
 
 type orderDateils struct {
-	Order      order.Order
-	Customer   users.Customer
-	OderStatus orders.OrderStatus
-	OrderLine  []orders.OrderLine
-	Items      []myItem
+	Order    order.Order
+	Customer users.Customer
+	//OderStatus []orders.OrderStatus
+	//OrderLine  []orders.OrderLine
+	Items     []myItem
+	Status    []orders.Status
+	OrderStat []TheOrderStat
 }
+
 type myItem struct {
 	Item     items.Products
 	Price    float64
 	Quantity float64
 }
 
+func getOrder(orderLine orders.OrderLine) myItem {
+	//var itemlist=make( []myItem,0)
+	entity := myItem{}
+	product, err := items2.GetProduct(orderLine.ItemNumber)
+	if err != nil {
+		fmt.Println("error reading items in getOrder")
+	}
+	account, err := items2.GetAccounting(product.Id)
+	if err == nil {
+		price := account.Price * orderLine.Quantity
+		return myItem{product, price, orderLine.Quantity}
+	}
+	return entity
+}
+
+type TheOrderStat struct {
+	OrderId    string
+	Date       time.Time
+	ModifiedBy string
+	Stat       string
+}
+
 func OrderTableHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var myOrderLine []orders.OrderLine
-		var itemlist []myItem
-		var orderData []orderDateils
+		var theOrderLine []orders.OrderLine
+		var theCustomer users.Customer
+		var theorderDateils []orderDateils
+		var statList [] TheOrderStat
+
+		var Order order.Order
+		//var Customer   users.Customer
+		var OderStatus []orders.OrderStatus
+
+		//var theProduct []items.Products
+		//var theAccount items.Accounting
+		var theLocalItemList []myItem
+		statusList, err := order.GetStatues()
+		if err != nil {
+			fmt.Println("err reading statusList", statusList)
+			app.ErrorLog.Println(err.Error())
+			//return
+		}
+		ordersList, err := order.GetOrders()
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			//return
+		}
+
+		//looping through each order to get the following details: 1) order . 2)orderLine
+		for _, myOrder := range ordersList {
+
+			//1) getting the Order details
+			Order = myOrder
+
+			//2)orderLine details with the orderNumber
+			theOrderLine, err = order.GetOrderLineWithOrderId(myOrder.Id)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+				return
+			}
+			theCustomer, err = customer2.GetCustomer(myOrder.CustomerId)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+				return
+			}
+
+			OderStatus, err = order.GetAllFor(myOrder.Id)
+			if err != nil {
+				fmt.Println("err reading OderStatus", OderStatus)
+				app.ErrorLog.Println(err.Error())
+			}
+			for _, orderSt := range OderStatus {
+				stat, err := order.GetStatus(orderSt.Stat)
+				if err != nil {
+					fmt.Println("err reading stat", stat)
+					app.ErrorLog.Println(err.Error())
+				}
+				theStat := TheOrderStat{orderSt.OrderId, orderSt.Date, orderSt.ModifiedBy, stat.Stat}
+				statList = append(statList, theStat)
+			}
+
+			for _, orderLing := range theOrderLine {
+
+				item, err := items2.GetProduct(orderLing.ItemNumber)
+				//fmt.Println(item,"<<<orderLing || index>>>>",index)
+				if err != nil {
+					app.ErrorLog.Println(err.Error())
+					return
+				}
+
+				account, err := items2.GetAccounting(item.Id)
+				if err == nil {
+					price := account.Price * orderLing.Quantity
+					itmeobj := myItem{item, price, orderLing.Quantity}
+					theLocalItemList = append(theLocalItemList, itmeobj)
+				}
+				//theProduct=append(theProduct,item)
+			}
+
+			theorderDateils = append(theorderDateils, orderDateils{Order, theCustomer, theLocalItemList, statusList, statList})
+			//fmt.Println("theCustomer >>>",theCustomer.Email,"\ntheProduct",theLocalItemList," \ntheAccount",theAccount," \n\n\n")
+			theLocalItemList = nil
+			theOrderLine = nil
+			statList = nil
+		}
+
+		//fmt.Println("theCustomer >>>",theorderDateils)
+		//for index,dataorder:=range theorderDateils{
+		//	fmt.Println("index: ",index,"    theCustomer >>>",dataorder.Customer,"      order: ",dataorder.Items,"    ",dataorder.OderStatus)
+		//}
+
 		type PageData struct {
 			OrderDetails []orderDateils
+			StatusL      []orders.Status
 		}
-		orders, err := order.GetOrders()
-		//fmt.Println("All the orders >>>",orders)
-		if err != nil {
-			fmt.Println("error reading orsers in OrderTableHandler")
-			app.ErrorLog.Println(err.Error())
-		}
-		if orders != nil {
-			for _, myorder := range orders {
-				//fmt.Println("my customer>>>", myorder)
-				customer, err := customer2.GetCustomer(myorder.CustomerId)
-				if err != nil {
-					fmt.Println("error reading customer in OrderTableHandler")
-					fmt.Println("error reading this customer>>>", myorder.CustomerId)
-					fmt.Println("error reading customer>>>", customer)
-					app.ErrorLog.Println(err.Error())
-				}
-				myOrderLine, err = order.GetOrderLineWithOrderId(myorder.Id)
-				if err != nil {
-					fmt.Println("error reading myOrderLine in OrderTableHandler")
-					app.ErrorLog.Println(err.Error())
-				} else {
-					for _, orderL := range myOrderLine {
-						product, err := items2.GetProduct(orderL.ItemNumber)
-						if err != nil {
-							fmt.Println("error reading items in OrderTableHandler")
-							app.ErrorLog.Println(err.Error())
-						}
-						account, err := items2.GetAccounting(product.Id)
-						if err != nil {
-							price := account.Price * orderL.Quantity
-							itemlist = append(itemlist, myItem{product, price, orderL.Quantity})
-						}
-					}
-				}
-				orderStatus, err := order.GetWithOrderId(myorder.Id)
-
-				fmt.Println("<<<<<<<<orderData>>>>>>>>>>>> ", itemlist)
-				fmt.Println("<<<<<<<<orderData>>>>>>>>>>>> ", customer.Email)
-				orderData = append(orderData, orderDateils{myorder, customer, orderStatus, myOrderLine, itemlist})
-				itemlist = itemlist[:0]
-				fmt.Println("<<<<<<<<orderData>>>>>>>>>>>> ")
-				//fmt.Println("", orderData)
-				fmt.Println("<<<<<<<<orderData>>>>>>>>>>>> ")
-			}
-		}
-
-		data := PageData{orderData}
-
+		data := PageData{theorderDateils, statusList}
 		files := []string{
 			app.Path + "/admin/ordertable.html",
 		}

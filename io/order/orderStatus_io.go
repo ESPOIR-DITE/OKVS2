@@ -33,6 +33,18 @@ func GetWithOrderId(orderIs string) (orders.OrderStatus, error) {
 	}
 	return entity, nil
 }
+func GetAllFor(orderIs string) ([]orders.OrderStatus, error) {
+	entity := []orders.OrderStatus{}
+	resp, _ := api.Rest().Get(orderStatusURL + "readFor?orderId=" + orderIs)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}
 func GetOrderStatus(orderStarusIs string) (orders.OrderStatus, error) {
 	entity := orders.OrderStatus{}
 	resp, _ := api.Rest().Get(orderStatusURL + "read?id=" + orderStarusIs)
