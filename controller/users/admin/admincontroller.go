@@ -11,6 +11,7 @@ import (
 	"github.com/go-chi/render"
 	"html/template"
 	"net/http"
+	"strconv"
 )
 
 func Admin(app *config.Env) http.Handler {
@@ -27,12 +28,15 @@ func Admin(app *config.Env) http.Handler {
 func AdminCreateSpecialsHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
+		title := r.PostFormValue("title")
 		itemId := r.PostFormValue("itemId")
-		specialType := r.PostFormValue("specialType")
-		price := r.PostFormValue("price")
+		specialTypeId := r.PostFormValue("specialType")
+		price, _ := strconv.ParseFloat(r.PostFormValue("price"), 64)
 		description := r.PostFormValue("description")
+		startDate := r.PostFormValue("startDate")
 		endDate := r.PostFormValue("endDate")
-		file := r.PostFormValue("file")
+		obj := items2.Specials{"", title, itemId, specialTypeId, startDate, endDate, description, price}
+		special, err := items.CreateSpecial(obj)
 
 	}
 }
