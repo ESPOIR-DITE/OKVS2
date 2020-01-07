@@ -94,8 +94,7 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div
                         class="collapse navbar-collapse offset w-100"
-                        id="navbarSupportedContent"
-                >
+                        id="navbarSupportedContent">
                     <div class="row w-100 mr-0">
                         <div class="col-lg-7 pr-0">
                             <ul class="nav navbar-nav center_nav pull-right">
@@ -260,23 +259,25 @@
 
                         <div class="card ">
                             <div class="card-header ">
-                                <h4 class="card-title {{.Result.Class}}">New Items<br>{{if.Result.Name}}{{.Result.Name}} {{end}}</h4>
+                                {{/*                                <h4 class="card-title {{.Result.Class}}">New Items<br>{{if.Result.Name}}{{.Result.Name}} {{end}}</h4>*/}}
                             </div>
                             <div class="card-body ">
-                                <form action="/item/create/soulier" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <form action="/manager/create/special" method="post" enctype="multipart/form-data"
+                                      class="form-horizontal">
 
                                     <fieldset>
                                         <div class="form-group">
                                             <div class="row">
                                                 <label class="col-sm-2 control-label">Select Item</label>
                                                 <div class="col-md-5">
-                                                    <select name="itemType" class="selectpicker" data-title="Single Select"
+                                                    <select name="itemId" class="selectpicker"
+                                                            data-title="Single Select"
                                                             data-style="btn-default btn-outline"
                                                             data-menu-style="dropdown-blue">
-                                                        <option  disabled selected>Select One Item Type</option>
-                                                        {{with .ItemTypeData}}
+                                                        <option disabled selected>Select One Item Type</option>
+                                                        {{with .Items}}
                                                             {{range .}}
-                                                                <option value={{.Id}}>{{.TypeName}}</option>
+                                                                <option value={{.Id}}>{{.Name}}</option>
                                                             {{end}}
                                                         {{end}}
                                                     </select>
@@ -290,13 +291,14 @@
                                             <div class="row">
                                                 <label class="col-sm-2 control-label">Special Type</label>
                                                 <div class="col-md-5">
-                                                    <select name="itemType" class="selectpicker" data-title="Single Select"
+                                                    <select name="specialType" class="selectpicker"
+                                                            data-title="Single Select"
                                                             data-style="btn-default btn-outline"
                                                             data-menu-style="dropdown-blue">
-                                                        <option  disabled selected>Select One Item Type</option>
-                                                        {{with .ItemTypeData}}
+                                                        <option disabled selected>Select One Item Type</option>
+                                                        {{with .SpecialType}}
                                                             {{range .}}
-                                                                <option value={{.Id}}>{{.TypeName}}</option>
+                                                                <option value={{.Id}}>{{.SpecialType}}</option>
                                                             {{end}}
                                                         {{end}}
                                                     </select>
@@ -311,7 +313,7 @@
                                             <div class="row">
                                                 <label class="col-sm-2 control-label">Special Price</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" name="ItemName" class="form-control">
+                                                    <input type="text" name="price" class="form-control">
                                                 </div>
                                             </div>
                                         </div>
@@ -332,31 +334,12 @@
                                             <div class="row">
                                                 <label class="col-sm-2 control-label">start and end date</label>
                                                 <div class="col-sm-5">
-                                                    <input name="price" type="text" class="form-control">
+                                                    <input name="endDate" type="text" class="form-control">
                                                 </div>
 
                                             </div>
                                         </div>
                                     </fieldset>
-
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <label class="col-sm-2 control-label">Pictures</label>
-                                                <div class="col-sm-3">
-                                                    <input type="file" name="file" class="form-control-file" id="exampleFormControlFile1">
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    <input type="file" name="file1" class="form-control-file" id="exampleFormControlFile1">
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    <input type="file" name="file2" class="form-control-file" id="exampleFormControlFile1">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-
-
 
                                     <div class="form-group mt-lg-3 " style="margin-left: 16%">
                                         <button type="submit" class="main_btn">Upload</button>
@@ -366,8 +349,6 @@
                             </div>
                         </div>
                     </div>
-
-
                 </row>
             </div>
         </div>

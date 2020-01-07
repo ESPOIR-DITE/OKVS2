@@ -2,6 +2,8 @@ package admin
 
 import (
 	"OKVS2/config"
+	items2 "OKVS2/domain/items"
+	"OKVS2/io/items"
 	users_io "OKVS2/io/users_io/address"
 	customer2 "OKVS2/io/users_io/customer"
 	"fmt"
@@ -15,10 +17,81 @@ func Admin(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/home", AdminMethod(app))
 	r.Get("/table", AdminTableHandler(app))
+	r.Get("/addSpecials", AdminAddSpecialsHandler(app))
 	r.Get("/getcustomer/{customerId}", AdminGetCustomerHandler(app))
-	//r.Get("/table", AdminTableHandler(app))
-
+	///create/special
+	r.Post("/create/special", AdminCreateSpecialsHandler(app))
 	return r
+}
+
+func AdminCreateSpecialsHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+		itemId := r.PostFormValue("itemId")
+		specialType := r.PostFormValue("specialType")
+		price := r.PostFormValue("price")
+		description := r.PostFormValue("description")
+		endDate := r.PostFormValue("endDate")
+		file := r.PostFormValue("file")
+
+	}
+}
+
+func AdminAddSpecialsHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+
+		fmt.Println(userEmail)
+
+		//if userEmail == "" {
+		//	fmt.Println("error the userEmail is empty",userEmail)
+		//	app.ErrorLog.Println("User need to logIn")
+		//	http.Redirect(w, r, "/user/login", 301)
+		//}
+		//admin, err := admin2.GetAdmin(userEmail)
+		//if err != nil {
+		//	fmt.Println("error the reading admin",admin)
+		//	app.ErrorLog.Println("User need to logIn as an Admin")
+		//	http.Redirect(w, r, "/user/login", 301)
+		//}
+		//if admin.Email == "" {
+		//
+		//	fmt.Println("error the reading admin.Email",admin.Email)
+		//	app.ErrorLog.Println("User need to logIn as an Admin")
+		//	http.Redirect(w, r, "/user/login", 301)
+		//}
+		specialType, err := items.GetSpecialTypes()
+		if err != nil {
+			fmt.Println("error reading customer specialType>>>>", specialType)
+			app.ErrorLog.Println(err.Error())
+		}
+		items, err := items.GetProducts()
+		if err != nil {
+			fmt.Println("error reading customer items>>>>", items)
+			app.ErrorLog.Println(err.Error())
+		}
+		type PageData struct {
+			SpecialType []items2.SpecialType
+			Items       []items2.Products
+		}
+		data := PageData{specialType, items}
+
+		files := []string{
+			//app.Path + "itemAdd/addSpecials.html",
+			//app.Path + "items/itemProduct.html",C:\Users\ESPOIR\GolandProjects\OKVS2\views\html\itemAdd\addSpacials.html
+			app.Path + "itemAdd/addSpacials.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+
+	}
 }
 
 type customerData struct {

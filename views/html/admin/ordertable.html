@@ -653,7 +653,7 @@
     function GetCustomer(custome) {
         const url = "http://localhost:4009/manager/getcustomer/" + custome;
         $.get(url, function (data) {
-            alert(data.CustomerName)
+            // alert(data.CustomerName)
             document.getElementById("customerForm");
             document.getElementById("CustomerName").value = data.CustomerName;
             document.getElementById("CustomerSurName").value = data.CustomerSurName;
