@@ -485,6 +485,7 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 		if userEmail == "" {
 			files := []string{
 				app.Path + "loginpage.html",
+
 			}
 			ts, err := template.ParseFiles(files...)
 			if err != nil {
@@ -628,6 +629,7 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 		data := PageData{theorderDateils, statusList, notice, class}
 		files := []string{
 			app.Path + "/admin/ordertable.html",
+			app.Path + "template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {

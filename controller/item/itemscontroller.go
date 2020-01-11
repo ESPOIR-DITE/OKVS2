@@ -1378,6 +1378,7 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 		data := PageData{gender, size, color, itemType, braind, res}
 		files := []string{
 			app.Path + "itemAdd/addItem.html",
+			app.Path + "template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -1412,6 +1413,7 @@ func SoulierItemHanler(app *config.Env) http.HandlerFunc {
 		data := PageData{products, productTypes}
 		files := []string{
 			app.Path + "items/itemProduct.html",
+			app.Path + "template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {

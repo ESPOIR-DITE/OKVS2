@@ -5,6 +5,7 @@ import (
 	items2 "OKVS2/domain/items"
 	"OKVS2/io/items"
 	users_io "OKVS2/io/users_io/address"
+	admin2 "OKVS2/io/users_io/admin"
 	customer2 "OKVS2/io/users_io/customer"
 	"fmt"
 	"github.com/go-chi/chi"
@@ -27,6 +28,12 @@ func Admin(app *config.Env) http.Handler {
 
 func AdminCreateSpecialsHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		if userEmail == "" {
+			fmt.Println("error the userEmail is empty", userEmail)
+			app.ErrorLog.Println("User need to logIn")
+			http.Redirect(w, r, "/user/login", 301)
+		}
 		r.ParseForm()
 		title := r.PostFormValue("title")
 		itemId := r.PostFormValue("itemId")
@@ -37,7 +44,10 @@ func AdminCreateSpecialsHandler(app *config.Env) http.HandlerFunc {
 		endDate := r.PostFormValue("endDate")
 		obj := items2.Specials{"", title, itemId, specialTypeId, startDate, endDate, description, price}
 		special, err := items.CreateSpecial(obj)
-
+		if err != nil {
+			fmt.Println("error creating special in AdminCreateSpecialsHandler>>>>", special)
+			app.ErrorLog.Println(err.Error())
+		}
 	}
 }
 
@@ -84,6 +94,7 @@ func AdminAddSpecialsHandler(app *config.Env) http.HandlerFunc {
 			//app.Path + "itemAdd/addSpecials.html",
 			//app.Path + "items/itemProduct.html",C:\Users\ESPOIR\GolandProjects\OKVS2\views\html\itemAdd\addSpacials.html
 			app.Path + "itemAdd/addSpacials.html",
+			app.Path + "template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -110,12 +121,15 @@ func AdminGetCustomerHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var cust customerData
 		userEmail := app.Session.GetString(r.Context(), "userEmail")
-		fmt.Println(userEmail)
+		admin, err := admin2.GetAdmin(userEmail)
+		if err != nil {
+			fmt.Println("error the reading admin", admin)
+			app.ErrorLog.Println("User need to logIn as an Admin")
+			http.Redirect(w, r, "/user/login", 301)
+		}
 
 		customerId := chi.URLParam(r, "customerId")
-
-		fmt.Println("customer email: ", customerId)
-
+		//fmt.Println("customer email: ", customerId)
 		custAddress, err := users_io.GetAddress(customerId)
 		if err != nil {
 			fmt.Println("error reading customer address>>>>", custAddress)
@@ -139,6 +153,13 @@ func AdminGetCustomerHandler(app *config.Env) http.HandlerFunc {
 
 func AdminTableHandler(app *config.Env) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
+		userEmail := app.Session.GetString(request.Context(), "userEmail")
+		admin, err := admin2.GetAdmin(userEmail)
+		if err != nil {
+			fmt.Println("error the reading admin", admin)
+			app.ErrorLog.Println("User need to logIn as an Admin")
+			http.Redirect(writer, request, "/user/login", 301)
+		}
 		type PageData struct {
 			name string
 		}
@@ -146,6 +167,7 @@ func AdminTableHandler(app *config.Env) http.HandlerFunc {
 
 		files := []string{
 			app.Path + "admin/admintable.html",
+			app.Path + "template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {

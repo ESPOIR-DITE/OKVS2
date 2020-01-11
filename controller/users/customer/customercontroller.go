@@ -498,6 +498,7 @@ func CustomerTableHandler(app *config.Env) http.HandlerFunc {
 		data := PageData{resp}
 		files := []string{
 			app.Path + "/admin/customertable.html",
+			app.Path + "template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
