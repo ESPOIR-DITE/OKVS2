@@ -2,6 +2,7 @@ package order
 
 import (
 	"OKVS2/config"
+	helperUser "OKVS2/controller/users"
 	"OKVS2/domain/items"
 	"OKVS2/domain/orders"
 	"OKVS2/domain/users"
@@ -17,6 +18,9 @@ import (
 	"time"
 )
 
+type MyUser struct {
+	User string
+}
 func Order(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/addToCard/{resetkeys}", AddToCardHandler(app))
@@ -343,12 +347,13 @@ func ReadCardHandler(app *config.Env) http.HandlerFunc {
 		userEmail := app.Session.GetString(r.Context(), "userEmail")
 		//fmt.Println("<<<< User email>>>", userEmail)
 		var check []orders.CheckOutHelper
-		/**if userEmail == "" {
+		if userEmail == "" {
 			app.ErrorLog.Println("User need to logIn")
 			http.Redirect(w, r, "/user/login", 307)
-			return
-		}*/
+			//return
+		}
 		cardList, _ := order.GetCardWithCustId(userEmail)
+		message, class, Manager, user := helperUser.GetUserDetails(userEmail)
 		//fmt.Println("product id to add to the card>>>", cardList, "<<<< User email>>>", userEmail)
 
 		for _, card := range cardList {
@@ -358,13 +363,20 @@ func ReadCardHandler(app *config.Env) http.HandlerFunc {
 
 		//fmt.Println("product id to add to the card>>>", cardList, "<<<< User email>>>", userEmail)
 		type PageData struct {
-			Entity []orders.CheckOutHelper
+			Entitys []orders.CheckOutHelper
+			Entity  CardeData
+			MyUser
+			Manager bool
+			User    users.Customer
 		}
 		//fmt.Println("check >>>", check)
-		data := PageData{check}
+		data1 := CardeData{message, class}
+		data := PageData{check, data1, MyUser{userEmail}, Manager, user}
 
 		files := []string{
 			app.Path + "items/item_cart.html",
+			app.Path + "customer-template/toolbarTemplate.html",
+			app.Path + "customer-template/navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {

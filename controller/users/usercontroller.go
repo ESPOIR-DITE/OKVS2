@@ -23,12 +23,22 @@ func User(app *config.Env) http.Handler {
 	r.Get("/login", userLoginHandler(app))
 	r.Get("/managementwelcom", ManagementHandler(app))
 	r.Get("/management", ManagementLoginHandler(app))
+	r.Get("/logout", LogoutHandler(app))
 
 	r.Post("/customer/create", CreateCustomerHandler(app))
 	r.Post("/customer/log", CustomerLogHandler(app))
 	r.Post("/manager/log", ManagerLogHandler(app))
 
 	return r
+}
+
+func LogoutHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		app.Session.Destroy(r.Context())
+
+		http.Redirect(w, r, "/", 301)
+		return
+	}
 }
 
 func ManagementLoginHandler(app *config.Env) http.HandlerFunc {

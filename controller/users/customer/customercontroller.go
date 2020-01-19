@@ -2,6 +2,7 @@ package customer
 
 import (
 	"OKVS2/config"
+	helperUser "OKVS2/controller/users"
 	gender2 "OKVS2/domain/gender"
 	"OKVS2/domain/items"
 	login2 "OKVS2/domain/login"
@@ -33,12 +34,51 @@ func Customer(app *config.Env) http.Handler {
 	r.Get("/table", CustomerTableHandler(app))
 	r.Get("/register/{pasword}", RegisterCustomerHandler(app))
 	r.Get("/profile", CustomerProfileHandler(app))
+	r.Get("/contact", ContactProfileHandler(app))
 	r.Get("/profileEdite", CustomerEditeProfileHandler(app))
 	r.Post("/myregistration", CustomerRegistration(app))
 	r.Post("/create/address", CreateAddressHandler(app))
 	r.Post("/profile/update", UpdateProfileHandler(app))
 
 	return r
+}
+
+func ContactProfileHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+
+		_, err := customer.GetCustomer(userEmail)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			http.Redirect(w, r, "/", 301)
+			return
+		}
+
+		message, class, Manager, user := helperUser.GetUserDetails(userEmail)
+
+		type PageData struct {
+			Entity CardeData
+			MyUser
+			Manager bool
+			User    users.Customer
+		}
+		data := PageData{CardeData{message, class}, MyUser{userEmail}, Manager, user}
+
+		files := []string{
+			app.Path + "customerUser/contactUser.html",
+			app.Path + "customer-template/toolbarTemplate.html",
+			app.Path + "customer-template/navbar.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+	}
 }
 
 func UpdateProfileHandler(app *config.Env) http.HandlerFunc {
@@ -87,8 +127,12 @@ func UpdateProfileHandler(app *config.Env) http.HandlerFunc {
 func CustomerEditeProfileHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		message, class, Manager, user := helperUser.GetUserDetails(userEmail)
+
 		files := []string{
 			app.Path + "/customerUser/profileEdite.html",
+			app.Path + "customer-template/toolbarTemplate.html",
+			app.Path + "customer-template/navbar.html",
 		}
 		mycustomer, err := customer.GetCustomer(userEmail)
 		if err != nil {
@@ -127,9 +171,13 @@ func CustomerEditeProfileHandler(app *config.Env) http.HandlerFunc {
 			Customer        users.Customer
 			CustomerAddress users.Address
 			Gender          gender2.CustomerGender
+			Entity          CardeData
+			MyUser
+			Manager bool
+			User    users.Customer
 		}
-		data := PageData{addressTypes, genderType, mycustomer, customerAddress, customerGender}
-		fmt.Print("in data>>>", data)
+		data := PageData{addressTypes, genderType, mycustomer, customerAddress, customerGender, CardeData{message, class}, MyUser{userEmail}, Manager, user}
+		//fmt.Print("in data>>>", data)
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
@@ -146,6 +194,7 @@ func CustomerProfileHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userEmail := app.Session.GetString(r.Context(), "userEmail")
 		customerDetail, err := customer.GetCustomer(userEmail)
+		message, class, Manager, user := helperUser.GetUserDetails(userEmail)
 		fmt.Println(" in reading customerDetaild>>: customerDetail")
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
@@ -180,8 +229,22 @@ func CustomerProfileHandler(app *config.Env) http.HandlerFunc {
 			Customer        users.Customer
 			CustomerGender  gender2.Gender
 			CustomerAddress users.Address
+			Entity          CardeData
+			MyUser
+			Manager bool
+			User    users.Customer
 		}
-		date := PageDate{reportor, Class, checker, customerDetail, gender, customerAddress}
+		date := PageDate{reportor,
+			Class,
+			checker,
+			customerDetail,
+			gender,
+			customerAddress,
+			CardeData{message, class},
+			MyUser{userEmail},
+			Manager,
+			user,
+		}
 		if userEmail == "" {
 			files := []string{
 				app.Path + "loginpage.html",
@@ -198,6 +261,8 @@ func CustomerProfileHandler(app *config.Env) http.HandlerFunc {
 		}
 		files := []string{
 			app.Path + "/customerUser/profile.html",
+			app.Path + "customer-template/toolbarTemplate.html",
+			app.Path + "customer-template/navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -223,6 +288,7 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 		var reportor = "update successeful"
 		var Class = "success"
 		var checker = false
+		message, class, Manager, user := helperUser.GetUserDetails(userEmail)
 
 		r.ParseForm()
 		genderData := r.PostFormValue("gender")
@@ -295,8 +361,22 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 			Customer        users.Customer
 			CustomerGender  gender2.Gender
 			CustomerAddress users.Address
+			Entity          CardeData
+			MyUser
+			Manager bool
+			User    users.Customer
 		}
-		date := PageDate{reportor, Class, checker, customerDetail, gender, customerAddress}
+		date := PageDate{reportor,
+			Class,
+			checker,
+			customerDetail,
+			gender,
+			customerAddress,
+			CardeData{message, class},
+			MyUser{userEmail},
+			Manager,
+			user,
+		}
 		if userEmail == "" {
 			files := []string{
 				app.Path + "loginpage.html",
@@ -313,6 +393,8 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 		}
 		files := []string{
 			app.Path + "/customerUser/profile.html",
+			app.Path + "customer-template/toolbarTemplate.html",
+			app.Path + "customer-template/navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
