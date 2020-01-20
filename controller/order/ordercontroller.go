@@ -495,58 +495,58 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println(userEmail)
 
 		if userEmail == "" {
-			files := []string{
-				app.Path + "loginpage.html",
-
-			}
-			ts, err := template.ParseFiles(files...)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-				return
-			}
-			err = ts.Execute(w, nil)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-			}
-			//fmt.Println("error the userEmail is empty",userEmail)
-			//app.ErrorLog.Println("User need to logIn")
-			//http.Redirect(w, r, "/user/login", 301)
+			//files := []string{
+			//	app.Path + "loginpage.html",
+			//
+			//}
+			//ts, err := template.ParseFiles(files...)
+			//if err != nil {
+			//	app.ErrorLog.Println(err.Error())
+			//	return
+			//}
+			//err = ts.Execute(w, nil)
+			//if err != nil {
+			//	app.ErrorLog.Println(err.Error())
+			//}
+			fmt.Println("error the userEmail is empty", userEmail)
+			app.ErrorLog.Println("User need to logIn")
+			http.Redirect(w, r, "/user/login", 301)
 		}
 		admin, err := admin2.GetAdmin(userEmail)
 		if err != nil {
-			files := []string{
-				app.Path + "loginpage.html",
-			}
-			ts, err := template.ParseFiles(files...)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-				return
-			}
-			err = ts.Execute(w, nil)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-			}
-			//fmt.Println("error the reading admin",admin)
-			//app.ErrorLog.Println("User need to logIn as an Admin")
-			//http.Redirect(w, r, "/user/login", 301)
+			//files := []string{
+			//	app.Path + "loginpage.html",
+			//}
+			//ts, err := template.ParseFiles(files...)
+			//if err != nil {
+			//	app.ErrorLog.Println(err.Error())
+			//	return
+			//}
+			//err = ts.Execute(w, nil)
+			//if err != nil {
+			//	app.ErrorLog.Println(err.Error())
+			//}
+			fmt.Println("error the reading admin", admin)
+			app.ErrorLog.Println("User need to logIn as an Admin")
+			http.Redirect(w, r, "/user/login", 301)
 		}
 
 		if admin.Email == "" {
-			files := []string{
-				app.Path + "loginpage.html",
-			}
-			ts, err := template.ParseFiles(files...)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-				return
-			}
-			err = ts.Execute(w, nil)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-			}
-			//fmt.Println("error the reading admin.Email",admin.Email)
-			//app.ErrorLog.Println("User need to logIn as an Admin")
-			//http.Redirect(w, r, "/user/login", 301)
+			//files := []string{
+			//	app.Path + "loginpage.html",
+			//}
+			//ts, err := template.ParseFiles(files...)
+			//if err != nil {
+			//	app.ErrorLog.Println(err.Error())
+			//	return
+			//}
+			//err = ts.Execute(w, nil)
+			//if err != nil {
+			//	app.ErrorLog.Println(err.Error())
+			//}
+			fmt.Println("error the reading admin.Email", admin.Email)
+			app.ErrorLog.Println("User need to logIn as an Admin")
+			http.Redirect(w, r, "/user/login", 301)
 		}
 
 		var theOrderLine []orders.OrderLine

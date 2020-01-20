@@ -21,7 +21,7 @@ func Admin(app *config.Env) http.Handler {
 	r.Get("/table", AdminTableHandler(app))
 	r.Get("/addSpecials", AdminAddSpecialsHandler(app))
 	r.Get("/getcustomer/{customerId}", AdminGetCustomerHandler(app))
-	///create/special
+
 	r.Post("/create/special", AdminCreateSpecialsHandler(app))
 	return r
 }
@@ -131,6 +131,7 @@ func AdminGetCustomerHandler(app *config.Env) http.HandlerFunc {
 		customerId := chi.URLParam(r, "customerId")
 		//fmt.Println("customer email: ", customerId)
 		custAddress, err := users_io.GetAddress(customerId)
+		//fmt.Println("customer email: ", custAddress)
 		if err != nil {
 			fmt.Println("error reading customer address>>>>", custAddress)
 			app.ErrorLog.Println(err.Error())
@@ -145,7 +146,7 @@ func AdminGetCustomerHandler(app *config.Env) http.HandlerFunc {
 		if custAddress.Address != "" || customer.Name != "" {
 			cust = customerData{customer.Name, customer.SurName, customer.Status, custAddress.Address, custAddress.PhoneNumber}
 		}
-		fmt.Println("customer>>>>", cust)
+		//fmt.Println("customer>>>>", cust)
 		render.JSON(w, r, cust)
 	}
 

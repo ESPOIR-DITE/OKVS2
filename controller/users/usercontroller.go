@@ -196,9 +196,7 @@ func CreateCustomerHandler(app *config.Env) http.HandlerFunc {
 func userLoginHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		message := app.Session.GetString(r.Context(), "message")
-
 		var data PageData
-
 		if message != "" {
 			data = PageData{"Login Error!", message}
 		} else {
@@ -206,6 +204,8 @@ func userLoginHandler(app *config.Env) http.HandlerFunc {
 		}
 		files := []string{
 			app.Path + "loginpage.html",
+			app.Path + "customer-template/toolbarTemplate.html",
+			app.Path + "customer-template/navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
