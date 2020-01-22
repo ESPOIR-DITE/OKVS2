@@ -30,7 +30,7 @@ func Home(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	//r.Use(middleware.LoginSession{SessionManager: app.Session}.RequireAuthenticatedUser)
 	r.Get("/", indexHanler(app))
-	r.Get("/soulier/table", SoulierItemHanler(app))
+	r.Get("/soulier/table", ItemViewHandler(app))
 	r.Get("/chemise/table", ChemiseItemHanler(app))
 	r.Get("/pantalon/table", PantalonHanler(app))
 	r.Get("/beate/table", BeauteItemHanler(app))
@@ -51,11 +51,13 @@ func Home(app *config.Env) http.Handler {
 	r.Get("/types/product", TypesProductTypeHandler(app))
 	r.Get("/types/address", TypesAddressHandler(app))
 
-	r.Get("/search/product/typeId/{resetkey}", ReadProductTypeIdHandler(app))
-	r.Get("/search/product/type", ReadProductTypeHandler(app))
+	//r.Get("/search/product/typeId/{resetkey}", ReadProductTypeIdHandler(app))
+	//r.Post("/search/product/type", ReadProductTypeHandler(app))
 	/**this link return the product details for a customer to view the product before adding to the card**/
 	r.Get("/searchProduct/{resetkey}", ReadProductHandler(app))
 	//r.Get("/addToCard/{resetkeys}", AddToCardHandler(app))
+
+	r.Get("/getproducts/{productTypeId}", GetProductsHandler(app))
 
 	/**r.Post("/create/soulier", CreateSoulierHandler(app))
 	r.Post("/create/soulier", CreateChemiseHandler(app))
@@ -78,6 +80,59 @@ func Home(app *config.Env) http.Handler {
 
 	return r
 }
+
+func GetProductsHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		productType := chi.URLParam(r, "productTypeId")
+
+		productTypes, err := types.GetTypes()
+		fmt.Println("productTypes>>>", productTypes)
+		if err != nil {
+			fmt.Println("error reading types")
+			app.ErrorLog.Println(err.Error())
+		}
+
+		var productList []items.Products
+		fmt.Println("productType>>>> ", productType)
+		app.Session.Put(r.Context(), "typeId", productType)
+
+		productsTypeObj, err := types.GetAllOfProductType(productType)
+		if err != nil {
+			fmt.Println("an error in productTypeObje in GetProductsHandler")
+			app.ErrorLog.Println(err.Error())
+		}
+		for _, value := range productsTypeObj {
+			products, err := itemsIO.GetProduct(value.ItemId)
+			if err != nil {
+				fmt.Println("an error in for loop in GetProductsHandler")
+				app.ErrorLog.Println(err.Error())
+			}
+			productList = append(productList, products)
+		}
+		fmt.Println("productsList>>>", productList)
+
+		type PageData struct {
+			Products     []items.Products
+			ProductTypes []items.Types
+		}
+		data := PageData{productList, productTypes}
+
+		files := []string{
+			app.Path + "items/itemProduct.html",
+			app.Path + "template/admin_navbar.html",
+		}
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+			return
+		}
+		err = ts.Execute(w, data)
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
+		//render.JSON(w, r, productList)
+	}
+}
 func ReadProductTypeIdHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		productType := chi.URLParam(r, "resetkey")
@@ -95,56 +150,64 @@ func ReadProductTypeIdHandler(app *config.Env) http.HandlerFunc {
 func ReadProductTypeHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//productType := chi.URLParam(r, "resetkey")
-		productType := app.Session.GetString(r.Context(), "typeId")
-		fmt.Println("productType>>>>", productType)
+		//productType := app.Session.GetString(r.Context(), "typeId")
+		//fmt.Println("productType>>>>", productType)
+		//
+		//productTypeObje, err := types.GetProductType(productType)
+		//if err != nil {
+		//	fmt.Println("an error in productTypeObje in ReadProductTypeHandler")
+		//	app.ErrorLog.Println(err.Error())
+		//}
 
-		productTypeObje, err := types.GetProductType(productType)
-		if err != nil {
-			fmt.Println("an error in productTypeObje in ReadProductTypeHandler")
-			app.ErrorLog.Println(err.Error())
-		}
+		r.ParseForm()
+		productTypeId := r.PostFormValue("productId")
+
 		var myimages []string
 		var colorListe []items.Color
 		var sizeListe []items.Size
 
+		var product items.Products
 		productTypes, _ := types.GetTypes()
 		//productId, _ := types.GetProductType(productTypeId)
-		product, _ := itemsIO.GetProduct(productTypeObje.ItemId)
-		fmt.Println("product product to search>>>", product)
+		if productTypeId != "" {
+			product, _ = itemsIO.GetProduct(productTypeId)
+
+		}
+		//fmt.Println("product product to search>>>", product)
 
 		accounting, _ := itemsIO.GetAccounting(product.Id)
-		fmt.Println("product accounting to search>>>", accounting)
+		//fmt.Println("product accounting to search>>>", accounting)
 		itemColorList, _ := types.GetItemColorList(product.Id)
-		fmt.Println("product itemColorList to search>>>", itemColorList)
+		//fmt.Println("product itemColorList to search>>>", itemColorList)
 
 		for _, itemColor := range itemColorList {
 			color, _ := types.GetColor(itemColor.ColorId)
 			colorListe = append(colorListe, color)
 		}
-		fmt.Println("product product to search>>>", colorListe)
+		//fmt.Println("product product to search>>>", colorListe)
 
 		itemBrand, _ := types.GetItemBraind(product.Id)
-		fmt.Println("product itemBrand to search>>>", itemBrand)
+		//fmt.Println("product itemBrand to search>>>", itemBrand)
 
 		braind, _ := types.GetBrand(itemBrand.BraindId)
-		fmt.Println("product braind to search>>>", braind)
+		//fmt.Println("product braind to search>>>", braind)
 
 		itemGender, _ := types.GetItemGender(product.Id)
-		fmt.Println("product itemGender to search>>>", itemGender)
+		//fmt.Println("product itemGender to search>>>", itemGender)
 
 		genderdate, _ := types.GetGender(itemGender.GenderId)
 		fmt.Println("product genderdate to search>>>", genderdate)
 
 		itemImag, _ := image_oi.GetItemImage(product.Id)
-		fmt.Println("product itemImag to search>>>", itemImag)
+		//fmt.Println("product itemImag to search>>>", itemImag)
 
 		productSizes, _ := types.GetPtoductSizeWithItemId(product.Id)
-		fmt.Println("product productSizes to search>>>", productSizes)
+		//fmt.Println("product productSizes to search>>>", productSizes)
 		for _, itemSize := range productSizes {
 			size, _ := types.GetSize(itemSize.SizeId)
 			sizeListe = append(sizeListe, size)
 		}
-		fmt.Println("product sizeListe to search>>>", sizeListe)
+		//fmt.Println("product sizeListe to search>>>", sizeListe)
 
 		if itemImag != nil {
 			for _, itemImageId := range itemImag {
@@ -153,10 +216,10 @@ func ReadProductTypeHandler(app *config.Env) http.HandlerFunc {
 			}
 		}
 		imageStringArry := GetImageItem(myimages)
-		fmt.Println("product myimages to search>>>", myimages)
+		//fmt.Println("product myimages to search>>>", myimages)
 
-		fmt.Println(" In  product...", product)
-		fmt.Println(" In  accounting...", accounting)
+		//fmt.Println(" In  product...", product)
+		//fmt.Println(" In  accounting...", accounting)
 
 		products, _ := itemsIO.GetProducts()
 		type PageData struct {
@@ -173,6 +236,7 @@ func ReadProductTypeHandler(app *config.Env) http.HandlerFunc {
 		data := PageData{product, accounting, colorListe, braind, genderdate, sizeListe, imageStringArry, productTypes, products}
 		files := []string{
 			app.Path + "/items/productsSearchResult.html",
+			app.Path + "/template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -207,6 +271,7 @@ func ViewProductHandler(app *config.Env) http.HandlerFunc {
 		data := PageData{products, productType}
 		files := []string{
 			app.Path + "items/ProductTable.html",
+			app.Path + "template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -312,7 +377,7 @@ func SearchProductHandler(app *config.Env) http.HandlerFunc {
 
 		r.ParseForm()
 		productTypeId := r.PostFormValue("productId")
-		fmt.Println("product to search>>>", productTypeId)
+		//fmt.Println("product to search>>>", productTypeId)
 		var myimages []string
 		var colorListe []items.Color
 		var sizeListe []items.Size
@@ -320,41 +385,41 @@ func SearchProductHandler(app *config.Env) http.HandlerFunc {
 		productType, _ := types.GetTypes()
 		//productId, _ := types.GetProductType(productTypeId)
 		product, _ := itemsIO.GetProduct(productTypeId)
-		fmt.Println("product product to search>>>", product)
+		//fmt.Println("product product to search>>>", product)
 
 		accounting, _ := itemsIO.GetAccounting(product.Id)
-		fmt.Println("product accounting to search>>>", accounting)
+		//fmt.Println("product accounting to search>>>", accounting)
 		itemColorList, _ := types.GetItemColorList(product.Id)
-		fmt.Println("product itemColorList to search>>>", itemColorList)
+		//fmt.Println("product itemColorList to search>>>", itemColorList)
 
 		for _, itemColor := range itemColorList {
 			color, _ := types.GetColor(itemColor.ColorId)
 			colorListe = append(colorListe, color)
 		}
-		fmt.Println("product product to search>>>", colorListe)
+		//fmt.Println("product product to search>>>", colorListe)
 
 		itemBrand, _ := types.GetItemBraind(product.Id)
-		fmt.Println("product itemBrand to search>>>", itemBrand)
+		//fmt.Println("product itemBrand to search>>>", itemBrand)
 
 		braind, _ := types.GetBrand(itemBrand.BraindId)
-		fmt.Println("product braind to search>>>", braind)
+		//fmt.Println("product braind to search>>>", braind)
 
 		itemGender, _ := types.GetItemGender(product.Id)
-		fmt.Println("product itemGender to search>>>", itemGender)
+		//fmt.Println("product itemGender to search>>>", itemGender)
 
 		genderdate, _ := types.GetGender(itemGender.GenderId)
-		fmt.Println("product genderdate to search>>>", genderdate)
+		//fmt.Println("product genderdate to search>>>", genderdate)
 
 		itemImag, _ := image_oi.GetItemImage(product.Id)
-		fmt.Println("product itemImag to search>>>", itemImag)
+		//fmt.Println("product itemImag to search>>>", itemImag)
 
 		productSizes, _ := types.GetPtoductSizeWithItemId(product.Id)
-		fmt.Println("product productSizes to search>>>", productSizes)
+		//fmt.Println("product productSizes to search>>>", productSizes)
 		for _, itemSize := range productSizes {
 			size, _ := types.GetSize(itemSize.SizeId)
 			sizeListe = append(sizeListe, size)
 		}
-		fmt.Println("product sizeListe to search>>>", sizeListe)
+		//fmt.Println("product sizeListe to search>>>", sizeListe)
 
 		if itemImag != nil {
 			for _, itemImageId := range itemImag {
@@ -363,10 +428,10 @@ func SearchProductHandler(app *config.Env) http.HandlerFunc {
 			}
 		}
 		imageStringArry := GetImageItem(myimages)
-		fmt.Println("product myimages to search>>>", myimages)
+		//fmt.Println("product myimages to search>>>", myimages)
 
-		fmt.Println(" In  product...", product)
-		fmt.Println(" In  accounting...", accounting)
+		//fmt.Println(" In  product...", product)
+		//fmt.Println(" In  accounting...", accounting)
 
 		products, _ := itemsIO.GetProducts()
 		type PageData struct {
@@ -383,6 +448,7 @@ func SearchProductHandler(app *config.Env) http.HandlerFunc {
 		data := PageData{product, accounting, colorListe, braind, genderdate, sizeListe, imageStringArry, productType, products}
 		files := []string{
 			app.Path + "items/productsSearchResult.html",
+			app.Path + "template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -1395,15 +1461,13 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 
 }
 
-func SoulierItemHanler(app *config.Env) http.HandlerFunc {
+func ItemViewHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//productTypes, err := types.GetTypes()
-		products, err := itemsIO.GetProducts()
-		if err != nil {
-			fmt.Println("error reading products")
-			app.ErrorLog.Println(err.Error())
-		}
+		var products []items.Products
+
 		productTypes, err := types.GetTypes()
+		fmt.Println("productTypes>>>", productTypes)
 		if err != nil {
 			fmt.Println("error reading types")
 			app.ErrorLog.Println(err.Error())

@@ -16,3 +16,8 @@ func TestGetProductType(t *testing.T) {
 	fmt.Println("result of product is: ", resp)
 	assert.Nil(t, err)
 }
+func TestGetAllOfProductType(t *testing.T) {
+	resp, err := GetAllOfProductType("T-6224368f-94c6-4d55-aaf3-38252a69a77e")
+	fmt.Println("result of product is: ", resp)
+	assert.Nil(t, err)
+}
