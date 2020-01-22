@@ -216,106 +216,98 @@
 <!--================Header Menu Area =================-->
 
 <!--================Home Banner Area =================-->
-<section class="banner_area">
-    <div class="banner_inner d-flex align-items-center">
-        <div class="container">
-            <div class="banner_content d-md-flex justify-content-between align-items-center">
-                <div class="mb-3 mb-md-0">
-                    <h2>Customers Table</h2>
-                    <p>Very us move be blessed multiply night</p>
-                </div>
-                <div class="page_link">
-                    <a href="/customer/table">Customers</a>
-                    <a href="/order/table">Orders</a>
-                    <a href="/item/soulier/table">items view</a>
-                    <a href="/item/soulier/add">items add</a>
-                    <a href="/managers/table">managers</a>
-                    <a href="/item/types">Create Types</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{{template "admin-navbar" .}}
 <!--================End Home Banner Area =================-->
 
 <!-- ================ contact section start ================= -->
 
 <!-- ================ contact section end ================= -->
-<div class="container">
-
-    {{if .Notice}}
-    <div class="alert {{.Class}}">
-        <button type="button" aria-hidden="true" class="close" data-dismiss="alert">
-            <i class="fa fa-close"></i>
-        </button>
-        <a  href="#">
-            <span>{{.Notice}}</span></a>
+<div class="main_menu" style="margin-top: 3%">
+    <div class="container">
+        <h3 class="text-heading title_color">Orders</h3>
     </div>
-    {{end}}
+</div>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Customer</th>
-            <th>Email</th>
-            <th>Order Date</th>
-            <th>Action</th>
-
-        </tr>
-        </thead>
-        <tbody>
-        {{with .OrderDetails }}
-            {{range .}}
-                <tr>
-                    <td> {{.Customer.Name}} {{.Customer.SurName}}</td>
-
-                    <td><a class="edit nav-link" title="View Customer details" href=""
-                           data-toggle="modal" data-target="#customerForm"
-                           onclick="GetCustomer({{.Customer.Email}})">{{.Customer.Email}}</a></td>
-                    <td> {{.Order.Date}}</td>
-
-
-                    <td>
-                        <ul class="">
-                            <li class="nav-item submenu dropdown">
-                                <a
-                                        href="#"
-                                        class="nav-link dropdown-toggle"
-                                        data-toggle="dropdown"
-                                        role="button"
-                                        aria-haspopup="true"
-                                        aria-expanded="false"
-                                >Select Action</a
-                                >
-                                <ul class="dropdown-menu">
-                                    <li class="nav-item">
-                                        <a class="edit nav-link" title="Edit" href=""
-                                           data-toggle="modal" data-target="#detailForm"
-                                           onclick="DetailForm({{.Items}})">Details</a>
-
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="edit nav-link" title="Edit" href=""
-                                           data-toggle="modal" data-target="#orderStat"
-                                           onclick="OrderStatForm({{.OrderStat}},{{.Order.Id}})">Update</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">Complete</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">Check Items</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-
-                    </td>
-
-                </tr>
-            {{end}}
+<div class="container">
+    <div class="row">
+        {{if .Notice}}
+            <div class="alert {{.Class}}">
+                <button type="button" aria-hidden="true" class="close" data-dismiss="alert">
+                    <i class="fa fa-close"></i>
+                </button>
+                <a href="#">
+                    <span>{{.Notice}}</span></a>
+            </div>
         {{end}}
-        </tbody>
-    </table>
+        <div class="container">
+            <div class="progress-table-wrap justify-content-center">
+                <table class="table col-12">
+                    <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Order Date</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{with .OrderDetails }}
+                        {{range .}}
+                            <tr>
+                                <td> {{.Customer.Name}} {{.Customer.SurName}}</td>
+
+                                <td><a class="edit nav-link" title="View Customer details" href=""
+                                       data-toggle="modal" data-target="#customerForm"
+                                       onclick="GetCustomer({{.Customer.Email}})">{{.Customer.Email}}</a></td>
+                                <td> {{.Order.Date}}</td>
+
+
+                                <td>
+
+
+                                    <ul class="">
+                                        <li class="nav-item submenu dropdown">
+                                            <a
+                                                    href="#"
+                                                    class="nav-link dropdown-toggle"
+                                                    data-toggle="dropdown"
+                                                    role="button"
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                            >Select Action</a
+                                            >
+                                            <ul class="dropdown-menu">
+                                                <li class="nav-item">
+                                                    <a class="edit nav-link" title="Edit" href=""
+                                                       data-toggle="modal" data-target="#detailForm"
+                                                       onclick="DetailForm({{.Items}})">Details</a>
+
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="edit nav-link" title="Edit" href=""
+                                                       data-toggle="modal" data-target="#orderStat"
+                                                       onclick="OrderStatForm({{.OrderStat}},{{.Order.Id}})">Update</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="#">Complete</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="#">Check Items</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+                                </td>
+
+                            </tr>
+                        {{end}}
+                    {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 <!--================ start footer Area  =================-->
 <footer class="footer-area section_gap">
@@ -417,63 +409,63 @@
         <div class="modal-content">
             <div class="modal-header">
 
-                    <div class="row col-12">
+                <div class="row col-12">
                     <div class="justify-content-center">
-                    <h2 >Order Stat</h2>
+                        <h2>Order Stat</h2>
                     </div>
 
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="fa fa-close"></i>
                     </button>
 
-                    </div>
+                </div>
             </div>
-                <div class="row col-12">
-                    <div class="container">
-                        <table class="table" id="orderStatmyTable">
-                            <thead>
-                            <th>Status</th>
-                            <th>Modifier</th>
-                            <th>Date Modified</th>
-                            <th>Status</th>
-                            </thead>
-                            <tbody>
-                            <tr>
+            <div class="row col-12">
+                <div class="container">
+                    <table class="table" id="orderStatmyTable">
+                        <thead>
+                        <th>Status</th>
+                        <th>Modifier</th>
+                        <th>Date Modified</th>
+                        <th>Status</th>
+                        </thead>
+                        <tbody>
+                        <tr>
 
-                            </tr>
-                            </tbody>
-                        </table>
+                        </tr>
+                        </tbody>
+                    </table>
 
-                            <form method="post" action="/order/update" class="col-12 justify-content-center">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label class="col-10 text-left control-label">Change the stat</label>
-                                        <div class="col-10 text-center">
-                                            <select name="statId" class="selectpicker text-center"
-                                                    data-title="Single Select"
-                                                    data-style="btn-default btn-outline"
-                                                    data-menu-style="dropdown-blue">
-                                                <option disabled selected>Select One Stat</option>
-                                                {{with .StatusL}}
-                                                    {{range .}}
-                                                        <option value={{.Id}}>{{.Stat}}</option>
-                                                    {{end}}
+                    <form method="post" action="/order/update" class="col-12 justify-content-center">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="input-group mt-10">
+                                    <label class="col-10 text-left control-label">Change the stat</label>
+                                    <div class="form-select" id="default-select2">
+                                        <select>
+                                            <option disabled selected>Select One Stat</option>
+                                            {{with .StatusL}}
+                                                {{range .}}
+                                                    <option value={{.Id}}>{{.Stat}}</option>
                                                 {{end}}
-                                            </select>
-                                        </div>
-                                        <input class=""type="hidden" value="" id="theOrderId" name="theOrderId">
+                                            {{end}}
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-10 justify-content-center">
-                                    <button class="mt-10" id="customerDetais" type="submit"
-                                            style="background-color: #FFFFFF; border: #FFFFFF">
-                                        <a class="genric-btn primary circle">Add Item</a>
-                                    </button>
-                                </div>
-                            </form>
+                                <input class="" type="hidden" value="" id="theOrderId" name="theOrderId">
+                                
+                            </div>
+                        </div>
+                        <div class="button-group-area mt-40 justify-content-center">
+                            <button class="mt-10 justify-content-center" id="customerDetais" type="submit"
+                                    style="background-color: #FFFFFF; border: #FFFFFF; margin-bottom: 5%; position: center">
+                                <a class="genric-btn primary circle">modify stat</a>
+                            </button>
+                        </div>
+                    </form>
 
-                    </div>
                 </div>
+            </div>
 
         </div>
     </div>
@@ -487,33 +479,33 @@
             <div class="modal-header">
 
 
-                    <div class="row col-12">
-                        <div class="justify-content-center">
-                            <h2 >Order Details</h2>
-                        </div>
+                <div class="row col-12">
+                    <div class="justify-content-center">
+                        <h2>Order Details</h2>
+                    </div>
 
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="fa fa-close"></i>
                     </button>
                     <!--h2>Thank you</h2-->
 
-                        <div class="row col-12">
-                    <div class="container">
-                        <table class="table" id="myTable">
-                            <thead>
-                            <th>Item Name</th>
-                            <th>Description</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            </thead>
-                            <tbody>
-                            <tr>
+                    <div class="row col-12">
+                        <div class="container">
+                            <table class="table" id="myTable">
+                                <thead>
+                                <th>Item Name</th>
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                </thead>
+                                <tbody>
+                                <tr>
 
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -649,9 +641,9 @@
 
 
     function GetCustomer(custome) {
-        const url = "http://localhost:4009/manager/getcustomer/" + custome;
+        const url = "http://localhost:4000/manager/getcustomer/" + custome;
         $.get(url, function (data) {
-            alert(data.CustomerName)
+            // alert(data.CustomerName)
             document.getElementById("customerForm");
             document.getElementById("CustomerName").value = data.CustomerName;
             document.getElementById("CustomerSurName").value = data.CustomerSurName;
@@ -689,7 +681,8 @@
             cell3.innerHTML = orderStat[i].ModifiedBy;
             cell4.innerHTML = orderStat[i].Stat;
         }
-        document.getElementById("theOrderId").value = orderId;;
+        document.getElementById("theOrderId").value = orderId;
+        ;
 
     }
 </script>

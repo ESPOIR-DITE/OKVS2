@@ -2,8 +2,10 @@ package item
 
 import (
 	"OKVS2/config"
+	helperUser "OKVS2/controller/users"
 	"OKVS2/domain/gender"
 	"OKVS2/domain/items"
+	"OKVS2/domain/users"
 	"OKVS2/io/image_oi"
 	itemsIO "OKVS2/io/items"
 	"OKVS2/io/makeUp"
@@ -1378,6 +1380,7 @@ func SoulierAddHandler(app *config.Env) http.HandlerFunc {
 		data := PageData{gender, size, color, itemType, braind, res}
 		files := []string{
 			app.Path + "itemAdd/addItem.html",
+			app.Path + "template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -1412,6 +1415,7 @@ func SoulierItemHanler(app *config.Env) http.HandlerFunc {
 		data := PageData{products, productTypes}
 		files := []string{
 			app.Path + "items/itemProduct.html",
+			app.Path + "template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -1538,18 +1542,38 @@ func ChemiseItemHanler(app *config.Env) http.HandlerFunc {
 	}
 }
 
+type CardeData struct {
+	Mesage string
+	Class  string
+}
+type MyUser struct {
+	User string
+}
+
 func indexHanler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		userEmail := app.Session.GetString(r.Context(), "userEmail")
+		message, class, Manager, user := helperUser.GetUserDetails(userEmail)
+
+		type PageData struct {
+			Entity CardeData
+			MyUser
+			Manager bool
+			User    users.Customer
+		}
+		data := PageData{CardeData{message, class}, MyUser{userEmail}, Manager, user}
 
 		files := []string{
 			app.Path + "category.html",
+			app.Path + "customer-template/toolbarTemplate.html",
+			app.Path + "customer-template/navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			return
 		}
-		err = ts.Execute(w, nil)
+		err = ts.Execute(w, data)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 		}

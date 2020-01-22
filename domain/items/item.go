@@ -166,4 +166,17 @@ type ViewProduct2 struct {
 	Colors      []Color `json:"colors"`
 }
 type Specials struct {
+	SpecialId     string  `json:"specialId"`
+	Title         string  `json:"title"`
+	ItemId        string  `json:"itemId"`
+	SpecialTypeId string  `json:"specialTypeId"`
+	Period        string  `json:"period"`
+	EndPeriod     string  `json:"endPeriod"`
+	Description   string  `json:"description"`
+	ActualPrice   float64 `json:"actualPrice"`
+}
+type SpecialType struct {
+	Id          string `json:"id"`
+	SpecialType string `json:"specialType"`
+	Description string `json:"description"`
 }

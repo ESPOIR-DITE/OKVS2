@@ -3,10 +3,11 @@ package home
 import (
 	"OKVS2/config"
 	"OKVS2/domain/items"
+	helperUser "OKVS2/controller/users"
+	//"OKVS2/domain/orders"
 	"OKVS2/domain/users"
-	"OKVS2/io/login"
 	"OKVS2/io/makeUp"
-	"OKVS2/io/order"
+	"OKVS2/io/users_io/admin"
 	"OKVS2/io/users_io/customer"
 	"fmt"
 	"github.com/go-chi/chi"
@@ -91,46 +92,61 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 
 		var message string
 		var class string
-		var Manager bool
+		var Manager = false
+		var user users.Customer
+		//var cardDetails []orders.Card
 
-		fmt.Println("User email from the session>>: ", userEmail)
-		user, err := customer.GetCustomer(userEmail)
-		if err != nil {
-			app.ErrorLog.Println(err.Error())
-		} else {
-			userLog, err := login.GetUserWithEmail(user.Email)
+		//([]orders.Card,string,string,bool,users.Customer)
+		message, class, Manager, user = helperUser.GetUserDetails(userEmail)
+		if Manager == true {
+			_, err := admin.GetAdmin(userEmail)
 			if err != nil {
 				app.ErrorLog.Println(err.Error())
 			} else {
-				if userLog.UserTupe == "admin" {
+				Manager = true
+				http.Redirect(w, r, "/user/managementwelcom", 301)
+				return
+			}
+		}
+
+		/**fmt.Println("User email from the session>>: ", userEmail)
+		userLog, err := login.GetUserWithEmail(userEmail)
+		if userLog.UserTupe=="customer"{
+			user, err = customer.GetCustomer(userEmail)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+			}
+		} else if userLog.UserTupe == "admin" {
+			_,err:= admin.GetAdmin(userEmail)
+			if err != nil {
+				app.ErrorLog.Println(err.Error())
+			}else{
 					Manager = true
 					http.Redirect(w, r, "/user/managementwelcom", 301)
 					return
-				} else {
-					Manager = false
 				}
 			}
 
-		}
+		*/
 
 		//Checking the card table if there something for this User we will send a message and set a trolley color to danger
-		cardDetails, err := order.GetCardWithCustId(userEmail)
-		fmt.Println("User card>>: ", cardDetails)
-		if err != nil {
-			app.ErrorLog.Println(err.Error())
-			fmt.Println("User may not have logIn or may not have ordered yet ")
-		}
-		var itemIdfromcard string
-		for _, valeu := range cardDetails {
-			itemIdfromcard = valeu.ItemId
-		}
-
-		if itemIdfromcard != "" {
-			//app.ErrorLog.Println(err.Error())
-			message = "You have something in your Card please click on the trolley icon to view your card"
-			class = "primary"
-		}
-		println("homePageElements:  ", homePageElements)
+		//cardDetails, err := order.GetCardWithCustId(userEmail)
+		//fmt.Println("User card>>: ", cardDetails)
+		//if err != nil {
+		//	app.ErrorLog.Println(err.Error())
+		//	fmt.Println("User may not have logIn or may not have ordered yet ")
+		//}
+		//var itemIdfromcard string
+		//for _, valeu := range cardDetails {
+		//	itemIdfromcard = valeu.ItemId
+		//}
+		//
+		//if itemIdfromcard != "" {
+		//	//app.ErrorLog.Println(err.Error())
+		//	message = "You have something in your Card please click on the trolley icon to view your card"
+		//	class = "primary"
+		//}
+		//println("homePageElements:  ", homePageElements)
 
 		if homePageElements != nil {
 			for _, itemImageId := range homePageElements {
@@ -142,11 +158,14 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 			Entity   CardeData
 			MyUser
 			Manager bool
+			User    users.Customer
 		}
 		data1 := CardeData{message, class}
-		data := PageData{itemsdetals, data1, MyUser{userEmail}, Manager}
+		data := PageData{itemsdetals, data1, MyUser{userEmail}, Manager, user}
 		files := []string{
 			app.Path + "index.html",
+			app.Path + "customer-template/toolbarTemplate.html",
+			app.Path + "customer-template/navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
