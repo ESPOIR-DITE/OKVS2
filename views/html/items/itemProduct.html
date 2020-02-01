@@ -227,32 +227,18 @@
         <div class="right_sidebar_area">
             <aside class="right_widgets p_filter_widgets">
                 <div class="l_w_title">
-                    <h3>Browse item Categories</h3>
+                    <h3>Browse item Type</h3>
                 </div>
                 <div class="widgets_inner">
                     <ul class="list">
                         {{with .ProductTypes}}
                             {{range .}}
                                 <li>
-                                    <a href="/item/search/product/typeId/{{.Id}}">{{.TypeName}}</a>
+{{/*                                    <a onclick="getproducts({{.Id}})">{{.TypeName}}</a>*/}}
+                                    <a href="/item/getproducts/{{.Id}}">{{.TypeName}}</a>
                                 </li>
                             {{end}}
                         {{end}}
-                        <!--li>
-                            <a href="/item/chemise/table">chemise</a>
-                        </li>
-                        <li>
-                            <a href="/item/pantalon/table">pantalon</a>
-                        </li>
-                        <li>
-                            <a href="/item/beate/table">beate</a>
-                        </li>
-                        <li>
-                            <a href="/item/perique/table">perique</a>
-                        </li>
-                        <li>
-                            <a href="/item/viewProducts/table">View All</a>
-                        </li-->
 
                     </ul>
                 </div>
@@ -266,54 +252,69 @@
     <div class="col-lg-9">
         <h4 class="product_top_bar">Choose The Product You Want to View</h4>
 
-<!--<form method="post" action="/item/search/productType">
+<form method="post" action="/item/search/product">
 
-    <div class="mt-10">
-        <select name="productId" class="selectpicker" data-title="Single Select"
-                data-style="btn-default btn-outline"
-                data-menu-style="dropdown-blue">
-            <option  disabled selected>Select One Item Type</option>
-
-                </select>
-
+    <div class="input-group-icon mt-10">
+        <div class="">
+        </div>
+        <div class="form-select" id="default-select">
+            <select id="myproductsDropDown" name="productId">
+                <option  value="" disabled selected>Select One Item</option>
+                {{with .Products}}
+                {{range .}}
+                <option  value={{.Id}}  selected>{{.Name}}</option>
+                {{end}}
+                {{end}}
+            </select>
+        </div>
     </div>
+
+{{/*    <div class="mt-10">*/}}
+{{/*        <select name="productId" id="drop2" class="" data-title="Single Select"*/}}
+{{/*                data-style="btn-default btn-outline"*/}}
+{{/*                data-menu-style="dropdown-blue">*/}}
+{{/*            <option  disabled selected>Select One Item Type</option>*/}}
+
+{{/*                </select>*/}}
+
+{{/*    </div>*/}}
     <button class="mt-10" id="customerDetais" type="submit" style="background-color: #FFFFFF; border: #FFFFFF">
         <a  class="genric-btn primary circle">Search</a>
     </button>
 
-</form>-->
+</form>
 
 
-            <div class="l_w_title">
-                <h3>Item de Beate</h3>
-            </div>
-            <div class="progress-table-wrap">
-            <table class="table table-dark">
-                <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Description</th>
-                    <th>Color</th>
-                    <th>Brand</th>
-                    <th>Color</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td> </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+{{/*            <div class="l_w_title">*/}}
+{{/*                <h3>Item de Beate</h3>*/}}
+{{/*            </div>*/}}
+{{/*            <div class="progress-table-wrap">*/}}
+{{/*            <table class="table table-dark">*/}}
+{{/*                <thead>*/}}
+{{/*                <tr>*/}}
+{{/*                    <th>Product Name</th>*/}}
+{{/*                    <th>Quantity</th>*/}}
+{{/*                    <th>Price</th>*/}}
+{{/*                    <th>Description</th>*/}}
+{{/*                    <th>Color</th>*/}}
+{{/*                    <th>Brand</th>*/}}
+{{/*                    <th>Color</th>*/}}
+{{/*                </tr>*/}}
+{{/*                </thead>*/}}
+{{/*                <tbody>*/}}
+{{/*                <tr>*/}}
+{{/*                    <td> </td>*/}}
+{{/*                    <td></td>*/}}
+{{/*                    <td></td>*/}}
+{{/*                    <td></td>*/}}
+{{/*                    <td></td>*/}}
+{{/*                    <td></td>*/}}
+{{/*                    <td></td>*/}}
 
-                </tr>
-                </tbody>
-            </table>
-        </div>
+{{/*                </tr>*/}}
+{{/*                </tbody>*/}}
+{{/*            </table>*/}}
+{{/*        </div>*/}}
 
     </div>
 
@@ -459,5 +460,21 @@
 <script src="../../assets/js/gmaps.min.js"></script>
 <script src="../../assets/js/theme.js"></script>
 </body>
+<script>
+    function getproducts(producTypeid) {
+        var URL="http://localhost:4000/item/getproducts/"+producTypeid;
+        var $myDrop = $("#myproductsDropDown");
+        let mydrop2 = $("#drop2");
+        //var myElement = document.getElementById("myproductsDropDown");
+        mydrop2.append("espoir");
+        $.get(URL,function (products) {
+        $.each(products,function (key,value) {
+        //let option = new Option(value.name,value.id);
+        alert(value.id);
+            $myDrop.append($("<option />").val(value.is).text(value.name));
+        });
+        });
+    }
+</script>
 
 </html>

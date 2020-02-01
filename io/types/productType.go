@@ -38,6 +38,20 @@ func GetProductType(id string) (items.ProductType, error) {
 	return entity, nil
 }
 
+func GetAllOfProductType(id string) ([]items.ProductType, error) {
+	entity := []items.ProductType{}
+	resp, _ := api.Rest().Get(productTypeURL + "/readAll?id=" + id)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	fmt.Println("In Product Types", entity)
+	return entity, nil
+}
+
 /***
 !!!! can not create !!!!
 */
