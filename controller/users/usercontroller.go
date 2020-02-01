@@ -77,12 +77,13 @@ func ManagementHandler(app *config.Env) http.HandlerFunc {
 			return
 		} else if userLog.UserTupe != "admin" {
 			app.Session.Put(r.Context(), "loging", "Wrong Credentials!")
-			http.Redirect(w, r, "/user/management", 301)
+			http.Redirect(w, r, "/user/login", 301)
 			return
 		}
 
 		files := []string{
 			app.Path + "/admin/welcommanagement.html",
+			app.Path + "template/admin_navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
