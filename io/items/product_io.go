@@ -70,3 +70,15 @@ func DeleteProduct(productId string) (items.Products, error) {
 	}
 	return entity, nil
 }
+func UpdateProduct(myItem items.Products) (items.Products, error) {
+	entity := items.Products{}
+	resp, _ := api.Rest().SetBody(myItem).Post(productURL + "/update")
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}

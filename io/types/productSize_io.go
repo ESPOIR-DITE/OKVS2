@@ -82,3 +82,18 @@ func DeleteProductSize(braind string) (items.ProductSize, error) {
 	}
 	return entity, nil
 }
+func DeleteAllOfProductSize(projectId []string) (bool, error) {
+	var entity bool
+	resp, _ := api.Rest().SetBody(projectId).Post(itemGenderURL + "/deleteAllOf")
+	if resp.IsError() {
+		return false, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+
+	if err != nil {
+		fmt.Println(" erro when marshaling", err)
+		return false, errors.New(resp.Status())
+
+	}
+	return true, nil
+}

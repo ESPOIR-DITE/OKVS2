@@ -22,3 +22,15 @@ func GetAccounting(id string) (items.Accounting, error) {
 	}
 	return entity, nil
 }
+func UpdateAccounting(account items.Accounting) (items.Accounting, error) {
+	entity := items.Accounting{}
+	resp, _ := api.Rest().SetBody(entity).Post(accountingURL + "/update")
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}

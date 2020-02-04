@@ -23,3 +23,16 @@ func GetImage(id string) (items.Images, error) {
 	}
 	return entity, nil
 }
+func UpdateImage(image items.Images) (items.Images, error) {
+	entity := items.Images{}
+	resp, _ := api.Rest().SetBody(image).Post(imageURL + "/update")
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}
+

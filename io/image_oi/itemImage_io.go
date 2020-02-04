@@ -24,3 +24,15 @@ func GetItemImage(id string) ([]items.Item_Pictures, error) {
 	}
 	return entity, nil
 }
+func ReadWithImageId(imageId string) (items.Item_Pictures, error) {
+	entity := items.Item_Pictures{}
+	resp, _ := api.Rest().Get(itemImageURL + "/readWithImageId?id=" + imageId)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}
