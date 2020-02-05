@@ -71,3 +71,27 @@ func DeleteItemGender(braind string) (items.ItemGender, error) {
 	}
 	return entity, nil
 }
+func ReadItemGenderWithItemId(itemId string) (items.ItemGender, error) {
+	entity := items.ItemGender{}
+	resp, _ := api.Rest().Get(itemGenderURL + "/readWithItemId?itemId=" + itemId)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}
+func UpdateItemGender(itemGender items.ItemGender) (items.ItemGender, error) {
+	entity := items.ItemGender{}
+	resp, _ := api.Rest().SetBody(itemGender).Post(itemGenderURL + "/update")
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}

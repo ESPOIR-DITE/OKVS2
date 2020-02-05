@@ -14,7 +14,7 @@ type ProductSize items.ProductSize
 func GetProductSizes() ([]items.ProductSize, error) {
 	//entity :=Color{}
 	entities := []items.ProductSize{}
-	resp, _ := api.Rest().Get(itemGenderURL + "/reads")
+	resp, _ := api.Rest().Get(productSizeURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
 	}
@@ -26,7 +26,7 @@ func GetProductSizes() ([]items.ProductSize, error) {
 }
 func GetProductSize(id string) (items.ProductSize, error) {
 	entity := items.ProductSize{}
-	resp, _ := api.Rest().Get(itemGenderURL + "/read?id=" + id)
+	resp, _ := api.Rest().Get(productSizeURL + "/read?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -53,7 +53,7 @@ func CreateProductSize(braind string) (items.ProductSize, error) {
 	fmt.Println(" we are about to creating Color", braind)
 	entity := items.ProductSize{}
 	myType := Braind{"000", braind}
-	resp, _ := api.Rest().SetBody(myType).Post(itemGenderURL + "/create")
+	resp, _ := api.Rest().SetBody(myType).Post(productSizeURL + "/create")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -67,10 +67,10 @@ func CreateProductSize(braind string) (items.ProductSize, error) {
 	}
 	return entity, nil
 }
-func DeleteProductSize(braind string) (items.ProductSize, error) {
+func DeleteProductSize(id string) (items.ProductSize, error) {
 	//entities:=[]Color{}
 	entity := items.ProductSize{}
-	resp, _ := api.Rest().Get(itemGenderURL + "/delete?id=" + braind)
+	resp, _ := api.Rest().Get(productSizeURL + "/delete?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -82,9 +82,9 @@ func DeleteProductSize(braind string) (items.ProductSize, error) {
 	}
 	return entity, nil
 }
-func DeleteAllOfProductSize(projectId []string) (bool, error) {
+func DeleteAllOfProductSize(projectId string) (bool, error) {
 	var entity bool
-	resp, _ := api.Rest().SetBody(projectId).Post(itemGenderURL + "/deleteAllOf")
+	resp, _ := api.Rest().Get(productSizeURL + "/deleteAllOf?productId=" + projectId)
 	if resp.IsError() {
 		return false, errors.New(resp.Status())
 	}
@@ -94,6 +94,18 @@ func DeleteAllOfProductSize(projectId []string) (bool, error) {
 		fmt.Println(" erro when marshaling", err)
 		return false, errors.New(resp.Status())
 
+	}
+	return true, nil
+}
+func CreateAllProductSize(sizeIdList []items.ProductSize) (bool, error) {
+	var entity bool
+	resp, _ := api.Rest().SetBody(sizeIdList).Post(productSizeURL + "/createAll")
+	if resp.IsError() {
+		return false, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return false, errors.New(resp.Status())
 	}
 	return true, nil
 }

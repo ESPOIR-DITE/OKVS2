@@ -105,6 +105,9 @@ func UpdateItemContent(app *config.Env) http.HandlerFunc {
 		productId := r.PostFormValue("productId")
 		accountId := r.PostFormValue("accountId")
 
+		var productSizeList []items.ProductSize
+		var productColorList []items.ItemColor
+
 		fmt.Println(ifColor, " <<<<ifColor||ifSize>>>>>", ifSize)
 
 		fmt.Println(mysize, " <<<<mysize||mycolor>>>>>", mycolor)
@@ -113,27 +116,92 @@ func UpdateItemContent(app *config.Env) http.HandlerFunc {
 
 		//HERE WE CHECK IF THE CHECK BUTTON IS ON WE HAVE TO DELETE ALL THE
 		if ifSize == "on" {
-			
-			psdeleteResult, err := types.DeleteAllOfProductSize(mysize)
+			psdeleteResult, err := types.DeleteAllOfProductSize(productId)
 			if err != nil {
-				fmt.Println("error updating products")
+				fmt.Println("error deleteing products size")
+			} else {
+				for _, valeu := range mysize {
+					newProductSize := items.ProductSize{"", valeu, productId}
+					productSizeList = append(productSizeList, newProductSize)
+				}
+				resultProductSize, err := types.CreateAllProductSize(productSizeList)
+				if err != nil {
+					fmt.Println("error creating productTypeList", err)
+				}
+				fmt.Println("resultProductSize", resultProductSize)
 			}
 			fmt.Println(psdeleteResult, " <<<<psdeleteResult")
 		}
-		//if itemName!=""||description!=""||productId!=""{
-		//	product:=items.Products{productId,itemName,description}
-		//	_,err:=itemsIO.UpdateProduct(product)
-		//	if err!=nil{
-		//		fmt.Println("error updating products")
-		//	}
-		//}
+		if ifColor == "on" {
+			pcdeleteReult, err := types.DeleteAllOfItemColor(productId)
+			fmt.Println("result for DeleteAllOfItemColor", pcdeleteReult)
+			if err != nil {
+				fmt.Println("error deleteing products color")
+			} else {
+				for _, value := range mycolor {
+					if value != "" {
+						newproductColorList := items.ItemColor{"", value, productId}
+						productColorList = append(productColorList, newproductColorList)
+					}
+				}
+				if len(productColorList) != 0 {
+					fmt.Println("we are in if len(productColorList)!=0{")
+					pcReult, err := types.CreateAllOfItemColors(productColorList)
+					if err != nil {
+						app.ErrorLog.Println(err.Error())
+						fmt.Println("error deleteing products color")
+					}
+					fmt.Println("result for CreateAllOfItemColors", pcReult)
+				}
+
+			}
+		}
+
+		if braindId != "" {
+			itembraind, err := types.ReadWithItemId(productId)
+			if err != nil {
+				app.ErrorLog.Println(err.Error(), " error Getting braind")
+			} else {
+				newBraind := items.ItemBraind{itembraind.Id, braindId, itembraind.ItemId}
+				pbraindResult, err := types.UpdateItemBraind(newBraind)
+				if err != nil {
+					app.ErrorLog.Println(err.Error())
+					fmt.Println("error deleteing products color")
+				}
+				fmt.Println("result for pbraindResult", pbraindResult)
+			}
+
+		}
+
+		if genderId != "" {
+			itemGender, err := types.ReadItemGenderWithItemId(productId)
+			if err != nil {
+				app.ErrorLog.Println(err.Error(), " error Getting braind")
+			} else {
+				newBraind := items.ItemGender{itemGender.Id, genderId, itemGender.ItemId}
+				pGenderResult, err := types.UpdateItemGender(newBraind)
+				if err != nil {
+					app.ErrorLog.Println(err.Error())
+					fmt.Println("error deleteing products gender")
+				}
+				fmt.Println("result for pGenderResult", pGenderResult)
+			}
+		}
+
+		if itemName != "" || description != "" || productId != "" {
+			product := items.Products{productId, itemName, description}
+			_, err := itemsIO.UpdateProduct(product)
+			if err != nil {
+				fmt.Println("error updating products")
+			}
+		}
 		fmt.Println(accountId, " <<<<accountId||quantity>>>>>", quantity, "    price>>>>", price)
 		if accountId != "" || quantity != 0 || price != 0 {
-			//account:=items.Accounting{accountId,price,quantity}
-			//_,err:=itemsIO.UpdateAccounting(account)
-			//if err!=nil{
-			//	fmt.Println("error updating account")
-			//}
+			account := items.Accounting{accountId, price, quantity}
+			_, err := itemsIO.UpdateAccounting(account)
+			if err != nil {
+				fmt.Println("error updating account")
+			}
 		}
 
 		var myimages []string
@@ -143,9 +211,6 @@ func UpdateItemContent(app *config.Env) http.HandlerFunc {
 		var theImage []image_id
 
 		productType, _ := types.GetTypes()
-		//fetching product Id trough itemImage
-
-		//productId, _ := types.GetProductType(productTypeId)
 		//reading the item that we just edite
 		product, _ := itemsIO.GetProduct(productId)
 		//fmt.Println("product product to search>>>", product)

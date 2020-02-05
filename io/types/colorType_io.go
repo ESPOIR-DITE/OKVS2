@@ -48,26 +48,33 @@ func GetItemColorList(id string) ([]items.ItemColor, error) {
 	}
 	return entity, nil
 }
-
-/**
-func CreateColors(color string) (Color, error) {
-	fmt.Println(" we are about to creating Color", color)
-	entity := Color{}
-	myType := Color{"000", color}
-	resp, _ := api.Rest().SetBody(myType).Post(colorURL + "/create")
+func DeleteAllOfItemColor(itemId string) (bool, error) {
+	var entity bool
+	resp, _ := api.Rest().Get(itemColorURL + "/deleteAllFor?itemId=" + itemId)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
-
-	fmt.Println(" we have create Color", entity)
 	if err != nil {
-		fmt.Println(" erro when marshaling", err)
 		return entity, errors.New(resp.Status())
-
 	}
 	return entity, nil
 }
+
+func CreateAllOfItemColors(color []items.ItemColor) (bool, error) {
+	var entity bool
+	resp, _ := api.Rest().SetBody(color).Post(itemColorURL + "/createAll")
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}
+
+/**
 func DeleteColor(color string) (items.Color, error) {
 	//entities:=[]Color{}
 	entity := items.Color{}

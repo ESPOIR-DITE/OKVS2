@@ -79,6 +79,7 @@ type Color struct {
 	ColorName string `json:"colorName"`
 }
 type ItemColor struct {
+	Id      string `json:"id"`
 	ItemId  string `json:"itemId"`
 	ColorId string `json:"colorId"`
 }
@@ -101,6 +102,7 @@ type Size struct {
 	SizeNumber string `json:"sizeNumber"`
 }
 type ProductSize struct {
+	Id     string `json:"id"`
 	ItemId string `json:"itemId"`
 	SizeId string `json:"sizeId"`
 }
@@ -121,10 +123,12 @@ type Types struct {
 	TypeName string `json:"typeName"`
 }
 type ItemBraind struct {
+	Id       string `json:"id"`
 	BraindId string `json:"braindId"`
 	ItemId   string `json:"itemId"`
 }
 type ItemGender struct {
+	Id       string `json:"id"`
 	ItemId   string `json:"itemId"`
 	GenderId string `json:"genderId"`
 }
