@@ -78,11 +78,15 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 		if any thing hapens we send the tamplete home page
 		we need to find out the data from the session so that we can che if the user has a card
 		*/
+
 		var itemsdetals []items.ItemViewHtml
 
 		homePageElements, err := makeUp.GetAllItems()
+		if err != nil {
+			app.ErrorLog.Println(err.Error())
+		}
 		//fmt.Println("User may not have logIn or may not have ordered yet ", homePageElements)
-		if err != nil && homePageElements == nil {
+		if homePageElements == nil {
 			app.ErrorLog.Println(err.Error())
 			http.Redirect(w, r, "/homeError/homeError", 301)
 		}
@@ -109,44 +113,6 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 			}
 		}
 
-		/**fmt.Println("User email from the session>>: ", userEmail)
-		userLog, err := login.GetUserWithEmail(userEmail)
-		if userLog.UserTupe=="customer"{
-			user, err = customer.GetCustomer(userEmail)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-			}
-		} else if userLog.UserTupe == "admin" {
-			_,err:= admin.GetAdmin(userEmail)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-			}else{
-					Manager = true
-					http.Redirect(w, r, "/user/managementwelcom", 301)
-					return
-				}
-			}
-
-		*/
-
-		//Checking the card table if there something for this User we will send a message and set a trolley color to danger
-		//cardDetails, err := order.GetCardWithCustId(userEmail)
-		//fmt.Println("User card>>: ", cardDetails)
-		//if err != nil {
-		//	app.ErrorLog.Println(err.Error())
-		//	fmt.Println("User may not have logIn or may not have ordered yet ")
-		//}
-		//var itemIdfromcard string
-		//for _, valeu := range cardDetails {
-		//	itemIdfromcard = valeu.ItemId
-		//}
-		//
-		//if itemIdfromcard != "" {
-		//	//app.ErrorLog.Println(err.Error())
-		//	message = "You have something in your Card please click on the trolley icon to view your card"
-		//	class = "primary"
-		//}
-		//println("homePageElements:  ", homePageElements)
 
 		if homePageElements != nil {
 			for _, itemImageId := range homePageElements {

@@ -5,7 +5,6 @@ import (
 
 	"OKVS2/domain/items"
 	"errors"
-	"fmt"
 )
 
 const colorURL = api.BASE_URL + "color"
@@ -38,7 +37,7 @@ func GetColor(id string) (items.Color, error) {
 	return entity, nil
 }
 func CreateColors(color string) (Color, error) {
-	fmt.Println(" we are about to creating Color", color)
+	//fmt.Println(" we are about to creating Color", color)
 	entity := Color{}
 	myType := Color{"000", color}
 	resp, _ := api.Rest().SetBody(myType).Post(colorURL + "/create")
@@ -47,9 +46,9 @@ func CreateColors(color string) (Color, error) {
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
 
-	fmt.Println(" we have create Color", entity)
+	//fmt.Println(" we have create Color", entity)
 	if err != nil {
-		fmt.Println(" erro when marshaling", err)
+		//fmt.Println(" erro when marshaling", err)
 		return entity, errors.New(resp.Status())
 
 	}
@@ -64,7 +63,7 @@ func DeleteColor(color string) (items.Color, error) {
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
 
-	fmt.Println(" we are Deleting Color", entity)
+	//fmt.Println(" we are Deleting Color", entity)
 	if err != nil {
 		return entity, errors.New(resp.Status())
 	}

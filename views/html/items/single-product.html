@@ -86,115 +86,8 @@
                         id="navbarSupportedContent"
                 >
                     <div class="row w-100 mr-0">
-                        <div class="col-lg-7 pr-0">
-                            <ul class="nav navbar-nav center_nav pull-right">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="../index.html">Home</a>
-                                </li>
-                                <li class="nav-item active submenu dropdown">
-                                    <a
-                                            href="#"
-                                            class="nav-link dropdown-toggle"
-                                            data-toggle="dropdown"
-                                            role="button"
-                                            aria-haspopup="true"
-                                            aria-expanded="false"
-                                    >Shop</a
-                                    >
-                                    <ul class="dropdown-menu">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="../category.html"
-                                            >Shop Category</a
-                                            >
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="single-product.html"
-                                            >Product Details</a
-                                            >
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="../checkout.html"
-                                            >Product Checkout</a
-                                            >
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="../cart.html">Shopping Cart</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item submenu dropdown">
-                                    <a
-                                            href="#"
-                                            class="nav-link dropdown-toggle"
-                                            data-toggle="dropdown"
-                                            role="button"
-                                            aria-haspopup="true"
-                                            aria-expanded="false"
-                                    >Blog</a
-                                    >
-                                    <ul class="dropdown-menu">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="../blog.html">Blog</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="../single-blog.html"
-                                            >Blog Details</a
-                                            >
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item submenu dropdown">
-                                    <a
-                                            href="#"
-                                            class="nav-link dropdown-toggle"
-                                            data-toggle="dropdown"
-                                            role="button"
-                                            aria-haspopup="true"
-                                            aria-expanded="false"
-                                    >Pages</a
-                                    >
-                                    <ul class="dropdown-menu">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="../tracking.html">Tracking</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="../elements.html">Elements</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="../contact.html">Contact</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="col-lg-5 pr-0">
-                            <ul class="nav navbar-nav navbar-right right_nav pull-right">
-                                <li class="nav-item">
-                                    <a href="#" class="icons">
-                                        <i class="ti-search" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="#" class="icons">
-                                        <i class="ti-shopping-cart"></i>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="#" class="icons">
-                                        <i class="ti-user" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="#" class="icons">
-                                        <i class="ti-heart" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                        {{template "navbar" .}}
+                        {{template "toolbar" .}}
                     </div>
                 </div>
             </nav>
@@ -215,8 +108,8 @@
                     <p>Very us move be blessed multiply night</p>
                 </div>
                 <div class="page_link">
-                    <a href="../index.html">Home</a>
-                    <a href="single-product.html">Product Details</a>
+                    <a href="/">Home</a>
+                    <a href="/">Product Details</a>
                 </div>
             </div>
         </div>
@@ -239,9 +132,9 @@
                             <li data-target="#carouselExampleIndicators"
                                     data-slide-to="{{.Number}}"
                                     class="{{.Class}}"
-                                     >
-                                <img  id='base64image' style="width:60px ;height: 60px"
-                                      src='data:image/jpeg;base64,{{.Pic}}'
+                            >
+                                <img id='base64image' style="width:100% ;height: 100%"
+                                     src='data:image/jpeg;base64,{{.Pic}}'
                                         alt=""/>
                             </li>
                             {{end}}
@@ -253,7 +146,7 @@
                             {{range .}}
                             <div class="carousel-item {{.Class}}">
                                 <img class="d-block w-100"
-                                     id='base64image'style="width:540px ;height: 583px"
+                                     id='base64image' style="width:100% ;height: 100%"
                                      src='data:image/jpeg;base64,{{.Pic}}'
                                         alt="{{.Position}}" />
                             </div>
@@ -267,8 +160,8 @@
             </div>
             <div class="col-lg-5 offset-lg-1">
                 <div class="s_product_text">
-                    <h3>{{.Entity.ItemName}}</h3>
-                    <h2> R {{.Entity.Price}}</h2>
+                    <h3>{{.EntityProduct.ItemName}}</h3>
+                    <h2> R {{.EntityProduct.Price}}</h2>
                     <ul class="list">
                         <li>
                             <a class="active" href="#">
@@ -286,29 +179,30 @@
                         the pleasant warm feeling during the winter.
                     </p>
                     <form action="/order/card/item" method="post">
-                    <div class="product_count">
+                        <div class="product_count">
 
-                        <label for="10" class="warning">Quantity Not a maximum of : {{.Entity.Quantity}} Items: </label>
-                        <input
-                                type="text"
-                                name="qty"
-                                id="sst"
-                                maxlength="{{.Entity.Quantity}}"
-                                value="1"
-                                title="Quantity:"
-                                class="input-text qty"
-                        />
-                        <input type="hidden" name="itemId" value="{{.Entity.ItemId}}"/>
+                            <label for="10" class="warning">Quantity Not a maximum of : {{.EntityProduct.Quantity}}
+                                Items: </label>
+                            <input
+                                    type="text"
+                                    name="qty"
+                                    id="sst"
+                                    maxlength="{{.EntityProduct.Quantity}}"
+                                    value="1"
+                                    title="Quantity:"
+                                    class="input-text qty"
+                            />
+                            <input type="hidden" name="itemId" value="{{.EntityProduct.ItemId}}"/>
 
-                        <button
-                                onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                                class="increase items-count"
-                                type="button"
-                        >
-                            <i class="lnr lnr-chevron-up"></i>
-                        </button>
-                        <button
-                                onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                            <button
+                                    onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                    class="increase items-count"
+                                    type="button"
+                            >
+                                <i class="lnr lnr-chevron-up"></i>
+                            </button>
+                            <button
+                                    onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
                                 class="reduced items-count"
                                 type="button"
                         >
@@ -894,7 +788,8 @@
     </div>
 </section>
 <!--================End Product Description Area =================-->
-
+<!--================Modal =================-->
+{{template "review_template" .}}
 <!--================ start footer Area  =================-->
 <footer class="footer-area section_gap">
     <div class="container">
@@ -990,5 +885,6 @@
 <script src="../../assets/vendors/counter-up/jquery.waypoints.min.js"></script>
 <script src="../../assets/vendors/counter-up/jquery.counterup.js"></script>
 <script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/customer/myModels.js"></script>
 </body>
 </html>

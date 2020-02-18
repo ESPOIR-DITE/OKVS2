@@ -90,116 +90,6 @@
                   <div class="row w-100 mr-0">
                       {{template "navbar" .}}
                       {{template "toolbar" .}}
-                      {{/*                <div class="col-lg-7 pr-0">*/}}
-                      {{/*                  <ul class="nav navbar-nav center_nav pull-right">*/}}
-                      {{/*                    <li class="nav-item">*/}}
-                      {{/*                      <a class="nav-link" href="/">Home</a>*/}}
-                      {{/*                    </li>*/}}
-                      {{/*                    <li class="nav-item submenu dropdown">*/}}
-                      {{/*                      <a*/}}
-                      {{/*                              href="#"*/}}
-                      {{/*                              class="nav-link dropdown-toggle"*/}}
-                      {{/*                              data-toggle="dropdown"*/}}
-                      {{/*                              role="button"*/}}
-                      {{/*                              aria-haspopup="true"*/}}
-                      {{/*                              aria-expanded="false"*/}}
-                      {{/*                      >Shop</a*/}}
-                      {{/*                      >*/}}
-                      {{/*                      <ul class="dropdown-menu">*/}}
-                      {{/*                        <li class="nav-item">*/}}
-                      {{/*                          <a class="nav-link" href="/category"*/}}
-                      {{/*                          >Shop Category</a*/}}
-                      {{/*                          >*/}}
-                      {{/*                        </li>*/}}
-                      {{/*                        <li class="nav-item">*/}}
-                      {{/*                          <a class="nav-link" href="items/single-product.html"*/}}
-                      {{/*                          >Product Details</a*/}}
-                      {{/*                          >*/}}
-                      {{/*                        </li>*/}}
-                      {{/*                        <li class="nav-item">*/}}
-                      {{/*                          <a class="nav-link" href="checkout.html"*/}}
-                      {{/*                          >Product Checkout</a*/}}
-                      {{/*                          >*/}}
-                      {{/*                        </li>*/}}
-                      {{/*                        <li class="nav-item">*/}}
-                      {{/*                          <a class="nav-link" href="cart.html">Shopping Cart</a>*/}}
-                      {{/*                        </li>*/}}
-                      {{/*                      </ul>*/}}
-                      {{/*                    </li>*/}}
-                      {{/*                    <li class="nav-item submenu dropdown">*/}}
-                      {{/*                      <a*/}}
-                      {{/*                              href="#"*/}}
-                      {{/*                              class="nav-link dropdown-toggle"*/}}
-                      {{/*                              data-toggle="dropdown"*/}}
-                      {{/*                              role="button"*/}}
-                      {{/*                              aria-haspopup="true"*/}}
-                      {{/*                              aria-expanded="false"*/}}
-                      {{/*                      >Blog</a*/}}
-                      {{/*                      >*/}}
-                      {{/*                      <ul class="dropdown-menu">*/}}
-                      {{/*                        <li class="nav-item">*/}}
-                      {{/*                          <a class="nav-link" href="blog.html">Blog</a>*/}}
-                      {{/*                        </li>*/}}
-                      {{/*                        <li class="nav-item">*/}}
-                      {{/*                          <a class="nav-link" href="single-blog.html"*/}}
-                      {{/*                          >Blog Details</a*/}}
-                      {{/*                          >*/}}
-                      {{/*                        </li>*/}}
-                      {{/*                      </ul>*/}}
-                      {{/*                    </li>*/}}
-                      {{/*                      <li class="nav-item active submenu dropdown">*/}}
-                      {{/*                      <a*/}}
-                      {{/*                              href="#"*/}}
-                      {{/*                              class="nav-link dropdown-toggle"*/}}
-                      {{/*                              data-toggle="dropdown"*/}}
-                      {{/*                              role="button"*/}}
-                      {{/*                              aria-haspopup="true"*/}}
-                      {{/*                              aria-expanded="false"*/}}
-                      {{/*                      >Pages</a*/}}
-                      {{/*                      >*/}}
-                      {{/*                      <ul class="dropdown-menu">*/}}
-                      {{/*                        <li class="nav-item">*/}}
-                      {{/*                          <a class="nav-link" href="tracking.html">Tracking</a>*/}}
-                      {{/*                        </li>*/}}
-                      {{/*                        <li class="nav-item">*/}}
-                      {{/*                          <a class="nav-link" href="elements.html">Elements</a>*/}}
-                      {{/*                        </li>*/}}
-                      {{/*                      </ul>*/}}
-                      {{/*                    </li>*/}}
-                      {{/*                      <li class="nav-item">*/}}
-                      {{/*                      <a class="nav-link" href="contact.html">Contact</a>*/}}
-                      {{/*                    </li>*/}}
-                      {{/*                  </ul>*/}}
-                      {{/*                </div>*/}}
-
-                      {{/*                <div class="col-lg-5 pr-0">*/}}
-                      {{/*                  <ul class="nav navbar-nav navbar-right right_nav pull-right">*/}}
-                      {{/*                    <li class="nav-item">*/}}
-                      {{/*                      <a href="#" class="icons">*/}}
-                      {{/*                        <i class="ti-search" aria-hidden="true"></i>*/}}
-                      {{/*                      </a>*/}}
-                      {{/*                    </li>*/}}
-
-                      {{/*                    <li class="nav-item">*/}}
-                      {{/*                      <a href="#" class="icons">*/}}
-                      {{/*                        <i class="ti-shopping-cart"></i>*/}}
-                      {{/*                      </a>*/}}
-                      {{/*                    </li>*/}}
-
-                      {{/*                    <li class="nav-item">*/}}
-                      {{/*                        <a {{if not .Customer.Email}}href="/user/login" {{else}} href="/customer/profile"{{end}}*/}}
-                      {{/*                           class="icons">*/}}
-                      {{/*                        <i class="ti-user" aria-hidden="true"></i>*/}}
-                      {{/*                      </a>*/}}
-                      {{/*                    </li>*/}}
-
-                      {{/*                    <li class="nav-item">*/}}
-                      {{/*                      <a href="#" class="icons">*/}}
-                      {{/*                        <i class="ti-heart" aria-hidden="true"></i>*/}}
-                      {{/*                      </a>*/}}
-                      {{/*                    </li>*/}}
-                      {{/*                  </ul>*/}}
-                      {{/*                </div>*/}}
                   </div>
               </div>
           </nav>
@@ -250,27 +140,28 @@
               </div>
             </div>
             <div class="col-12 ">
-              <label class=" control-label">Surname</label>
-              <div class="form-group ">
-                  <input class="form-control" value="{{.Customer.SurName}}" name="surname"
-                         placeholder="Enter your surname">
-              </div>
-            </div>
-            <div class=" col-12">
-              <div class="input-group">
-                <label class=" control-label">Gender</label>
-                <div class="form-select " id="default-select">
-                  <select name="gender">
-                    <option selected disabled value="">select one Address type</option>
-                    {{with .GenderType}}
-                      {{range .}}
-                        <option value="{{.GenderId}}">{{.GenderName}}</option>
-                      {{end}}
-                    {{end}}
-                  </select>
+                <label class=" control-label">Surname</label>
+                <div class="form-group ">
+                    <input class="form-control" value="{{.Customer.SurName}}" name="surname"
+                           placeholder="Enter your surname">
                 </div>
-              </div>
             </div>
+                  <div class=" col-12">
+                      <div class="input-group">
+                          <label class=" control-label">Gender</label>
+                          <div class="form-select " id="default-select">
+                              <select name="gender" onchange="editProfileGender({{.Gender.GenderId}})"
+                                      id="customer_gender">
+                                  <option selected disabled value="">select one Address type</option>
+                                  {{with .GenderType}}
+                                      {{range .}}
+                                          <option value="{{.GenderId}}"{{if eq $.Gender.GenderId .GenderId}} selected{{end}}>{{.GenderName}}</option>
+                                      {{end}}
+                                  {{end}}
+                              </select>
+                          </div>
+                      </div>
+                  </div>
               <div class=" col-12">
               <div class="input-group">
                 <label class=" control-label">Address Type</label>
@@ -466,7 +357,12 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
     <script src="../../assets/js/gmaps.min.js"></script>
     <script src="../../assets/js/theme.js"></script>
-  </body>
-
+</body>
+<script>
+    function editProfileGender(genderId) {
+        const selctcustomer_gender = $("#customer_gender").val();
+        if (genderId.localeCompare(selctcustomer_gender)) ;
+    }
+</script>
 
 </html>

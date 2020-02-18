@@ -21,6 +21,8 @@ func User(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/register", userRegisterHandler(app))
 	r.Get("/login", userLoginHandler(app))
+	r.Get("/relogin", userReloginHandler(app))
+
 	r.Get("/managementwelcom", ManagementHandler(app))
 	r.Get("/management", ManagementLoginHandler(app))
 	r.Get("/logout", LogoutHandler(app))
@@ -30,6 +32,15 @@ func User(app *config.Env) http.Handler {
 	r.Post("/manager/log", ManagerLogHandler(app))
 
 	return r
+}
+
+func userReloginHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		app.Session.Destroy(r.Context())
+
+		http.Redirect(w, r, "/user/login", 301)
+		return
+	}
 }
 
 func LogoutHandler(app *config.Env) http.HandlerFunc {
@@ -84,6 +95,7 @@ func ManagementHandler(app *config.Env) http.HandlerFunc {
 		files := []string{
 			app.Path + "/admin/welcommanagement.html",
 			app.Path + "template/admin_navbar.html",
+			app.Path + "template/admin_toolbarTemplate.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {

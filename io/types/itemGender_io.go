@@ -34,12 +34,12 @@ func GetItemGender(id string) (items.ItemGender, error) {
 	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
-	fmt.Println(" we are about to reading ItemGender <<int item gender>>", entity)
+	//fmt.Println(" we are about to reading ItemGender <<int item gender>>", entity)
 	return entity, nil
 
 }
 func CreateItemGender(braind string) (items.ItemGender, error) {
-	fmt.Println(" we are about to creating Color", braind)
+	//fmt.Println(" we are about to creating Color", braind)
 	entity := items.ItemGender{}
 	myType := Braind{"000", braind}
 	resp, _ := api.Rest().SetBody(myType).Post(itemGenderURL + "/create")
@@ -65,7 +65,7 @@ func DeleteItemGender(braind string) (items.ItemGender, error) {
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
 
-	fmt.Println(" we are Deleting Color", entity)
+	//fmt.Println(" we are Deleting Color", entity)
 	if err != nil {
 		return entity, errors.New(resp.Status())
 	}

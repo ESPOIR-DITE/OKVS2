@@ -171,6 +171,7 @@ func CustomerEditeProfileHandler(app *config.Env) http.HandlerFunc {
 			Customer        users.Customer
 			CustomerAddress users.Address
 			Gender          gender2.CustomerGender
+
 			Entity          CardeData
 			MyUser
 			Manager bool

@@ -186,26 +186,26 @@
       <div class="row">
         {{with .Entities}}
         {{range .}}
-        <div class="col-lg-4 col-md-6">
-          <div class="single-product">
-            <div class="product-img"> <img
-                      class="card-img" style="width:200px;height:200px;"
-                      id='base64image'
-                      src='data:image/jpeg;base64,{{.Image}}'
-                      alt=""
-              />
-              <div class="p_icon">
-                <a href="item/searchProduct/{{.ItemNumber}}">
-                  <i class="ti-eye"></i>
-                </a>
-                <a href="#">
-                  <i class="ti-heart"></i>
-                </a>
-                <a href="/order/addToCard/{{.ItemNumber}}">
-                  <i class="ti-shopping-cart"></i>
-                </a>
-              </div>
-            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-product">
+                    <div class="product-img"><img
+                                class="card-img" style="width:200px;height:200px;"
+                                id='base64image'
+                                src='data:image/jpeg;base64,{{.Image}}'
+                                alt=""
+                        />
+                        <div class="p_icon">
+                            <a href="/item/searchProduct/{{.ItemNumber}}">
+                                <i class="ti-eye"></i>
+                            </a>
+                            <a href="#">
+                                <i class="ti-heart"></i>
+                            </a>
+                            <a href="/order/addToCard/{{.ItemNumber}}">
+                                <i class="ti-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
             <div class="product-btm">
               <a href="#" class="d-block">
                 <h4>{{.Description}}<br>{{.ProductName}}</h4>

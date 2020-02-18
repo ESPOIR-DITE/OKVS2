@@ -8,7 +8,7 @@ import (
 )
 
 func TestCreateSpecial(t *testing.T) {
-	obje := items.Specials{"", "", "", "", "", "", 0, 0}
+	obje := items.Specials{"", "", "", "", "", "", "", 0}
 	result, err := CreateSpecial(obje)
 	fmt.Println("result ", result)
 	assert.Nil(t, err)

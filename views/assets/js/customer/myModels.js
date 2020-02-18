@@ -10,3 +10,8 @@ function DetailForm(app) {
 
 
 }
+
+function myreview() {
+    var form = document.forms['contactForm'];
+    alert("we are in")
+}

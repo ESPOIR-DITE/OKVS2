@@ -319,9 +319,9 @@
                             <td>{{.Gender.GenderName}}</td>
                             <td>{{.Account.Quantity}}</td>
                             <td>{{.Account.Price}}</td>
-                            <td>{{with .Color}}{{range .}}{{.ColorName}}{{end}}{{end}}</td>
+                            <td>{{with .Color}}{{range .}}{{.ColorName}}<br/>{{end}}{{end}}</td>
                             <td>{{.Braind.BraindName}} </td>
-                            <td>{{with .MySize}}{{range .}}{{.SizeNumber}}{{end}}{{end}}</td>
+                            <td>{{with .MySize}}{{range .}}{{.SizeNumber}}<br/>{{end}}{{end}}</td>
                             <td>{{.Product.Description}}</td>
                             <td>
                                 <div class="col-md-6 text-center">
@@ -577,6 +577,7 @@
                                         </div>
 
                                         <div class="col-md-4" style="margin-top: -5px">
+                                            <label class="col-sm-4 control-label text-center">Update</label>
                                             <div class="switch-wrap d-flex justify-content-center">
                                                 <div class="primary-checkbox">
                                                     <input type="checkbox" name="ifColor" id="primary-checkbox" checked>
@@ -613,13 +614,14 @@
                                     <div class="row">
                                         <label class="col-sm-8 control-label">Braind</label>
                                         <div class="col-md-12">
-                                            <select name="braind" class="selectpicker"
+                                            <select name="braind" onchange="checkSelctedBraind({{.Braind.BraindId}})"
+                                                    class="selectpicker" id="braindId"
                                                     data-style="btn-default btn-outline"
                                                     data-menu-style="dropdown-blue">
                                                 <option disabled selected>Select One Item Gender</option>
                                                 {{with .Brainds}}
                                                     {{range .}}
-                                                        <option value={{.BraindId}}>{{.BraindName}}</option>
+                                                        <option value="{{.BraindId}}"{{if eq $.Braind.BraindId .BraindId}} selected{{end}}>{{.BraindName}}</option>
                                                     {{end}}
                                                 {{end}}
                                             </select>
@@ -794,7 +796,7 @@
     }
 
     function updateContent(event) {
-        alert(event.Product.name);
+        // alert(event.Product.name);
         var form = document.forms['editcontentForm'];
         form.elements["productId"].value = event.Product.id;
         form.elements["itemName"].value = event.Product.name;
@@ -803,6 +805,12 @@
         form.elements["quantity"].value = event.Account.quantity;
         form.elements["accountId"].value = event.Account.itemId;
         form.elements['braind'].value = item.Braind.braindName;
+    }
+
+    let checkSelctedBraind = function (initialBraind) {
+        const selectedbraindId = $("#braindId").val();
+        if (initialBraind.localeCompare(selectedbraindId)) {
+        }
     }
 </script>
 
