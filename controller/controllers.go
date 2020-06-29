@@ -4,6 +4,7 @@ import (
 	"OKVS2/config"
 	controllers "OKVS2/controller/home"
 	"OKVS2/controller/item"
+	"OKVS2/controller/order"
 	"OKVS2/controller/users"
 	"OKVS2/controller/users/admin"
 	"OKVS2/controller/users/customer"
@@ -17,13 +18,16 @@ func Controllers(env *config.Env) http.Handler {
 	mux.Use(middleware.RequestID)
 	mux.Use(middleware.RealIP)
 	mux.Use(middleware.Logger)
+	mux.Use(env.Session.LoadAndSave)
 
 	mux.Handle("/", controllers.Home(env))
+	//mux.Handle("/homeError", controllers.Home(env))
 	mux.Mount("/category", item.Home(env))
 	mux.Mount("/customer", customer.Customer(env))
 	mux.Mount("/user", users.User(env))
 	mux.Mount("/manager", admin.Admin(env))
 	mux.Mount("/item", item.Home(env))
+	mux.Mount("/order", order.Order(env))
 
 	fileServer := http.FileServer(http.Dir("./views/assets/"))
 	// Use the mux.Handle() function to register the file server as the handler for

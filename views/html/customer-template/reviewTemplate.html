@@ -1,0 +1,82 @@
+{{define "review_template"}}
+    <div id="review" class="modal modal-message fade" role="dialog">
+        <div class="row">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <p>Customer Details</p>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-close"></i>
+                        </button>
+                    </div>
+
+                    <div class="review_box">
+                        <h4>Post a comment</h4>
+                        <form
+                                class="row contact_form"
+                                action="../contact_process.php"
+                                method="post"
+                                id="contactForm"
+                                novalidate="novalidate"
+                        >
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input
+                                            type="text"
+                                            class="form-control"
+                                            id="name"
+                                            name="name"
+                                            placeholder="Your Full name"
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input
+                                            type="email"
+                                            class="form-control"
+                                            id="email"
+                                            name="email"
+                                            placeholder="Email Address"
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input
+                                            type="text"
+                                            class="form-control"
+                                            id="number"
+                                            name="number"
+                                            placeholder="Phone Number"
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                        <textarea
+                                class="form-control"
+                                name="message"
+                                id="message"
+                                rows="1"
+                                placeholder="Message"
+                        ></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12 text-right">
+                                <button
+                                        type="submit"
+                                        value="submit"
+                                        class="btn submit_btn"
+                                >
+                                    Submit Now
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}

@@ -45,7 +45,7 @@
                     </a>
                   </li>
                   <li>
-                    <a href="tracking.html">
+                    <a href="/order/track">
                       track order
                     </a>
                   </li>
@@ -64,7 +64,7 @@
         <div class="container">
           <nav class="navbar navbar-expand-lg navbar-light w-100">
             <!-- Brand and toggle get grouped for better mobile display -->
-            <a class="navbar-brand logo_h" href="index.html">
+            <a class="navbar-brand logo_h" href="/">
               <img src="../assets/img/logo.png" alt="" />
             </a>
             <button
@@ -89,7 +89,7 @@
                 <div class="col-lg-7 pr-0">
                   <ul class="nav navbar-nav center_nav pull-right">
                     <li class="nav-item">
-                      <a class="nav-link" href="index.html">Home</a>
+                      <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item submenu dropdown">
                       <a
@@ -108,7 +108,7 @@
                           >
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" href="single-product.html"
+                          <a class="nav-link" href="items/single-product.html"
                             >Product Details</a
                           >
                         </li>
@@ -155,7 +155,7 @@
                       >
                       <ul class="dropdown-menu">
                         <li class="nav-item">
-                          <a class="nav-link" href="tracking.html">Tracking</a>
+                          <a class="nav-link" href="/order/order/track">Tracking</a>
                         </li>
                         <li class="nav-item">
                           <a class="nav-link" href="elements.html">Elements</a>
@@ -176,11 +176,6 @@
                       </a>
                     </li>
 
-                    <li class="nav-item">
-                      <a href="#" class="icons">
-                        <i class="ti-shopping-cart"></i>
-                      </a>
-                    </li>
 
                     <li class="nav-item">
                       <a href="#" class="icons">
@@ -215,8 +210,8 @@
               <p>Very us move be blessed multiply night</p>
             </div>
             <div class="page_link">
-              <a href="index.html">Home</a>
-              <a href="tracking.html">Order Tracking</a>
+              <a href="/">Home</a>
+              <a href="/order/order/track">Order Tracking</a>
             </div>
           </div>
         </div>
@@ -230,9 +225,9 @@
             <div class="tracking_box_inner">
                 <p>To track your order please enter your Order ID in the box below and press the "Track" button. This was given
                     to you on your receipt and in the confirmation email you should have received.</p>
-                <form class="row tracking_form" action="#" method="post" novalidate="novalidate">
+                <form class="row tracking_form" action="/order/mytracking" method="post" novalidate="novalidate">
                     <div class="col-md-12 form-group">
-                        <input type="text" class="form-control" id="order" name="order" placeholder="Order ID">
+                        <input type="text" class="form-control" id="order" name="orderNumber" placeholder="Order ID">
                     </div>
                     <div class="col-md-12 form-group">
                         <input type="email" class="form-control" id="email" name="email" placeholder="Billing Email Address">
