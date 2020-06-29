@@ -36,6 +36,8 @@ func ManagementLoginHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		files := []string{
 			app.Path + "managementLogin.html",
+			app.Path + "template/navigator.html",
+			app.Path + "template/footer.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -53,6 +55,8 @@ func ManagementHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		files := []string{
 			app.Path + "welcommanagement.html",
+			app.Path + "template/navigator.html",
+			app.Path + "template/footer.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -144,7 +148,7 @@ func CreateCustomerHandler(app *config.Env) http.HandlerFunc {
 		r.ParseForm()
 		name := r.PostFormValue("first_name")
 		lastName := r.PostFormValue("last_name")
-		email := r.PostFormValue("EMAIL")
+		email := r.PostFormValue("email")
 		user := users.Customer{email, name, lastName, "active"}
 
 		result, err := customer.CreateCustomer(user)
@@ -160,6 +164,8 @@ func userLoginHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		files := []string{
 			app.Path + "loginpage.html",
+			app.Path + "template/navigator.html",
+			app.Path + "template/footer.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -176,7 +182,9 @@ func userLoginHandler(app *config.Env) http.HandlerFunc {
 func userRegisterHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		files := []string{
-			app.Path + "customerform.html",
+			app.Path + "customer/customerform.html",
+			app.Path + "template/navigator.html",
+			app.Path + "template/footer.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="icon" href="assets/img/favicon.png" type="image/png" />
+    <title>Eiser ecommerce</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="../../assets/vendors/linericon/style.css" />
+    <link rel="stylesheet" href="../../assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="../../assets/css/themify-icons.css" />
+    <link rel="stylesheet" href="../../assets/vendors/owl-carousel/owl.carousel.min.css" />
+    <link rel="stylesheet" href="../../assets/vendors/lightbox/simpleLightbox.css" />
+    <link rel="stylesheet" href="../../assets/vendors/nice-select/css/nice-select.css" />
+    <link rel="stylesheet" href="../../assets/vendors/animate-css/animate.css" />
+    <link rel="stylesheet" href="../../assets/vendors/jquery-ui/jquery-ui.css" />
+    <!-- main css -->
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <link rel="stylesheet" href="../../assets/css/responsive.css" />
+  </head>
+
+  <body>
+    <!--================Header Menu Area =================-->
+    {{template "navigatore" .}}
+    <!--================Header Menu Area =================-->
+
+    <!--================Home Banner Area =================-->
+    <section class="banner_area">
+      <div class="banner_inner d-flex align-items-center">
+        <div class="container">
+          <div
+            class="banner_content d-md-flex justify-content-between align-items-center"
+          >
+            <div class="mb-3 mb-md-0">
+              <h2>Customer Registration</h2>
+              <p>Very us move be blessed multiply night</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--================End Home Banner Area =================-->
+
+    <!--================Tracking Box Area =================-->
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+          <div class="card card-signin my-5">
+            <div class="card-body">
+              <h5 class="card-title text-center">Sign Up</h5>
+              <form class="form-signin" method="post" action="/user/customer/create">
+
+                <div class="form-label-group">
+                  <label >first name</label>
+                  <input type="text" name="first_name"  class="form-control" placeholder="Espoir" required autofocus>
+
+                </div>
+                <br/>
+                <div class="form-label-group">
+                  <label >Last name</label>
+                  <input type="text" name="last_name"  class="form-control" placeholder="Diteekemena" required autofocus>
+
+                </div>
+                <br/>
+                <div class="form-label-group">
+                  <label >Email address</label>
+                  <input type="email" name="email"  class="form-control" placeholder="Email address" required autofocus>
+
+                </div>
+                <br/>
+
+                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
+                <hr class="my-4">
+                <a href="/" class="btn btn-lg danger btn-block text-uppercase" > Cancel</a>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <!--================End Tracking Box Area =================-->
+
+    <!--================ start footer Area  =================-->
+    {{template "footer" .}}
+    <!--================ End footer Area  =================-->
+
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="../../assets/js/jquery-3.2.1.min.js"></script>
+    <script src="../../assets/js/popper.js"></script>
+    <script src="../../assets/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/stellar.js"></script>
+    <script src="../../assets/vendors/lightbox/simpleLightbox.min.js"></script>
+    <script src="../../assets/vendors/nice-select/js/jquery.nice-select.min.js"></script>
+    <script src="../../assets/vendors/isotope/imagesloaded.pkgd.min.js"></script>
+    <script src="../../assets/vendors/isotope/isotope-min.js"></script>
+    <script src="../../assets/vendors/owl-carousel/owl.carousel.min.js"></script>
+    <script src="../../assets/js/jquery.ajaxchimp.min.js"></script>
+    <script src="../../assets/js/mail-script.js"></script>
+    <script src="../../assets/vendors/jquery-ui/jquery-ui.js"></script>
+    <script src="../../assets/vendors/counter-up/jquery.waypoints.min.js"></script>
+    <script src="../../assets/vendors/counter-up/jquery.counterup.js"></script>
+    <script src="../../assets/js/theme.js"></script>
+</body>
+
+</html>

@@ -28,6 +28,8 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 
 		files := []string{
 			app.Path + "index.html",
+			app.Path + "template/navigator.html",
+			app.Path + "template/footer.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
@@ -50,6 +52,8 @@ func indexHanler(app *config.Env) http.HandlerFunc {
 			fmt.Println("email is empty ....")
 			files := []string{
 				app.Path + "index.html",
+				app.Path + "template/navigator.html",
+				app.Path + "template/footer.html",
 			}
 			ts, err := template.ParseFiles(files...)
 			if err != nil {
@@ -72,6 +76,8 @@ func indexHanler(app *config.Env) http.HandlerFunc {
 
 		files := []string{
 			app.Path + "index.html",
+			app.Path + "template/navigator.html",
+			app.Path + "template/footer.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {

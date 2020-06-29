@@ -13,7 +13,6 @@ type Customer users.Customer
 func GetCustomers() ([]Customer, error) {
 	entities := []Customer{}
 	resp, _ := api.Rest().Get(customerURL + "/reads")
-
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
 	}
@@ -25,9 +24,20 @@ func GetCustomers() ([]Customer, error) {
 }
 func GetCustomer(id string) (Customer, error) {
 	entity := Customer{}
-
 	reso, _ := api.Rest().Get(customerURL + "/read?id=" + id)
+	if reso.IsError() {
+		return entity, errors.New(reso.Status())
+	}
+	err := api.JSON.Unmarshal(reso.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(reso.Status())
 
+	}
+	return entity, nil
+}
+func GetCustomerWithPassword(id string) (Customer, error) {
+	entity := Customer{}
+	reso, _ := api.Rest().Get(customerURL + "/readWIthPassword?id=" + id)
 	if reso.IsError() {
 		return entity, errors.New(reso.Status())
 	}
@@ -40,7 +50,6 @@ func GetCustomer(id string) (Customer, error) {
 }
 func CreateCustomer(entit interface{}) (Customer, error) {
 	entity := Customer{}
-
 	resp, _ := api.Rest().SetBody(entit).Post(customerURL + "/create")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
@@ -52,6 +61,7 @@ func CreateCustomer(entit interface{}) (Customer, error) {
 	}
 	return entity, nil
 }
+
 func DeleteAdmin(id string) (Customer, error) {
 	entity := Customer{}
 	resp, _ := api.Rest().Get(customerURL + "/delete?id=" + id)

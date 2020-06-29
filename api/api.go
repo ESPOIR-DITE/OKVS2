@@ -5,7 +5,7 @@ import (
 	"gopkg.in/resty.v1"
 )
 
-const BASE_URL string = "http://localhost:9090/OKVS/"
+const BASE_URL string = "http://localhost:9099/OKVS/"
 
 func Rest() *resty.Request {
 	return resty.R().SetAuthToken("").

@@ -4,6 +4,7 @@ import (
 	"OKVS2/config"
 	"OKVS2/domain/users"
 	customerIO "OKVS2/io/users/customer"
+	"fmt"
 	"github.com/go-chi/chi"
 	"html/template"
 	"net/http"
@@ -15,7 +16,28 @@ func Customer(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/home", CustomerMethod(app))
 	r.Get("/table", CustomerTableHandler(app))
+	r.Get("/register/{userId}", RegisterCustomerHandler(app))
+
 	return r
+}
+
+func RegisterCustomerHandler(app *config.Env) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		password := chi.URLParam(r, "userId")
+		customerLogin, err := customerIO.GetCustomerWithPassword(password)
+		if err != nil {
+			fmt.Println("error reading the password")
+			http.Redirect(w, r, "/", 301)
+			return
+		} else {
+			customer, err := customerIO.GetCustomer(customerLogin.Email)
+			if err != nil {
+				fmt.Println("error reading the password")
+				http.Redirect(w, r, "/", 301)
+				return
+			}
+		}
+	}
 }
 
 func CustomerTableHandler(app *config.Env) http.HandlerFunc {
