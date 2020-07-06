@@ -8,10 +8,8 @@ import (
 
 const customerURL = api.BASE_URL + "/customer"
 
-type Customer users.Customer
-
-func GetCustomers() ([]Customer, error) {
-	entities := []Customer{}
+func GetCustomers() ([]users.Customer, error) {
+	entities := []users.Customer{}
 	resp, _ := api.Rest().Get(customerURL + "/reads")
 
 	if resp.IsError() {
@@ -36,8 +34,8 @@ func GetCustomer(id string) (users.Customer, error) {
 	}
 	return entity, nil
 }
-func GetCustomerWithPassword(id string) (Customer, error) {
-	entity := Customer{}
+func GetCustomerWithPassword(id string) (users.Customer, error) {
+	entity := users.Customer{}
 	reso, _ := api.Rest().Get(customerURL + "/readWIthPassword?id=" + id)
 	if reso.IsError() {
 		return entity, errors.New(reso.Status())
@@ -49,8 +47,8 @@ func GetCustomerWithPassword(id string) (Customer, error) {
 	}
 	return entity, nil
 }
-func CreateCustomer(entit interface{}) (Customer, error) {
-	entity := Customer{}
+func CreateCustomer(entit interface{}) (users.Customer, error) {
+	entity := users.Customer{}
 
 	resp, _ := api.Rest().SetBody(entit).Post(customerURL + "/create")
 	if resp.IsError() {
@@ -64,8 +62,8 @@ func CreateCustomer(entit interface{}) (Customer, error) {
 	return entity, nil
 }
 
-func DeleteAdmin(id string) (Customer, error) {
-	entity := Customer{}
+func DeleteAdmin(id string) (users.Customer, error) {
+	entity := users.Customer{}
 	resp, _ := api.Rest().Get(customerURL + "/delete?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())

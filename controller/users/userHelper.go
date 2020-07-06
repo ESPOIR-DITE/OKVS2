@@ -22,15 +22,15 @@ func GetUserDetails(email string) (string, string, bool, users.Customer) {
 	var user users.Customer
 
 	userLog, err := login.GetUserWithEmail(email)
-	if userLog.UserTupe == "customer" {
+	if userLog.UserType == "customer" {
 		user, err = customer.GetCustomer(email)
 		if err != nil {
-			fmt.Println("error reading GetCustomer in if userLog.UserTupe==customer")
+			fmt.Println("error reading GetCustomer in if userLog.UserType==customer")
 		}
-	} else if userLog.UserTupe == "admin" {
+	} else if userLog.UserType == "admin" {
 		_, err := admin.GetAdmin(email)
 		if err != nil {
-			fmt.Println("error reading GetCustomer in if userLog.UserTupe==customer2")
+			fmt.Println("error reading GetCustomer in if userLog.UserType==customer2")
 		} else {
 			Manager = true
 		}

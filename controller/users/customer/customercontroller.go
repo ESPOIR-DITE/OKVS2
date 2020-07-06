@@ -172,7 +172,7 @@ func CustomerEditeProfileHandler(app *config.Env) http.HandlerFunc {
 			CustomerAddress users.Address
 			Gender          gender2.CustomerGender
 
-			Entity          CardeData
+			Entity CardeData
 			MyUser
 			Manager bool
 			User    users.Customer
@@ -413,47 +413,70 @@ func CustomerRegistration(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 		email := r.PostFormValue("email")
+		previousPassword := r.PostFormValue("previousPassword")
 		password1 := r.PostFormValue("password1")
 		password2 := r.PostFormValue("password2")
 		fmt.Println("new password1>>: ", password1+"new password1>>: ", password2+"  userEmail", email)
-		if password1 != password2 {
-			fmt.Println("new password1>>: ", password1+"new password1>>: ", password2)
-			logindetails, err := login.GetUserWithEmail(email)
-			customerdetails, _ := customer.GetCustomer(logindetails.Email)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-				homeHanler(app)
-			}
-			type PageData struct {
-				Entities login2.Login
-				Customer users.Customer
-				Class    string
-				Message  string
-			}
-			data := PageData{logindetails, customerdetails, "danger", "please check if your password are the same"}
-			files := []string{
-				app.Path + "customerUser/passwordUpdate.html",
-			}
-			ts, err := template.ParseFiles(files...)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
+		if password1 != "" && password2 != "" {
+			fmt.Println("they are not empty......")
+			if password1 == password2 {
+				fmt.Println("they are equal")
+				fmt.Println("new password1>>: ", password1+"new password1>>: ", password2)
+				logindetails, err := login.GetUserWithEmail(email)
+				if err != nil {
+					//Todo we need to report with an error message
+					fmt.Println("could not find the login details")
+					http.Redirect(w, r, "/customer/register/"+previousPassword, 301)
+					return
+				}
+				_, errx := customer.GetCustomer(logindetails.Email)
+				if errx != nil {
+					//Todo we need to report with an error message
+					app.ErrorLog.Println(errx.Error())
+					fmt.Println("could not find the customer details")
+					http.Redirect(w, r, "/customer/register/"+previousPassword, 301)
+					return
+					//homeHanler(app)
+				}
+				newLoging := login2.Login{email, password2, "customer"}
+				_, errr := login.UpdateLogin(newLoging)
+				if errr != nil {
+					//Todo we need to report with an error message
+					app.ErrorLog.Println(errr.Error())
+					fmt.Println("could not update Loging details")
+					http.Redirect(w, r, "/customer/register/"+previousPassword, 301)
+					return
+					//homeHanler(app)
+				}
+				http.Redirect(w, r, "/user/login", 301)
+				return
+				//type PageData struct {
+				//	Entities login2.Login
+				//	Customer users.Customer
+				//	Class    string
+				//	Message  string
+				//}
+				//data := PageData{logindetails, customerdetails, "danger", "please check if your password are the same"}
+				//files := []string{
+				//	app.Path + "customerUser/passwordUpdate.html",
+				//}
+				//ts, err := template.ParseFiles(files...)
+				//if err != nil {
+				//	app.ErrorLog.Println(err.Error())
+				//	return
+				//}
+				//err = ts.Execute(w, data)
+				//if err != nil {
+				//	app.ErrorLog.Println(err.Error())
+				//}
+			} else {
+				fmt.Println("confirm with empty password")
+				http.Redirect(w, r, "/customer/register/"+previousPassword, 301)
 				return
 			}
-			err = ts.Execute(w, data)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-			}
 		} else {
-			logindetails, err := login.GetUserWithEmail(email)
-			if err != nil {
-				app.ErrorLog.Println(err.Error())
-				//homeHanler(app)
-			}
-			newLoging := login2.Login{logindetails.Email, password1, logindetails.UserTupe}
-			result, _ := login.UpdateLogin(newLoging)
-			fmt.Println("user login new details>>: ", result)
-
-			http.Redirect(w, r, "/", 301)
+			fmt.Println("confirm with empty password")
+			http.Redirect(w, r, "/customer/register/"+previousPassword, 301)
 			return
 		}
 	}
@@ -475,10 +498,15 @@ func RegisterCustomerHandler(app *config.Env) http.HandlerFunc {
 			Customer users.Customer
 			Class    string
 			Message  string
+			Password string
 		}
-		data := PageData{logindetails, customerdetails, "", ""}
+		data := PageData{logindetails, customerdetails, "", "", pasword}
 		files := []string{
 			app.Path + "customerUser/passwordUpdate.html",
+			app.Path + "template/navigator.html",
+			app.Path + "template/footer.html",
+			app.Path + "customer-template/toolbarTemplate.html",
+			app.Path + "customer-template/navbar.html",
 		}
 		ts, err := template.ParseFiles(files...)
 		if err != nil {

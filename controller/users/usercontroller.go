@@ -10,7 +10,6 @@ import (
 	"github.com/go-chi/chi"
 	"html/template"
 	"net/http"
-	"strings"
 )
 
 type PageData struct {
@@ -87,7 +86,7 @@ func ManagementHandler(app *config.Env) http.HandlerFunc {
 			app.ErrorLog.Println(err.Error())
 			http.Redirect(w, r, "/user/management", 301)
 			return
-		} else if userLog.UserTupe != "admin" {
+		} else if userLog.UserType != "admin" {
 			app.Session.Put(r.Context(), "loging", "Wrong Credentials!")
 			http.Redirect(w, r, "/user/login", 301)
 			return
@@ -130,14 +129,14 @@ func ManagerLogHandler(app *config.Env) http.HandlerFunc {
 			LoginStat string
 		}
 		fmt.Println("user type is: ", resp)
-		if resp.UserTupe == "admin" {
+		if resp.UserType == "admin" {
 			app.Session.Cookie.Name = "UserID"
 			app.Session.Put(r.Context(), "userEmail", logingDetails.Email)
 			app.Session.Put(r.Context(), "password", logingDetails.Pasword)
 			app.InfoLog.Println("Login is successful. Result is ", logingDetails)
 			http.Redirect(w, r, "/user/managementwelcom", 301)
 		}
-		if resp.UserTupe != "admin" {
+		if resp.UserType != "admin" {
 			stat = "Please Login here "
 		}
 		fmt.Println("user type is: ", stat)
@@ -161,13 +160,10 @@ func CustomerLogHandler(app *config.Env) http.HandlerFunc {
 		r.ParseForm()
 		email := r.PostFormValue("email")
 		password := r.PostFormValue("password")
-		fmt.Println("email: ", email+"password: ", password)
+		fmt.Println("email: ", email+" password: ", password)
 
-		//var data PageDate
-
-		//logingDetails := login.LoginHelper{email, password}
-		//customerDetails := login.Login{logingDetails.Email, logingDetails.Pasword, "customer"}
-		resp, err := login2.UniversalLogin(email, password)
+		userLoginDetails := login.Login{email, password, ""}
+		resp, err := login2.UniversalLogin(userLoginDetails)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			app.Session.Put(r.Context(), "message", "Wrong Credentials!")
@@ -179,10 +175,9 @@ func CustomerLogHandler(app *config.Env) http.HandlerFunc {
 		app.Session.Put(r.Context(), "password", resp.Password)
 		app.InfoLog.Println("Login is successful. Result is ", resp)
 
-		if resp.UserTupe == "admin" {
+		if resp.UserType == "admin" {
 			http.Redirect(w, r, "/user/managementwelcom", 301)
 		} else {
-
 			http.Redirect(w, r, "/", 301)
 		}
 	}
@@ -217,6 +212,8 @@ func userLoginHandler(app *config.Env) http.HandlerFunc {
 		}
 		files := []string{
 			app.Path + "loginpage.html",
+			app.Path + "template/navigator.html",
+			app.Path + "template/footer.html",
 			app.Path + "customer-template/toolbarTemplate.html",
 			app.Path + "customer-template/navbar.html",
 		}

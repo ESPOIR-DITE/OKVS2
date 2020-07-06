@@ -7,5 +7,5 @@ type LoginHelper struct {
 type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
-	UserTupe string `json:"userTupe"`
+	UserType string `json:"userType"`
 }

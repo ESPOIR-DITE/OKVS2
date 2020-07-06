@@ -65,9 +65,9 @@ func UpdateLogin(user login.Login) (login.Login, error) {
 	}
 	return entity, nil
 }
-func UniversalLogin(email, password string) (login.Login, error) {
+func UniversalLogin(user login.Login) (login.Login, error) {
 	entity := login.Login{}
-	resp, _ := api.Rest().Get(loginURL + "/univelogin?email=" + email + "&password=" + password)
+	resp, _ := api.Rest().SetBody(user).Post(loginURL + "/univelogin")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
