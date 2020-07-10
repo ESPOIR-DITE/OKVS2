@@ -5023,7 +5023,7 @@ var widgetsMenu = $.widget( "ui.menu", {
 				var actualTarget = $( event.target ).closest( ".ui-menu-item" ),
 					target = $( event.currentTarget );
 
-				// Ignore bubbled events on parent items, see #11641
+				// Ignore bubbled events on parent item_io, see #11641
 				if ( actualTarget[ 0 ] !== target[ 0 ] ) {
 					return;
 				}
@@ -5225,7 +5225,7 @@ var widgetsMenu = $.widget( "ui.menu", {
 		menus = submenus.add( this.element );
 		items = menus.find( this.options.items );
 
-		// Initialize menu-items containing spaces and/or dashes only as dividers
+		// Initialize menu-item_io containing spaces and/or dashes only as dividers
 		items.not( ".ui-menu-item" ).each( function() {
 			var item = $( this );
 			if ( that._isDivider( item ) ) {
@@ -5233,7 +5233,7 @@ var widgetsMenu = $.widget( "ui.menu", {
 			}
 		} );
 
-		// Don't refresh list items that are already adapted
+		// Don't refresh list item_io that are already adapted
 		newItems = items.not( ".ui-menu-item, .ui-menu-divider" );
 		newWrappers = newItems.children()
 			.not( ".ui-menu" )
@@ -5565,7 +5565,7 @@ var widgetsMenu = $.widget( "ui.menu", {
 		return this.activeMenu
 			.find( this.options.items )
 
-				// Only match on items, not dividers or other content (#10571)
+				// Only match on item_io, not dividers or other content (#10571)
 				.filter( ".ui-menu-item" )
 					.filter( function() {
 						return regex.test(
@@ -5795,7 +5795,7 @@ $.widget( "ui.autocomplete", {
 					delete this.cancelBlur;
 
 					// Support: IE 8 only
-					// Right clicking a menu item or selecting text from the menu items will
+					// Right clicking a menu item or selecting text from the menu item_io will
 					// result in focus moving out of the input. However, we've already received
 					// and ignored the blur event because of the cancelBlur flag set above. So
 					// we restore focus to ensure that the menu closes properly based on the user's
@@ -5809,7 +5809,7 @@ $.widget( "ui.autocomplete", {
 				var label, item;
 
 				// support: Firefox
-				// Prevent accidental activation of menu items in Firefox (#7024 #9118)
+				// Prevent accidental activation of menu item_io in Firefox (#7024 #9118)
 				if ( this.isNewMenu ) {
 					this.isNewMenu = false;
 					if ( event.originalEvent && /^mouse/.test( event.originalEvent.type ) ) {
@@ -6071,7 +6071,7 @@ $.widget( "ui.autocomplete", {
 
 	_normalize: function( items ) {
 
-		// assume all items have the right format when the first item is complete
+		// assume all item_io have the right format when the first item is complete
 		if ( items.length && items[ 0 ].label && items[ 0 ].value ) {
 			return items;
 		}
@@ -6302,7 +6302,7 @@ var widgetsControlgroup = $.widget( "ui.controlgroup", {
 		var that = this,
 			childWidgets = [];
 
-		// First we iterate over each of the items options
+		// First we iterate over each of the item_io options
 		$.each( this.options.items, function( widget, selector ) {
 			var labels;
 			var options = {};
@@ -7143,10 +7143,10 @@ if ( $.uiBackCompat !== false ) {
 		}
 		if ( arguments[ 0 ] === "option" && arguments[ 1 ] === "items" && arguments[ 2 ] ) {
 			return this.controlgroup.apply( this,
-				[ arguments[ 0 ], "items.button", arguments[ 2 ] ] );
+				[ arguments[ 0 ], "item_io.button", arguments[ 2 ] ] );
 		}
 		if ( arguments[ 0 ] === "option" && arguments[ 1 ] === "items" ) {
-			return this.controlgroup.apply( this, [ arguments[ 0 ], "items.button" ] );
+			return this.controlgroup.apply( this, [ arguments[ 0 ], "item_io.button" ] );
 		}
 		if ( typeof arguments[ 0 ] === "object" && arguments[ 0 ].items ) {
 			arguments[ 0 ].items = {
@@ -13910,7 +13910,7 @@ var widgetsSelectmenu = $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
 		this._on( this.button, this._buttonEvents );
 		this.button.one( "focusin", function() {
 
-			// Delay rendering the menu items until the button receives focus.
+			// Delay rendering the menu item_io until the button receives focus.
 			// The menu may have already been rendered via a programmatic open.
 			if ( !that._rendered ) {
 				that._refreshMenu();
@@ -13976,7 +13976,7 @@ var widgetsSelectmenu = $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
 			return false;
 		};
 
-		// Selects often contain empty items, but never contain dividers
+		// Selects often contain empty item_io, but never contain dividers
 		this.menuInstance._isDivider = function() {
 			return false;
 		};
@@ -14031,7 +14031,7 @@ var widgetsSelectmenu = $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
 			return;
 		}
 
-		// If this is the first time the menu is being opened, render the items
+		// If this is the first time the menu is being opened, render the item_io
 		if ( !this._rendered ) {
 			this._refreshMenu();
 		} else {
@@ -15209,7 +15209,7 @@ var widgetsSlider = $.widget( "ui.slider", $.ui.mouse, {
 
 //>>label: Sortable
 //>>group: Interactions
-//>>description: Enables items in a list to be sorted using the mouse.
+//>>description: Enables item_io in a list to be sorted using the mouse.
 //>>docs: http://api.jqueryui.com/sortable/
 //>>demos: http://jqueryui.com/sortable/
 //>>css.structure: ../../themes/base/sortable.css
@@ -15272,7 +15272,7 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 		this.containerCache = {};
 		this._addClass( "ui-sortable" );
 
-		//Get the items
+		//Get the item_io
 		this.refresh();
 
 		//Let's determine the parent's offset
@@ -15332,10 +15332,10 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 			return false;
 		}
 
-		//We have to refresh the items data once first
+		//We have to refresh the item_io data once first
 		this._refreshItems( event );
 
-		//Find out if the clicked node (or one of its parents) is a actual item in this.items
+		//Find out if the clicked node (or one of its parents) is a actual item in this.item_io
 		$( event.target ).parents().each( function() {
 			if ( $.data( this, that.widgetName + "-item" ) === that ) {
 				currentItem = $( this );
@@ -15598,11 +15598,11 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 			}
 
 			// Only put the placeholder inside the current Container, skip all
-			// items from other containers. This works because when moving
+			// item_io from other containers. This works because when moving
 			// an item from one container to another the
 			// currentContainer is switched before the placeholder is moved.
 			//
-			// Without this, moving items in "sub-sortables" can cause
+			// Without this, moving item_io in "sub-sortables" can cause
 			// the placeholder to jitter between the outer and inner container.
 			if ( item.instance !== this.currentContainer ) {
 				continue;
@@ -15998,7 +15998,7 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 
 	refreshPositions: function( fast ) {
 
-		// Determine whether items are being displayed horizontally
+		// Determine whether item_io are being displayed horizontally
 		this.floating = this.items.length ?
 			this.options.axis === "x" || this._isFloating( this.items[ 0 ].item ) :
 			false;
@@ -16633,7 +16633,7 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 			} );
 		}
 
-		// Check if the items Container has Changed and trigger appropriate
+		// Check if the item_io Container has Changed and trigger appropriate
 		// events.
 		if ( this !== this.currentContainer ) {
 			if ( !noPropagation ) {

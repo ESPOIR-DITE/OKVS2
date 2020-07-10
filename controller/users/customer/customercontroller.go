@@ -5,14 +5,13 @@ import (
 	helperUser "OKVS2/controller/users"
 	gender2 "OKVS2/domain/gender"
 	"OKVS2/domain/items"
-	login2 "OKVS2/domain/login"
 	"OKVS2/domain/users"
-	"OKVS2/io/login"
 	"OKVS2/io/makeUp"
-	"OKVS2/io/order"
-	"OKVS2/io/types"
+	"OKVS2/io/order/card"
+	"OKVS2/io/users_io"
 	address2 "OKVS2/io/users_io/address"
-	"OKVS2/io/users_io/customer"
+	"OKVS2/io/users_io/gender"
+	"OKVS2/io/users_io/login"
 	"fmt"
 	"github.com/go-chi/chi"
 	"html/template"
@@ -47,7 +46,7 @@ func ContactProfileHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userEmail := app.Session.GetString(r.Context(), "userEmail")
 
-		_, err := customer.GetCustomer(userEmail)
+		_, err := users_io.GetCustomer(userEmail)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			http.Redirect(w, r, "/", 301)
@@ -95,14 +94,14 @@ func UpdateProfileHandler(app *config.Env) http.HandlerFunc {
 		phoneNumber := r.PostFormValue("cellphone")
 
 		myCustomer := users.Customer{userEmail, name, surName, "active"}
-		_, err := customer.UpdateCustomer(myCustomer)
+		_, err := users_io.UpdateCustomer(myCustomer)
 		if err != nil {
 			fmt.Println("myCustomer ", myCustomer)
 			app.ErrorLog.Println(err.Error())
 		}
 		/**getting the id of the gender that**/
 		customerGender := gender2.CustomerGender{userEmail, genderId, dateOfBirth}
-		_, errr := customer.UpdateCustomerGender(customerGender)
+		_, errr := users_io.UpdateCustomerGender(customerGender)
 		fmt.Println("myCustomer Gender ", customerGender)
 		if errr != nil {
 			fmt.Println("myCustomer Gender ", customerGender)
@@ -134,14 +133,14 @@ func CustomerEditeProfileHandler(app *config.Env) http.HandlerFunc {
 			app.Path + "customer-template/toolbarTemplate.html",
 			app.Path + "customer-template/navbar.html",
 		}
-		mycustomer, err := customer.GetCustomer(userEmail)
+		mycustomer, err := users_io.GetCustomer(userEmail)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			http.Redirect(w, r, "/", 301)
 			return
 		}
 
-		customerGender, err := customer.GetCustomerGender(userEmail)
+		customerGender, err := users_io.GetCustomerGender(userEmail)
 		if err != nil {
 			fmt.Println("in customerGender")
 			app.ErrorLog.Println(err.Error())
@@ -153,12 +152,12 @@ func CustomerEditeProfileHandler(app *config.Env) http.HandlerFunc {
 			app.ErrorLog.Println(err.Error())
 		}
 
-		genderType, err := types.GetGenders()
+		genderType, err := gender.GetGenders()
 		if err != nil {
 			fmt.Println("in genderType")
 			app.ErrorLog.Println(err.Error())
 		}
-		addressTypes, err := types.GetAddressTypes()
+		addressTypes, err := address2.GetAddressTypes()
 
 		if err != nil {
 			fmt.Print("in addressTypes")
@@ -166,7 +165,7 @@ func CustomerEditeProfileHandler(app *config.Env) http.HandlerFunc {
 		}
 
 		type PageData struct {
-			AddressTypes    []types.AddressType
+			AddressTypes    []address2.AddressType
 			GenderType      []gender2.Gender
 			Customer        users.Customer
 			CustomerAddress users.Address
@@ -194,7 +193,7 @@ func CustomerEditeProfileHandler(app *config.Env) http.HandlerFunc {
 func CustomerProfileHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userEmail := app.Session.GetString(r.Context(), "userEmail")
-		customerDetail, err := customer.GetCustomer(userEmail)
+		customerDetail, err := users_io.GetCustomer(userEmail)
 		message, class, Manager, user := helperUser.GetUserDetails(userEmail)
 		fmt.Println(" in reading customerDetaild>>: customerDetail")
 		if err != nil {
@@ -205,13 +204,13 @@ func CustomerProfileHandler(app *config.Env) http.HandlerFunc {
 		var Class = "success"
 		var checker = true
 
-		customerGender, err := customer.GetCustomerGender(userEmail)
+		customerGender, err := users_io.GetCustomerGender(userEmail)
 		fmt.Println("Gender Id>>: ", customerGender)
 		if err != nil {
 			fmt.Println("error in reading customerGender>>: ")
 			app.ErrorLog.Println(err.Error())
 		}
-		gender, err := types.GetGender(customerGender.GenderId)
+		gender, err := gender.GetGender(customerGender.GenderId)
 		if err != nil {
 			fmt.Println("error in reading Gender>>: ")
 			app.ErrorLog.Println(err.Error())
@@ -280,7 +279,7 @@ func CustomerProfileHandler(app *config.Env) http.HandlerFunc {
 func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userEmail := app.Session.GetString(r.Context(), "userEmail")
-		_, err := customer.GetCustomer(userEmail)
+		_, err := users_io.GetCustomer(userEmail)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			http.Redirect(w, r, "/", 301)
@@ -301,9 +300,9 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 		age := r.PostFormValue("age")
 
 		if genderData != "" || age != "" {
-			readgender, _ := types.GetGender(genderData)
+			readgender, _ := gender.GetGender(genderData)
 			customerGenderObj := gender2.CustomerGender{userEmail, readgender.GenderId, age}
-			customerGender, err := customer.CreateCustomerGender(customerGenderObj)
+			customerGender, err := users_io.CreateCustomerGender(customerGenderObj)
 			if err != nil {
 				fmt.Println("error in creating customerGender>>: ", customerGender)
 				app.ErrorLog.Println(err.Error())
@@ -312,8 +311,8 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 				checker = false
 			}
 			if addressType != "" || address != "" || cellphone != "" {
-				addressobj, _ := types.ReadWithAddressType(addressType)
-				addressObj := users.AddressHelper{"00", userEmail, address, addressobj.AddressTypeId, cellphone}
+				addressobj, _ := address2.ReadWithAddressType(addressType)
+				addressObj := users.UserAddress{"00", userEmail, address, addressobj.AddressTypeId, cellphone}
 				_, err := address2.CreateAddress(addressObj)
 				if err != nil {
 					fmt.Println("error in creating address>>: ")
@@ -324,7 +323,7 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 				}
 				if name != "" || surname != "" {
 					customerDetails := users.Customer{userEmail, name, surname, "active"}
-					_, err := customer.UpdateCustomer(customerDetails)
+					_, err := users_io.UpdateCustomer(customerDetails)
 					if err != nil {
 						fmt.Println("error in creating customerDetails>>: ")
 						app.ErrorLog.Println(err.Error())
@@ -335,17 +334,17 @@ func CreateAddressHandler(app *config.Env) http.HandlerFunc {
 				}
 			}
 		}
-		customerDetail, err := customer.GetCustomer(userEmail)
+		customerDetail, err := users_io.GetCustomer(userEmail)
 		if err != nil {
 			fmt.Println("error in reading customerDetaild>>: ")
 			app.ErrorLog.Println(err.Error())
 		}
-		customerGender, err := customer.GetCustomerGender(userEmail)
+		customerGender, err := users_io.GetCustomerGender(userEmail)
 		if err != nil {
 			fmt.Println("error in reading customerGender>>: ")
 			app.ErrorLog.Println(err.Error())
 		}
-		gender, err := types.GetGender(customerGender.GenderId)
+		gender, err := gender.GetGender(customerGender.GenderId)
 		if err != nil {
 			fmt.Println("error in reading Gender>>: ")
 			app.ErrorLog.Println(err.Error())
@@ -429,7 +428,7 @@ func CustomerRegistration(app *config.Env) http.HandlerFunc {
 					http.Redirect(w, r, "/customer/register/"+previousPassword, 301)
 					return
 				}
-				_, errx := customer.GetCustomer(logindetails.Email)
+				_, errx := users_io.GetCustomer(logindetails.Email)
 				if errx != nil {
 					//Todo we need to report with an error message
 					app.ErrorLog.Println(errx.Error())
@@ -438,7 +437,7 @@ func CustomerRegistration(app *config.Env) http.HandlerFunc {
 					return
 					//homeHanler(app)
 				}
-				newLoging := login2.Login{email, password2, "customer"}
+				newLoging := users.Login{email, password2, "customer"}
 				_, errr := login.UpdateLogin(newLoging)
 				if errr != nil {
 					//Todo we need to report with an error message
@@ -488,13 +487,13 @@ func RegisterCustomerHandler(app *config.Env) http.HandlerFunc {
 		fmt.Println("generated pasword>>: ", pasword)
 		logindetails, err := login.GetUserEmail(pasword)
 		fmt.Println("user login details>>: ", logindetails)
-		customerdetails, _ := customer.GetCustomer(logindetails.Email)
+		customerdetails, _ := users_io.GetCustomer(logindetails.Email)
 		fmt.Println("user login customerdetails>>: ", customerdetails)
 		if err != nil {
 			homeHanler(app)
 		}
 		type PageData struct {
-			Entities login2.Login
+			Entities users.Login
 			Customer users.Customer
 			Class    string
 			Message  string
@@ -525,7 +524,7 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		/**
-		we first collect all the items that should appear on the home page
+		we first collect all the item_io that should appear on the home page
 		if any thing hapens we send the tamplete home page
 		we need to find out the data from the session so that we can che if the user has a card
 		*/
@@ -546,7 +545,7 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 
 		fmt.Println("User email from the session>>: ", userEmail)
 		//Checking the card table if there something for this User we will send a message and set a trolley color to danger
-		cardDetails, err := order.GetCardWithCustId(userEmail)
+		cardDetails, err := card.GetCardWithCustId(userEmail)
 		fmt.Println("User card>>: ", cardDetails)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
@@ -597,7 +596,7 @@ func readImage(byteImage []byte) string {
 func CustomerTableHandler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//var dust []customerIO.Customer
-		resp, err := customer.GetCustomers()
+		resp, err := users_io.GetCustomers()
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			return

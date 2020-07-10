@@ -104,7 +104,7 @@
     //            $('.member_slider').owlCarousel({
     //                loop:true,
     //                margin: 30,
-    //                items: 3,
+    //                item_io: 3,
     //                nav: false,
     //                autoplay: false,
     //                smartSpeed: 1500,
@@ -114,13 +114,13 @@
     //                responsiveClass: true,
     //                responsive: {
     //                    0: {
-    //                        items: 1,
+    //                        item_io: 1,
     //                    },
     //                    768: {
-    //                        items: 2,
+    //                        item_io: 2,
     //                    },
     //                    992: {
-    //                        items: 3,
+    //                        item_io: 3,
     //                    },
     //                }
     //            })

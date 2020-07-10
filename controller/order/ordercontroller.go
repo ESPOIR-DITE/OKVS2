@@ -6,10 +6,14 @@ import (
 	"OKVS2/domain/items"
 	"OKVS2/domain/orders"
 	"OKVS2/domain/users"
-	items2 "OKVS2/io/items"
+	"OKVS2/io/accountting_io"
+	items2 "OKVS2/io/item_io"
 	"OKVS2/io/order"
+	card2 "OKVS2/io/order/card"
+	"OKVS2/io/order/orderLine"
+	"OKVS2/io/order/status"
+	"OKVS2/io/users_io"
 	admin2 "OKVS2/io/users_io/admin"
-	customer2 "OKVS2/io/users_io/customer"
 	"fmt"
 	"github.com/go-chi/chi"
 	"html/template"
@@ -21,6 +25,7 @@ import (
 type MyUser struct {
 	User string
 }
+
 func Order(app *config.Env) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/addToCard/{resetkeys}", AddToCardHandler(app))
@@ -73,7 +78,7 @@ func UpdateOrderHandler(app *config.Env) http.HandlerFunc {
 		theOrderId := r.PostFormValue("theOrderId")
 		statId := r.PostFormValue("statId")
 		orderStatus := orders.OrderStatus{"", theOrderId, time.Now(), userEmail, statId}
-		newOrderStatus, err := order.CreateOrderStatus(orderStatus)
+		newOrderStatus, err := status.CreateOrderStatus(orderStatus)
 		if err != nil {
 			notice = "Could not update because there is an error"
 			class = "danger"
@@ -111,7 +116,7 @@ func MyTrackingHandler(app *config.Env) http.HandlerFunc {
 			}
 		}
 		//need o check if the user exist in the database
-		entit, err := customer2.GetCustomer(userEmail)
+		entit, err := users_io.GetCustomer(userEmail)
 		if err != nil {
 			fmt.Println("in MyTrackingHandler user id to add to the card>>><<<< customer>>>", entit)
 			files := []string{
@@ -212,7 +217,7 @@ func MyOrderHandler(app *config.Env) http.HandlerFunc {
 		}
 
 		//reading all the card of this user
-		card, err := order.GetCardWithCustId(userEmail)
+		card, err := card2.GetCardWithCustId(userEmail)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			message = "An error has occured please try again"
@@ -267,7 +272,7 @@ func CardRemoveHandler(app *config.Env) http.HandlerFunc {
 		}
 
 		makeCard := orders.Card{"", itemId, userEmail, 00}
-		card, err := order.RemoveCard(makeCard)
+		card, err := card2.RemoveCard(makeCard)
 
 		fmt.Println("Result after remove ", card)
 		if err != nil {
@@ -317,7 +322,7 @@ func AddItemToCardHandler(app *config.Env) http.HandlerFunc {
 			return
 		}
 		makeCard := orders.Card{"", itemId, userEmail, quantity}
-		card, err := order.CreateCard(makeCard)
+		card, err := card2.CreateCard(makeCard)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			message = "An error has occured please try again"
@@ -352,12 +357,12 @@ func ReadCardHandler(app *config.Env) http.HandlerFunc {
 			http.Redirect(w, r, "/user/login", 307)
 			//return
 		}
-		cardList, _ := order.GetCardWithCustId(userEmail)
+		cardList, _ := card2.GetCardWithCustId(userEmail)
 		message, class, Manager, user := helperUser.GetUserDetails(userEmail)
 		//fmt.Println("product id to add to the card>>>", cardList, "<<<< User email>>>", userEmail)
 
 		for _, card := range cardList {
-			cardCheck, _ := order.GetCheckOut(card)
+			cardCheck, _ := card2.GetCheckOut(card)
 			check = append(check, orders.CheckOutHelper{readImage(cardCheck.Image), cardCheck.Description, cardCheck.Price, cardCheck.Quantity, cardCheck.Total, cardCheck.ItemId})
 		}
 
@@ -374,7 +379,7 @@ func ReadCardHandler(app *config.Env) http.HandlerFunc {
 		data := PageData{check, data1, MyUser{userEmail}, Manager, user}
 
 		files := []string{
-			app.Path + "items/item_cart.html",
+			app.Path + "item_io/item_cart.html",
 			app.Path + "customer-template/toolbarTemplate.html",
 			app.Path + "customer-template/navbar.html",
 		}
@@ -411,7 +416,7 @@ func AddToCardHandler(app *config.Env) http.HandlerFunc {
 		}
 
 		makeCard := orders.Card{"", itemId, userEmail, 00}
-		card, err := order.CreateCard(makeCard)
+		card, err := card2.CreateCard(makeCard)
 
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
@@ -470,9 +475,9 @@ func getOrder(orderLine orders.OrderLine) myItem {
 	entity := myItem{}
 	product, err := items2.GetProduct(orderLine.ItemNumber)
 	if err != nil {
-		fmt.Println("error reading items in getOrder")
+		fmt.Println("error reading item_io in getOrder")
 	}
-	account, err := items2.GetAccounting(product.Id)
+	account, err := accountting_io.GetAccounting(product.Id)
 	if err == nil {
 		price := account.Price * orderLine.Quantity
 		return myItem{product, price, orderLine.Quantity}
@@ -556,7 +561,7 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 		var Order order.Order
 		var OderStatus []orders.OrderStatus
 		var theLocalItemList []myItem
-		statusList, err := order.GetStatues()
+		statusList, err := status.GetStatues()
 
 		if err != nil {
 			fmt.Println("err reading statusList", statusList)
@@ -574,24 +579,24 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 			Order = myOrder
 
 			//2)orderLine details with the orderNumber
-			theOrderLine, err = order.GetOrderLineWithOrderId(myOrder.Id)
+			theOrderLine, err = orderLine.GetOrderLineWithOrderId(myOrder.Id)
 			if err != nil {
 				app.ErrorLog.Println(err.Error())
 				return
 			}
-			theCustomer, err = customer2.GetCustomer(myOrder.CustomerId)
+			theCustomer, err = users_io.GetCustomer(myOrder.CustomerId)
 			if err != nil {
 				app.ErrorLog.Println(err.Error())
 				return
 			}
 
-			OderStatus, err = order.GetAllFor(myOrder.Id)
+			OderStatus, err = status.GetAllFor(myOrder.Id)
 			if err != nil {
 				fmt.Println("err reading OderStatus", OderStatus)
 				app.ErrorLog.Println(err.Error())
 			}
 			for _, orderSt := range OderStatus {
-				stat, err := order.GetStatus(orderSt.Stat)
+				stat, err := status.GetStatus(orderSt.Stat)
 				if err != nil {
 					fmt.Println("err reading stat", stat)
 					app.ErrorLog.Println(err.Error())
@@ -611,7 +616,7 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 					return
 				}
 
-				account, err := items2.GetAccounting(item.Id)
+				account, err := accountting_io.GetAccounting(item.Id)
 				if err == nil {
 					price := account.Price * orderLing.Quantity
 					itmeobj := myItem{item, price, orderLing.Quantity}

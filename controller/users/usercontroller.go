@@ -2,10 +2,9 @@ package users
 
 import (
 	"OKVS2/config"
-	"OKVS2/domain/login"
 	"OKVS2/domain/users"
-	login2 "OKVS2/io/login"
-	"OKVS2/io/users_io/customer"
+	"OKVS2/io/users_io"
+	login2 "OKVS2/io/users_io/login"
 	"fmt"
 	"github.com/go-chi/chi"
 	"html/template"
@@ -117,8 +116,8 @@ func ManagerLogHandler(app *config.Env) http.HandlerFunc {
 		password := r.PostFormValue("password")
 		fmt.Println("email: ", email+"password: ", password)
 
-		logingDetails := login.LoginHelper{email, password}
-		customerDetails := login.Login{logingDetails.Email, logingDetails.Pasword, "customer"}
+		logingDetails := users.LoginHelper{email, password}
+		customerDetails := users.Login{logingDetails.Email, logingDetails.Pasword, "customer"}
 		resp, err := login2.UserLogin(customerDetails)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
@@ -162,7 +161,7 @@ func CustomerLogHandler(app *config.Env) http.HandlerFunc {
 		password := r.PostFormValue("password")
 		fmt.Println("email: ", email+" password: ", password)
 
-		userLoginDetails := login.Login{email, password, ""}
+		userLoginDetails := users.Login{email, password, ""}
 		resp, err := login2.UniversalLogin(userLoginDetails)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
@@ -192,7 +191,7 @@ func CreateCustomerHandler(app *config.Env) http.HandlerFunc {
 		email := r.PostFormValue("email")
 		user := users.Customer{email, name, lastName, "active"}
 
-		result, err := customer.CreateCustomer(user)
+		result, err := users_io.CreateCustomer(user)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 		}

@@ -8,7 +8,7 @@ import (
 
 const addressURL = api.BASE_URL + "address"
 
-func CreateAddress(obj users.AddressHelper) (users.Address, error) {
+func CreateAddress(obj users.UserAddress) (users.Address, error) {
 	entity := users.Address{}
 	resp, _ := api.Rest().SetBody(obj).Post(addressURL + "/create")
 	if resp.IsError() {

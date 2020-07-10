@@ -20,8 +20,8 @@ func GetAllItems() ([]items.ItemView, error) {
 	}
 	return entities, nil
 }
-func GetOneItemDetails(id string) (items.ViewProduct, error) {
-	entity := items.ViewProduct{}
+func GetOneItemDetails(id string) (items.ViewItem, error) {
+	entity := items.ViewItem{}
 	resp, _ := api.Rest().Get(itemviewURL + "/read?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
@@ -32,8 +32,8 @@ func GetOneItemDetails(id string) (items.ViewProduct, error) {
 	}
 	return entity, nil
 }
-func ViewAllItems() ([]items.ViewProduct, error) {
-	entities := []items.ViewProduct{}
+func ViewAllItems() ([]items.ViewItem, error) {
+	entities := []items.ViewItem{}
 	resp, _ := api.Rest().Get(itemviewURL + "/readAll")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())

@@ -380,12 +380,12 @@
             noneSelectedText: 'Nothing selected',
             noneResultsText: 'No results matched {0}',
             countSelectedText: function(numSelected, numTotal) {
-                return (numSelected == 1) ? "{0} item selected" : "{0} items selected";
+                return (numSelected == 1) ? "{0} item selected" : "{0} item_io selected";
             },
             maxOptionsText: function(numAll, numGroup) {
                 return [
-                    (numAll == 1) ? 'Limit reached ({n} item max)' : 'Limit reached ({n} items max)',
-                    (numGroup == 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} items max)'
+                    (numAll == 1) ? 'Limit reached ({n} item max)' : 'Limit reached ({n} item_io max)',
+                    (numGroup == 1) ? 'Group limit reached ({n} item max)' : 'Group limit reached ({n} item_io max)'
                 ];
             },
             selectAllText: 'Select All',
@@ -1771,7 +1771,7 @@
                         elem.focus();
                         // Prevent screen from scrolling if the user hit the spacebar
                         e.preventDefault();
-                        // Fixes spacebar selection of dropdown items in FF & IE
+                        // Fixes spacebar selection of dropdown item_io in FF & IE
                         $(document).data('spaceSelect', true);
                     } else if (!/(32)/.test(e.keyCode.toString(10))) {
                         that.$menuInner.find('.active a').click();

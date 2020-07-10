@@ -6,8 +6,8 @@ import (
 	"OKVS2/domain/items"
 	"OKVS2/domain/users"
 	"OKVS2/io/makeUp"
+	"OKVS2/io/users_io"
 	"OKVS2/io/users_io/admin"
-	"OKVS2/io/users_io/customer"
 	"fmt"
 	"github.com/go-chi/chi"
 	"html/template"
@@ -75,7 +75,7 @@ type MyUser struct {
 func homeHanler(app *config.Env) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		/**
-		we first collect all the items that should appear on the home page
+		we first collect all the item_io that should appear on the home page
 		if any thing hapens we send the tamplete home page
 		we need to find out the data from the session so that we can che if the user has a card
 		*/
@@ -169,7 +169,7 @@ func indexHanler(app *config.Env) http.HandlerFunc {
 				app.ErrorLog.Println(err.Error())
 			}
 		}
-		userName, err := customer.GetCustomer(email)
+		userName, err := users_io.GetCustomer(email)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 			http.Redirect(w, r, "/", 301)

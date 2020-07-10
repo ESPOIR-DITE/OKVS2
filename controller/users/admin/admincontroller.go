@@ -3,10 +3,11 @@ package admin
 import (
 	"OKVS2/config"
 	items2 "OKVS2/domain/items"
-	"OKVS2/io/items"
+	"OKVS2/io/item_io"
+	special2 "OKVS2/io/item_io/special"
+	users_io2 "OKVS2/io/users_io"
 	users_io "OKVS2/io/users_io/address"
 	admin2 "OKVS2/io/users_io/admin"
-	customer2 "OKVS2/io/users_io/customer"
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
@@ -43,7 +44,7 @@ func AdminCreateSpecialsHandler(app *config.Env) http.HandlerFunc {
 		startDate := r.PostFormValue("startDate")
 		endDate := r.PostFormValue("endDate")
 		obj := items2.Specials{"", title, itemId, specialTypeId, startDate, endDate, description, price}
-		special, err := items.CreateSpecial(obj)
+		special, err := special2.CreateSpecial(obj)
 		if err != nil {
 			fmt.Println("error creating special in AdminCreateSpecialsHandler>>>>", special)
 			app.ErrorLog.Println(err.Error())
@@ -74,14 +75,14 @@ func AdminAddSpecialsHandler(app *config.Env) http.HandlerFunc {
 		//	app.ErrorLog.Println("User need to logIn as an Admin")
 		//	http.Redirect(w, r, "/user/login", 301)
 		//}
-		specialType, err := items.GetSpecialTypes()
+		specialType, err := special2.GetSpecialTypes()
 		if err != nil {
 			fmt.Println("error reading customer specialType>>>>", specialType)
 			app.ErrorLog.Println(err.Error())
 		}
-		items, err := items.GetProducts()
+		items, err := item_io.GetProducts()
 		if err != nil {
-			fmt.Println("error reading customer items>>>>", items)
+			fmt.Println("error reading customer item_io>>>>", items)
 			app.ErrorLog.Println(err.Error())
 		}
 		type PageData struct {
@@ -92,7 +93,7 @@ func AdminAddSpecialsHandler(app *config.Env) http.HandlerFunc {
 
 		files := []string{
 			//app.Path + "itemAdd/addSpecials.html",
-			//app.Path + "items/itemProduct.html",C:\Users\ESPOIR\GolandProjects\OKVS2\views\html\itemAdd\addSpacials.html
+			//app.Path + "item_io/itemProduct.html",C:\Users\ESPOIR\GolandProjects\OKVS2\views\html\itemAdd\addSpacials.html
 			app.Path + "itemAdd/addSpacials.html",
 			app.Path + "template/admin_navbar.html",
 		}
@@ -136,7 +137,7 @@ func AdminGetCustomerHandler(app *config.Env) http.HandlerFunc {
 			fmt.Println("error reading customer address>>>>", custAddress)
 			app.ErrorLog.Println(err.Error())
 		}
-		customer, err := customer2.GetCustomer(customerId)
+		customer, err := users_io2.GetCustomer(customerId)
 		if err != nil {
 			fmt.Println("error reading customer>>>>", customer)
 			app.ErrorLog.Println(err.Error())

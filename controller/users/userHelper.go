@@ -2,10 +2,10 @@ package users
 
 import (
 	"OKVS2/domain/users"
-	"OKVS2/io/login"
-	"OKVS2/io/order"
+	"OKVS2/io/order/card"
+	"OKVS2/io/users_io"
 	"OKVS2/io/users_io/admin"
-	"OKVS2/io/users_io/customer"
+	"OKVS2/io/users_io/login"
 	"fmt"
 )
 
@@ -23,7 +23,7 @@ func GetUserDetails(email string) (string, string, bool, users.Customer) {
 
 	userLog, err := login.GetUserWithEmail(email)
 	if userLog.UserType == "customer" {
-		user, err = customer.GetCustomer(email)
+		user, err = users_io.GetCustomer(email)
 		if err != nil {
 			fmt.Println("error reading GetCustomer in if userLog.UserType==customer")
 		}
@@ -36,7 +36,7 @@ func GetUserDetails(email string) (string, string, bool, users.Customer) {
 		}
 	}
 
-	cardDetails, err := order.GetCardWithCustId(email)
+	cardDetails, err := card.GetCardWithCustId(email)
 	fmt.Println("User card>>: ", cardDetails)
 	if err != nil {
 		fmt.Println("User may not have logIn or may not have ordered yet ")
