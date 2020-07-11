@@ -1,4 +1,4 @@
-package order
+package order_io
 
 import (
 	"OKVS2/api"
@@ -6,7 +6,7 @@ import (
 	"errors"
 )
 
-const orderURL = api.BASE_URL + "/order"
+const orderURL = api.BASE_URL + "/order_io"
 
 type Order orders.Orders
 

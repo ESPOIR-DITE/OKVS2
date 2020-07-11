@@ -1,4 +1,4 @@
-package makeUp
+package joins
 
 import (
 	"fmt"

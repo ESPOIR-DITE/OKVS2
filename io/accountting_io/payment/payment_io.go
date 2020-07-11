@@ -1,4 +1,4 @@
-package accountting_io
+package payment
 
 import (
 	"OKVS2/api"
@@ -6,11 +6,11 @@ import (
 	"errors"
 )
 
-const accountingURL = api.BASE_URL + "accounting"
+const paymentURL = api.BASE_URL + "payment"
 
-func CreateAccounting(account accounting.Accounting) (accounting.Accounting, error) {
-	entity := accounting.Accounting{}
-	resp, _ := api.Rest().SetBody(account).Post(accountingURL + "/create")
+func CreatePayment(account accounting.Payment) (accounting.Payment, error) {
+	entity := accounting.Payment{}
+	resp, _ := api.Rest().SetBody(account).Post(paymentURL + "/create")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -20,9 +20,9 @@ func CreateAccounting(account accounting.Accounting) (accounting.Accounting, err
 	}
 	return entity, nil
 }
-func UpdateAccounting(account accounting.Accounting) (accounting.Accounting, error) {
-	entity := accounting.Accounting{}
-	resp, _ := api.Rest().SetBody(account).Post(accountingURL + "/update")
+func UpdatePayment(account accounting.Payment) (accounting.Payment, error) {
+	entity := accounting.Payment{}
+	resp, _ := api.Rest().SetBody(account).Post(paymentURL + "/update")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -33,10 +33,10 @@ func UpdateAccounting(account accounting.Accounting) (accounting.Accounting, err
 	return entity, nil
 }
 
-func GetAccountings() ([]accounting.Accounting, error) {
+func GetPayments() ([]accounting.Payment, error) {
 	//entity :=Color{}
-	entities := []accounting.Accounting{}
-	resp, _ := api.Rest().Get(accountingURL + "/reads")
+	entities := []accounting.Payment{}
+	resp, _ := api.Rest().Get(paymentURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
 	}
@@ -46,9 +46,9 @@ func GetAccountings() ([]accounting.Accounting, error) {
 	}
 	return entities, nil
 }
-func GetAccounting(id string) (accounting.Accounting, error) {
-	entity := accounting.Accounting{}
-	resp, _ := api.Rest().Get(accountingURL + "/read?id=" + id)
+func GetPayment(id string) (accounting.Payment, error) {
+	entity := accounting.Payment{}
+	resp, _ := api.Rest().Get(paymentURL + "/read?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -60,9 +60,9 @@ func GetAccounting(id string) (accounting.Accounting, error) {
 
 }
 
-func DeleteAccounting(id string) (accounting.Accounting, error) {
-	entity := accounting.Accounting{}
-	resp, _ := api.Rest().Get(accountingURL + "/delete?id=" + id)
+func DeletePayment(id string) (accounting.Payment, error) {
+	entity := accounting.Payment{}
+	resp, _ := api.Rest().Get(paymentURL + "/delete?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}

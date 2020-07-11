@@ -4,16 +4,37 @@ import (
 	"OKVS2/api"
 	"OKVS2/domain/items"
 	"errors"
-	"fmt"
 )
 
-const itemBraindURL = api.BASE_URL + "itemBraind"
+const itemBrandURL = api.BASE_URL + "itemBrand"
 
-type ItemBraind items.ItemBrand
-
-func GetItemBrainds() ([]items.ItemBrand, error) {
+func CreateItemBrand(itemBrand items.ItemBrand) (items.ItemBrand, error) {
+	entity := items.ItemBrand{}
+	resp, _ := api.Rest().SetBody(itemBrand).Post(itemBrandURL + "/create")
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}
+func GetItemBrand(id string) (items.ItemBrand, error) {
+	entity := items.ItemBrand{}
+	resp, _ := api.Rest().Get(itemBrandURL + "/read?id=" + id)
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		return entity, errors.New(resp.Status())
+	}
+	return entity, nil
+}
+func GetItemBrands() ([]items.ItemBrand, error) {
 	entities := []items.ItemBrand{}
-	resp, _ := api.Rest().Get(itemBraindURL + "/reads")
+	resp, _ := api.Rest().Get(itemBrandURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
 	}
@@ -23,9 +44,10 @@ func GetItemBrainds() ([]items.ItemBrand, error) {
 	}
 	return entities, nil
 }
-func GetItemBraind(id string) (items.ItemBrand, error) {
+
+func DeleteItemBrand(braind string) (items.ItemBrand, error) {
 	entity := items.ItemBrand{}
-	resp, _ := api.Rest().Get(itemBraindURL + "/read?id=" + id)
+	resp, _ := api.Rest().Get(itemBrandURL + "/delete?id=" + braind)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -34,44 +56,10 @@ func GetItemBraind(id string) (items.ItemBrand, error) {
 		return entity, errors.New(resp.Status())
 	}
 	return entity, nil
-
 }
-func CreateItemBraind(braind string) (items.ItemBrand, error) {
-	fmt.Println(" we are about to creating Color", braind)
+func UpdateItemBrand(entit items.ItemBrand) (items.ItemBrand, error) {
 	entity := items.ItemBrand{}
-	myType := Braind{"000", braind}
-	resp, _ := api.Rest().SetBody(myType).Post(itemBraindURL + "/create")
-	if resp.IsError() {
-		return entity, errors.New(resp.Status())
-	}
-	err := api.JSON.Unmarshal(resp.Body(), &entity)
-
-	fmt.Println(" we have create Color", entity)
-	if err != nil {
-		fmt.Println(" erro when marshaling", err)
-		return entity, errors.New(resp.Status())
-
-	}
-	return entity, nil
-}
-func DeleteItemBraind(braind string) (items.ItemBrand, error) {
-	//entities:=[]Color{}
-	entity := items.ItemBrand{}
-	resp, _ := api.Rest().Get(itemBraindURL + "/delete?id=" + braind)
-	if resp.IsError() {
-		return entity, errors.New(resp.Status())
-	}
-	err := api.JSON.Unmarshal(resp.Body(), &entity)
-
-	fmt.Println(" we are Deleting Color", entity)
-	if err != nil {
-		return entity, errors.New(resp.Status())
-	}
-	return entity, nil
-}
-func UpdateItemBraind(entit items.ItemBrand) (items.ItemBrand, error) {
-	entity := items.ItemBrand{}
-	resp, _ := api.Rest().SetBody(entit).Post(itemBraindURL + "/update")
+	resp, _ := api.Rest().SetBody(entit).Post(itemBrandURL + "/update")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -83,13 +71,11 @@ func UpdateItemBraind(entit items.ItemBrand) (items.ItemBrand, error) {
 }
 func ReadWithItemId(itemId string) (items.ItemBrand, error) {
 	entity := items.ItemBrand{}
-	resp, _ := api.Rest().Get(itemBraindURL + "/readWithItemId?itemId=" + itemId)
+	resp, _ := api.Rest().Get(itemBrandURL + "/readWithItemId?itemId=" + itemId)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
-
-	fmt.Println(" we are Deleting Color", entity)
 	if err != nil {
 		return entity, errors.New(resp.Status())
 	}

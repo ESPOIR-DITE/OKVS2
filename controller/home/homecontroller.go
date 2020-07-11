@@ -5,7 +5,7 @@ import (
 	helperUser "OKVS2/controller/users"
 	"OKVS2/domain/items"
 	"OKVS2/domain/users"
-	"OKVS2/io/makeUp"
+	"OKVS2/io/joins"
 	"OKVS2/io/users_io"
 	"OKVS2/io/users_io/admin"
 	"fmt"
@@ -82,7 +82,7 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 
 		var itemsdetals []items.ItemViewHtml
 
-		homePageElements, err := makeUp.GetAllItems()
+		homePageElements, err := joins.GetAllItems()
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 		}

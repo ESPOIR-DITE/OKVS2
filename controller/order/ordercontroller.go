@@ -8,10 +8,10 @@ import (
 	"OKVS2/domain/users"
 	"OKVS2/io/accountting_io"
 	items2 "OKVS2/io/item_io"
-	"OKVS2/io/order"
-	card2 "OKVS2/io/order/card"
-	"OKVS2/io/order/orderLine"
-	"OKVS2/io/order/status"
+	"OKVS2/io/order_io"
+	card2 "OKVS2/io/order_io/card"
+	"OKVS2/io/order_io/orderLine"
+	"OKVS2/io/order_io/status"
 	"OKVS2/io/users_io"
 	admin2 "OKVS2/io/users_io/admin"
 	"fmt"
@@ -31,8 +31,8 @@ func Order(app *config.Env) http.Handler {
 	r.Get("/addToCard/{resetkeys}", AddToCardHandler(app))
 	r.Get("/table", OrderTableHandler(app))
 	//r.Get("/home", OrderTableHandler(app))
-	r.Get("/order/readCard", ReadCardHandler(app))
-	r.Get("/order/myorder", MyOrderHandler(app))
+	r.Get("/order_io/readCard", ReadCardHandler(app))
+	r.Get("/order_io/myorder", MyOrderHandler(app))
 	r.Post("/card/item", AddItemToCardHandler(app))
 	r.Get("/addToCard/remove/{toremove}", CardRemoveHandler(app))
 	r.Get("/track", OrderTrackingHandler(app))
@@ -85,12 +85,12 @@ func UpdateOrderHandler(app *config.Env) http.HandlerFunc {
 			fmt.Println("error creating newOrderStatus", newOrderStatus)
 			app.ErrorLog.Println(err.Error())
 		}
-		notice = "You have successfully updated order stat"
+		notice = "You have successfully updated order_io stat"
 		class = "success"
 
 		app.Session.Put(r.Context(), "notice", notice)
 		app.Session.Put(r.Context(), "class", class)
-		http.Redirect(w, r, "/order/table", 301)
+		http.Redirect(w, r, "/order_io/table", 301)
 		return
 	}
 }
@@ -139,7 +139,7 @@ func MyTrackingHandler(app *config.Env) http.HandlerFunc {
 
 		entity := orders.OrderHelper{}
 		if orderNumber != "" {
-			entity, err = order.OrderTracking(orderNumber)
+			entity, err = order_io.OrderTracking(orderNumber)
 			if err != nil {
 				message = "Wrong OrderNumber please try again"
 			}
@@ -224,13 +224,13 @@ func MyOrderHandler(app *config.Env) http.HandlerFunc {
 		}
 		fmt.Println("Result after remove ", card)
 		for _, cardResult := range card {
-			result, _ = order.CreateOrder(cardResult)
+			result, _ = order_io.CreateOrder(cardResult)
 		}
 		if result != false {
 
-			message = "You have placed an order"
+			message = "You have placed an order_io"
 		}
-		fmt.Println("Result after placing the order ", result)
+		fmt.Println("Result after placing the order_io ", result)
 
 		type PageData struct {
 			Entity CardeData
@@ -287,7 +287,7 @@ func CardRemoveHandler(app *config.Env) http.HandlerFunc {
 		data1 := CardeData{message, class}
 		data := PageData{data1}
 		fmt.Println(data)
-		http.Redirect(w, r, "/order/order/readCard", 301)
+		http.Redirect(w, r, "/order_io/order_io/readCard", 301)
 		return
 		/**
 		files := []string{
@@ -455,7 +455,7 @@ func AddToCardHandler(app *config.Env) http.HandlerFunc {
 }
 
 type orderDateils struct {
-	Order    order.Order
+	Order    order_io.Order
 	Customer users.Customer
 	//OderStatus []orders.OrderStatus
 	//OrderLine  []orders.OrderLine
@@ -558,7 +558,7 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 		var theCustomer users.Customer
 		var theorderDateils []orderDateils
 		var statList []TheOrderStat
-		var Order order.Order
+		var Order order_io.Order
 		var OderStatus []orders.OrderStatus
 		var theLocalItemList []myItem
 		statusList, err := status.GetStatues()
@@ -567,12 +567,12 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 			fmt.Println("err reading statusList", statusList)
 			app.ErrorLog.Println(err.Error())
 		}
-		ordersList, err := order.GetOrders()
+		ordersList, err := order_io.GetOrders()
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
 		}
 
-		//looping through each order to get the following details: 1) order . 2)orderLine
+		//looping through each order_io to get the following details: 1) order_io . 2)orderLine
 		for _, myOrder := range ordersList {
 
 			//1) getting the Order details
@@ -634,7 +634,7 @@ func OrderTableHandler(app *config.Env) http.HandlerFunc {
 
 		//fmt.Println("theCustomer >>>",theorderDateils)
 		//for index,dataorder:=range theorderDateils{
-		//	fmt.Println("index: ",index,"    theCustomer >>>",dataorder.Customer,"      order: ",dataorder.Items,"    ",dataorder.OderStatus)
+		//	fmt.Println("index: ",index,"    theCustomer >>>",dataorder.Customer,"      order_io: ",dataorder.Items,"    ",dataorder.OderStatus)
 		//}
 
 		type PageData struct {

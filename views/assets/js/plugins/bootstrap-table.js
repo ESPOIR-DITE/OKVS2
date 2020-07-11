@@ -865,7 +865,7 @@
         var $this = $(event.currentTarget).parent(),
             $this_ = this.$header.find('th').eq($this.index());
 
-        this.$header.add(this.$header_).find('span.order').remove();
+        this.$header.add(this.$header_).find('span.order_io').remove();
 
         if (this.options.sortName === $this.data('field')) {
             this.options.sortOrder = this.options.sortOrder === 'asc' ? 'desc' : 'asc';

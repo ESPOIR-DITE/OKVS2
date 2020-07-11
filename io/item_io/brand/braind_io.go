@@ -1,16 +1,16 @@
-package accountting_io
+package brand
 
 import (
 	"OKVS2/api"
-	"OKVS2/domain/accounting"
+	"OKVS2/domain/items"
 	"errors"
 )
 
-const accountingURL = api.BASE_URL + "accounting"
+const brandURL = api.BASE_URL + "brand"
 
-func CreateAccounting(account accounting.Accounting) (accounting.Accounting, error) {
-	entity := accounting.Accounting{}
-	resp, _ := api.Rest().SetBody(account).Post(accountingURL + "/create")
+func CreateBraind(braind string) (items.Brand, error) {
+	entity := items.Brand{}
+	resp, _ := api.Rest().SetBody(entity).Post(brandURL + "/create")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -20,9 +20,9 @@ func CreateAccounting(account accounting.Accounting) (accounting.Accounting, err
 	}
 	return entity, nil
 }
-func UpdateAccounting(account accounting.Accounting) (accounting.Accounting, error) {
-	entity := accounting.Accounting{}
-	resp, _ := api.Rest().SetBody(account).Post(accountingURL + "/update")
+func UpdateBraind(braind string) (items.Brand, error) {
+	entity := items.Brand{}
+	resp, _ := api.Rest().SetBody(entity).Post(brandURL + "/update")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -32,11 +32,9 @@ func UpdateAccounting(account accounting.Accounting) (accounting.Accounting, err
 	}
 	return entity, nil
 }
-
-func GetAccountings() ([]accounting.Accounting, error) {
-	//entity :=Color{}
-	entities := []accounting.Accounting{}
-	resp, _ := api.Rest().Get(accountingURL + "/reads")
+func GetBrainds() ([]items.Brand, error) {
+	entities := []items.Brand{}
+	resp, _ := api.Rest().Get(brandURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
 	}
@@ -46,9 +44,9 @@ func GetAccountings() ([]accounting.Accounting, error) {
 	}
 	return entities, nil
 }
-func GetAccounting(id string) (accounting.Accounting, error) {
-	entity := accounting.Accounting{}
-	resp, _ := api.Rest().Get(accountingURL + "/read?id=" + id)
+func GetBrand(id string) (items.Brand, error) {
+	entity := items.Brand{}
+	resp, _ := api.Rest().Get(brandURL + "/read?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -59,10 +57,9 @@ func GetAccounting(id string) (accounting.Accounting, error) {
 	return entity, nil
 
 }
-
-func DeleteAccounting(id string) (accounting.Accounting, error) {
-	entity := accounting.Accounting{}
-	resp, _ := api.Rest().Get(accountingURL + "/delete?id=" + id)
+func DeleteBraind(braind string) (items.Brand, error) {
+	entity := items.Brand{}
+	resp, _ := api.Rest().Get(brandURL + "/delete?id=" + braind)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}

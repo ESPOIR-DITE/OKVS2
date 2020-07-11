@@ -8,10 +8,8 @@ import (
 
 const itemURL = api.BASE_URL + "/item"
 
-type Item ItemValeu.Items
-
-func GetItems() ([]Item, error) {
-	entities := []Item{}
+func GetItems() ([]ItemValeu.Items, error) {
+	entities := []ItemValeu.Items{}
 	resp, _ := api.Rest().Get(itemURL + "/reads")
 	if resp.IsError() {
 		return entities, errors.New(resp.Status())
@@ -23,8 +21,8 @@ func GetItems() ([]Item, error) {
 	return entities, nil
 }
 
-func GetItem(id string) (Item, error) {
-	entity := Item{}
+func GetItem(id string) (ItemValeu.Items, error) {
+	entity := ItemValeu.Items{}
 	resp, _ := api.Rest().Get(itemURL + "/read" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
@@ -36,8 +34,8 @@ func GetItem(id string) (Item, error) {
 	return entity, nil
 
 }
-func UpdateItem(item Item) (Item, error) {
-	entity := Item{}
+func UpdateItem(item ItemValeu.Items) (ItemValeu.Items, error) {
+	entity := ItemValeu.Items{}
 	resp, _ := api.Rest().SetBody(item).Post(itemURL + "/create")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
@@ -48,8 +46,8 @@ func UpdateItem(item Item) (Item, error) {
 	}
 	return entity, nil
 }
-func DeleteItem(id string) (Item, error) {
-	entity := Item{}
+func DeleteItem(id string) (ItemValeu.Items, error) {
+	entity := ItemValeu.Items{}
 	resp, _ := api.Rest().Get(itemURL + "/delete" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
@@ -60,8 +58,8 @@ func DeleteItem(id string) (Item, error) {
 	}
 	return entity, nil
 }
-func CreateItem(item interface{}) (Item, error) {
-	entity := Item{}
+func CreateItem(item ItemValeu.MyItemHelper) (ItemValeu.Items, error) {
+	entity := ItemValeu.Items{}
 	resp, _ := api.Rest().SetBody(item).Post(itemURL + "/create")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())

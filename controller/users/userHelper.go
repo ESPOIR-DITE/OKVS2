@@ -2,7 +2,7 @@ package users
 
 import (
 	"OKVS2/domain/users"
-	"OKVS2/io/order/card"
+	"OKVS2/io/order_io/card"
 	"OKVS2/io/users_io"
 	"OKVS2/io/users_io/admin"
 	"OKVS2/io/users_io/login"

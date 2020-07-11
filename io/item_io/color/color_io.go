@@ -12,7 +12,6 @@ const colorURL = api.BASE_URL + "color"
 type Color items.Color
 
 func GetColors() ([]items.Color, error) {
-	//entity :=Color{}
 	entities := []items.Color{}
 	resp, _ := api.Rest().Get(colorURL + "/reads")
 	if resp.IsError() {
@@ -37,7 +36,6 @@ func GetColor(id string) (items.Color, error) {
 	return entity, nil
 }
 func CreateColors(color string) (Color, error) {
-	//fmt.Println(" we are about to creating Color", color)
 	entity := Color{}
 	myType := Color{"000", color}
 	resp, _ := api.Rest().SetBody(myType).Post(colorURL + "/create")
@@ -45,8 +43,21 @@ func CreateColors(color string) (Color, error) {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
+	if err != nil {
+		//fmt.Println(" erro when marshaling", err)
+		return entity, errors.New(resp.Status())
 
-	//fmt.Println(" we have create Color", entity)
+	}
+	return entity, nil
+}
+func UpdateColors(color string) (Color, error) {
+	entity := Color{}
+	myType := Color{"000", color}
+	resp, _ := api.Rest().SetBody(myType).Post(colorURL + "/update")
+	if resp.IsError() {
+		return entity, errors.New(resp.Status())
+	}
+	err := api.JSON.Unmarshal(resp.Body(), &entity)
 	if err != nil {
 		//fmt.Println(" erro when marshaling", err)
 		return entity, errors.New(resp.Status())
@@ -55,15 +66,12 @@ func CreateColors(color string) (Color, error) {
 	return entity, nil
 }
 func DeleteColor(color string) (items.Color, error) {
-	//entities:=[]Color{}
 	entity := items.Color{}
 	resp, _ := api.Rest().Get(colorURL + "/delete?id=" + color)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
-
-	//fmt.Println(" we are Deleting Color", entity)
 	if err != nil {
 		return entity, errors.New(resp.Status())
 	}

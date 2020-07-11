@@ -405,7 +405,7 @@
         }
 
         // Store the actual step values.
-        // xSteps is sorted in the same order as xPct and xVal.
+        // xSteps is sorted in the same order_io as xPct and xVal.
         this.xNumSteps = this.xSteps.slice(0);
 
         // Convert all numeric steps to the percentage of the subrange they represent.
@@ -832,7 +832,7 @@
             format: defaultFormatter
         };
 
-        // Tests are executed in the order they are presented here.
+        // Tests are executed in the order_io they are presented here.
         var tests = {
             'step': {
                 r: false,
@@ -1119,7 +1119,7 @@
         // The tooltips option is a shorthand for using the 'update' event.
         function tooltips() {
 
-            // Tooltips are added with options.tooltips in original order.
+            // Tooltips are added with options.tooltips in original order_io.
             var tips = scope_Handles.map(addTooltip);
 
             bindEvent('update', function(values, handleNumber, unencoded) {

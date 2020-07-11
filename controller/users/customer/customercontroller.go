@@ -6,8 +6,8 @@ import (
 	gender2 "OKVS2/domain/gender"
 	"OKVS2/domain/items"
 	"OKVS2/domain/users"
-	"OKVS2/io/makeUp"
-	"OKVS2/io/order/card"
+	"OKVS2/io/joins"
+	"OKVS2/io/order_io/card"
 	"OKVS2/io/users_io"
 	address2 "OKVS2/io/users_io/address"
 	"OKVS2/io/users_io/gender"
@@ -530,7 +530,7 @@ func homeHanler(app *config.Env) http.HandlerFunc {
 		*/
 		var itemsdetals []items.ItemViewHtml
 
-		homePageElements, err := makeUp.GetAllItems()
+		homePageElements, err := joins.GetAllItems()
 		//fmt.Println("User may not have logIn or may not have ordered yet ", homePageElements)
 		if err != nil && homePageElements == nil {
 			app.ErrorLog.Println(err.Error())

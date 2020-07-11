@@ -8,10 +8,7 @@ import (
 
 const itemColorURL = api.BASE_URL + "itemColor"
 
-type ItemColor items.ItemColor
-
 func GetItemColors() ([]items.ItemColor, error) {
-	//entity :=Color{}
 	entities := []items.ItemColor{}
 	resp, _ := api.Rest().Get(itemColorURL + "/reads")
 	if resp.IsError() {
@@ -74,19 +71,16 @@ func CreateAllOfItemColors(color []items.ItemColor) (bool, error) {
 	return entity, nil
 }
 
-/**
-func DeleteColor(color string) (item_io.Color, error) {
+func DeleteItemColor(color string) (items.ItemColor, error) {
 	//entities:=[]Color{}
-	entity := item_io.Color{}
+	entity := items.ItemColor{}
 	resp, _ := api.Rest().Get(colorURL + "/delete?id=" + color)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
 	err := api.JSON.Unmarshal(resp.Body(), &entity)
-
-	fmt.Println(" we are Deleting Color", entity)
 	if err != nil {
 		return entity, errors.New(resp.Status())
 	}
 	return entity, nil
-}*/
+}

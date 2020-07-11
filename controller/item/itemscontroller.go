@@ -14,7 +14,7 @@ import (
 	"OKVS2/io/item_io/image"
 	size2 "OKVS2/io/item_io/size"
 	"OKVS2/io/item_io/type"
-	"OKVS2/io/makeUp"
+	"OKVS2/io/joins"
 	"OKVS2/io/users_io/address"
 	"OKVS2/io/users_io/admin"
 	gender3 "OKVS2/io/users_io/gender"
@@ -171,7 +171,7 @@ func UpdateItemContent(app *config.Env) http.HandlerFunc {
 				app.ErrorLog.Println(err.Error(), " error Getting braind")
 			} else {
 				newBraind := items.ItemBrand{itembraind.Id, braindId, itembraind.ItemId}
-				pbraindResult, err := brand.UpdateItemBraind(newBraind)
+				pbraindResult, err := brand.UpdateItemBrand(newBraind)
 				if err != nil {
 					app.ErrorLog.Println(err.Error())
 					fmt.Println("error deleteing products color")
@@ -253,7 +253,7 @@ func UpdateItemContent(app *config.Env) http.HandlerFunc {
 
 		itemBrand, err := brand.ReadWithItemId(product.Id)
 		if err != nil {
-			app.ErrorLog.Println(err.Error(), "erro GetItemBraind(product.Id)")
+			app.ErrorLog.Println(err.Error(), "erro GetItemBrand(product.Id)")
 		}
 		//fmt.Println("product itemBrand to search>>>", itemBrand)
 
@@ -566,7 +566,7 @@ func UpdateItemHandler(app *config.Env) http.HandlerFunc {
 		}
 		//fmt.Println("product product to search>>>", colorListe)
 
-		itemBrand, _ := brand.GetItemBraind(product.Id)
+		itemBrand, _ := brand.GetItemBrand(product.Id)
 		//fmt.Println("product itemBrand to search>>>", itemBrand)
 
 		braind, _ := brand.GetBrand(itemBrand.BraindId)
@@ -736,7 +736,7 @@ func ReadProductTypeHandler(app *config.Env) http.HandlerFunc {
 		}
 		//fmt.Println("product product to search>>>", colorListe)
 
-		itemBrand, _ := brand.GetItemBraind(product.Id)
+		itemBrand, _ := brand.GetItemBrand(product.Id)
 		//fmt.Println("product itemBrand to search>>>", itemBrand)
 
 		braind, _ := brand.GetBrand(itemBrand.BraindId)
@@ -807,7 +807,7 @@ func ViewProductHandler(app *config.Env) http.HandlerFunc {
 			Entity       []items.ViewItem
 			ProductTypes []items.TypeOfItem
 		}
-		products, err := makeUp.ViewAllItems()
+		products, err := joins.ViewAllItems()
 		//fmt.Println(products)
 		if err != nil {
 			fmt.Println("an error in ViewProductHandler in itemsController")
@@ -877,7 +877,7 @@ func ReadProductHandler(app *config.Env) http.HandlerFunc {
 			}
 		}
 
-		productDetails, err := makeUp.GetOneItemDetails(resetKey)
+		productDetails, err := joins.GetOneItemDetails(resetKey)
 		//fmt.Println("productDetails>>>", productDetails)
 		if err != nil {
 			app.ErrorLog.Println(err.Error())
