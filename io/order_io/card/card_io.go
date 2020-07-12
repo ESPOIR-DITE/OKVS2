@@ -2,6 +2,7 @@ package card
 
 import (
 	"OKVS2/api"
+	"OKVS2/domain/items"
 	"OKVS2/domain/orders"
 	"errors"
 )
@@ -106,9 +107,9 @@ func UpdateCard(myEntity interface{}) (orders.Card, error) {
 	}
 	return entity, nil
 }
-func GetCheckOut(myEntity orders.Card) (orders.CheckOut, error) {
-	entity := orders.CheckOut{}
-	resp, _ := api.Rest().SetBody(myEntity).Post(checkcardURL + "/read")
+func GetCheckOut(myEntity orders.Card) (items.CheckOut, error) {
+	entity := items.CheckOut{}
+	resp, _ := api.Rest().SetBody(myEntity).Post(checkcardURL + "/checkout")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}

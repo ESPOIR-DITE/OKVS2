@@ -6,7 +6,7 @@ import (
 	"errors"
 )
 
-const orderURL = api.BASE_URL + "/order_io"
+const orderURL = api.BASE_URL + "order"
 
 type Order orders.Orders
 

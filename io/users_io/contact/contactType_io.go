@@ -1,16 +1,16 @@
-package users_io
+package contact
 
 import (
 	"OKVS2/api"
-	"OKVS2/domain/gender"
+	"OKVS2/domain/users"
 	"errors"
 )
 
-const customergenderURL = api.BASE_URL + "customerGender"
+const contacttypeURL = api.BASE_URL + "contactType"
 
-func CreateCustomerGender(obj gender.CustomerGender) (gender.CustomerGender, error) {
-	entity := gender.CustomerGender{}
-	resp, _ := api.Rest().SetBody(obj).Post(customergenderURL + "/create")
+func CreateContactType(obj users.ContactType) (users.ContactType, error) {
+	entity := users.ContactType{}
+	resp, _ := api.Rest().SetBody(obj).Post(contacttypeURL + "/create")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -20,9 +20,10 @@ func CreateCustomerGender(obj gender.CustomerGender) (gender.CustomerGender, err
 	}
 	return entity, nil
 }
-func GetCustomerGender(id string) (gender.CustomerGender, error) {
-	entity := gender.CustomerGender{}
-	resp, _ := api.Rest().Get(customergenderURL + "/read?id=" + id)
+
+func GetContactType(id string) (users.ContactType, error) {
+	entity := users.ContactType{}
+	resp, _ := api.Rest().Get(contacttypeURL + "/read?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -32,9 +33,9 @@ func GetCustomerGender(id string) (gender.CustomerGender, error) {
 	}
 	return entity, nil
 }
-func GetCustomerGenders() ([]gender.CustomerGender, error) {
-	entity := []gender.CustomerGender{}
-	resp, _ := api.Rest().Get(customergenderURL + "/reads")
+func GetContactTypes() ([]users.ContactType, error) {
+	entity := []users.ContactType{}
+	resp, _ := api.Rest().Get(contacttypeURL + "/reads")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -44,9 +45,10 @@ func GetCustomerGenders() ([]gender.CustomerGender, error) {
 	}
 	return entity, nil
 }
-func DeleteCustomerGender(id string) (gender.CustomerGender, error) {
-	entity := gender.CustomerGender{}
-	resp, _ := api.Rest().Get(customergenderURL + "/delete?id=" + id)
+
+func DeleteContactType(id string) (users.ContactType, error) {
+	entity := users.ContactType{}
+	resp, _ := api.Rest().Get(contacttypeURL + "/delete?id=" + id)
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -56,9 +58,9 @@ func DeleteCustomerGender(id string) (gender.CustomerGender, error) {
 	}
 	return entity, nil
 }
-func UpdateCustomerGender(obj gender.CustomerGender) (gender.CustomerGender, error) {
-	entity := gender.CustomerGender{}
-	resp, _ := api.Rest().SetBody(obj).Post(customergenderURL + "/update")
+func UpdateContactType(obj users.ContactType) (users.ContactType, error) {
+	entity := users.ContactType{}
+	resp, _ := api.Rest().SetBody(obj).Post(contacttypeURL + "/update")
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}

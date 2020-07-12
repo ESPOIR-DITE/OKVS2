@@ -14,7 +14,7 @@ import (
 	"net/http"
 )
 
-type Customer users.Customer
+type Customer users.User
 type PageData struct {
 	User interface{}
 }

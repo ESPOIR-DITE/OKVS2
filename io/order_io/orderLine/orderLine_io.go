@@ -10,9 +10,7 @@ const orderLineURL = api.BASE_URL + "orderline/"
 
 func CreateOrderLine(obj orders.OrderLine) (orders.OrderLine, error) {
 	entity := orders.OrderLine{}
-
 	resp, _ := api.Rest().SetBody(obj).Post(orderLineURL + "create")
-
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -24,9 +22,7 @@ func CreateOrderLine(obj orders.OrderLine) (orders.OrderLine, error) {
 }
 func GetOrderLineWithOrderId(orderNumber string) ([]orders.OrderLine, error) {
 	entity := []orders.OrderLine{}
-
 	resp, _ := api.Rest().Get(orderLineURL + "readWithOrderId?id=" + orderNumber)
-
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
@@ -80,9 +76,7 @@ func DeleteOrderLine(orderLineId string) (orders.OrderLine, error) {
 }
 func UpdateOrderLine(obj orders.OrderLine) (orders.OrderLine, error) {
 	entity := orders.OrderLine{}
-
 	resp, _ := api.Rest().SetBody(obj).Post(orderLineURL + "update")
-
 	if resp.IsError() {
 		return entity, errors.New(resp.Status())
 	}
